@@ -8,6 +8,10 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.password_manager_app.ui.HomeScreen
 import com.example.password_manager_app.ui.LoginScreen
 import com.example.password_manager_app.ui.theme.PasswordmanagerappTheme
 
@@ -21,7 +25,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    LoginScreen(onSubmit = {})
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "homeScreen" ) {
+                        composable("login") { LoginScreen(onSubmit = {}) }
+                        composable("homeScreen") { HomeScreen(
+                            onNavigateToLogin = { navController.navigate("login") }
+                        ) }
+                    }
+
                 }
             }
         }
@@ -40,5 +51,5 @@ fun DefaultPreview() {
 
 /**
  * Loading Images: https://developer.android.com/jetpack/compose/graphics/images/loading
- *
+ * Navigation: https://developer.android.com/jetpack/compose/navigation
  */
