@@ -22,8 +22,7 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(75.dp)
-            .border(2.dp, Color.Blue),
+            .padding(75.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
