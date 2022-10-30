@@ -16,7 +16,8 @@ import com.example.password_manager_app.R
 
 @Composable
 fun HomeScreen(
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    onNavigateToRegister: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -34,7 +35,7 @@ fun HomeScreen(
         Button(modifier = Modifier.fillMaxWidth(), onClick = onNavigateToLogin) {
             Text("Login")
         }
-        Button(modifier = Modifier.fillMaxWidth(), onClick = {}) {
+        Button(modifier = Modifier.fillMaxWidth(), onClick = onNavigateToRegister) {
             Text("Register")
         }
     }
