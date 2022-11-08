@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.password_manager_app.ui.HomeScreen
 import com.example.password_manager_app.ui.LoginScreen
+import com.example.password_manager_app.ui.RegisterScreen
 import com.example.password_manager_app.ui.theme.PasswordmanagerappTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,10 +28,24 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "homeScreen" ) {
-                        composable("login") { LoginScreen(onSubmit = {}) }
-                        composable("homeScreen") { HomeScreen(
-                            onNavigateToLogin = { navController.navigate("login") }
-                        ) }
+                        composable("login") {
+                            LoginScreen(
+                                onSubmit = {},
+                                onNavigateToRegister = { navController.navigate("register") }
+                            )
+                        }
+                        composable("homeScreen") {
+                            HomeScreen(
+                                onNavigateToLogin = { navController.navigate("login") },
+                                onNavigateToRegister = { navController.navigate("register") }
+                            )
+                        }
+                        composable("register") {
+                            RegisterScreen(
+                                onNavigateToLogin = { navController.navigate("login") },
+                                onNavigateToViewPasswords = {}
+                            )
+                        }
                     }
 
                 }
@@ -45,7 +60,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     PasswordmanagerappTheme {
-        LoginScreen(onSubmit = {})
+        LoginScreen(onSubmit = {}, onNavigateToRegister = {})
     }
 }
 
