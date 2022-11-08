@@ -20,7 +20,10 @@ import com.example.password_manager_app.R
  * Login Screen that lets a user log in
  */
 @Composable
-fun LoginScreen(onSubmit: () -> Unit) {
+fun LoginScreen(
+    onSubmit: () -> Unit,
+    onNavigateToRegister: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -78,7 +81,7 @@ fun LoginScreen(onSubmit: () -> Unit) {
                 Text(
                     text = "No Account? Register",
                     modifier = Modifier
-                        .clickable {  },
+                        .clickable { onNavigateToRegister() },
                     style = TextStyle(textDecoration = TextDecoration.Underline)
                 )
             }
