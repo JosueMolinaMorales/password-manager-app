@@ -11,9 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.password_manager_app.R
+import com.example.password_manager_app.ui.components.PasswordManagerButton
+import com.example.password_manager_app.ui.components.PasswordManagerTextField
 
 
 /**
@@ -30,13 +34,24 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Login",
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Medium,
+                textDecoration = TextDecoration.Underline
+            )
+        }
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 32.dp),
             horizontalArrangement = Arrangement.Center
         ){
             Image(
-                painter = painterResource(id = R.drawable.img),
+                painter = painterResource(id = R.drawable.koalalogo),
                 contentDescription = ""
             )
         }
@@ -51,7 +66,7 @@ fun LoginScreen(
                     .padding(8.dp)
             ) {
                 // Email Row
-                TextField(
+                PasswordManagerTextField(
                     value = "",
                     onValueChange = {},
                     placeholder = { Text(text = "Email") },
@@ -63,8 +78,9 @@ fun LoginScreen(
                     .padding(8.dp)
             ) {
                 // Password Row
-                TextField(
+                PasswordManagerTextField(
                     value = "",
+                    label = { Text("Password") },
                     onValueChange = {},
                     placeholder = { Text(text = "Password") },
                     isError = false // Will be true if the login failed
@@ -73,7 +89,7 @@ fun LoginScreen(
             Row(
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             ) {
-                Button(onClick = onSubmit) {
+                PasswordManagerButton(onClick = onSubmit) {
                     Text(text = "Login")
                 }
             }
