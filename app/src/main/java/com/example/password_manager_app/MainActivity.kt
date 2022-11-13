@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.password_manager_app.ui.HomeScreen
 import com.example.password_manager_app.ui.LoginScreen
+import com.example.password_manager_app.ui.MainScreen
 import com.example.password_manager_app.ui.RegisterScreen
 import com.example.password_manager_app.ui.theme.PasswordmanagerappTheme
 
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = "homeScreen" ) {
                         composable("login") {
                             LoginScreen(
-                                onSubmit = {},
+                                onNavigateToMainScreen = { navController.navigate("mainScreen") },
                                 onNavigateToRegister = { navController.navigate("register") }
                             )
                         }
@@ -43,24 +44,24 @@ class MainActivity : ComponentActivity() {
                         composable("register") {
                             RegisterScreen(
                                 onNavigateToLogin = { navController.navigate("login") },
-                                onNavigateToViewPasswords = {}
+                                onNavigateToMainScreen = { navController.navigate("mainScreen") }
                             )
                         }
+                        composable("mainScreen") {
+                            MainScreen({}, onLogOut = {navController.navigate("login")})
+                        }
                     }
-
                 }
             }
         }
     }
 }
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     PasswordmanagerappTheme {
-        LoginScreen(onSubmit = {}, onNavigateToRegister = {})
+        LoginScreen(onNavigateToMainScreen = {}, onNavigateToRegister = {})
     }
 }
 

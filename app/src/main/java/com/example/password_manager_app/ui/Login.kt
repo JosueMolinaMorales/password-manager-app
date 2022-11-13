@@ -21,7 +21,7 @@ import com.example.password_manager_app.R
  */
 @Composable
 fun LoginScreen(
-    onSubmit: () -> Unit,
+    onNavigateToMainScreen: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
     Column(
@@ -73,7 +73,7 @@ fun LoginScreen(
             Row(
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             ) {
-                Button(onClick = onSubmit) {
+                Button(onClick = onNavigateToMainScreen) {
                     Text(text = "Login")
                 }
             }
