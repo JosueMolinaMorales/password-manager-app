@@ -122,7 +122,8 @@ fun NavigationDrawer(
                 modifier = Modifier
                     .padding(top = 20.dp),
                 text = "Hi, ",//eventually will include ${name
-                fontSize = 20.sp
+                fontSize = 20.sp,
+                fontWeight = FontWeight(1000)
             )
             NavigationItem(icon = Icons.Default.List, text = "View Secrets") {
                 navToSecrets()
