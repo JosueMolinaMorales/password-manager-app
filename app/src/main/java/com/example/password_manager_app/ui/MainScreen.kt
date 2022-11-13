@@ -1,5 +1,9 @@
 package com.example.password_manager_app.ui
 
+import android.graphics.fonts.FontStyle
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -13,13 +17,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.password_manager_app.ui.components.PasswordManagerTextField
+import com.example.password_manager_app.ui.theme.Charcoal
+import com.example.password_manager_app.ui.theme.LavenderBlush
+import com.example.password_manager_app.ui.theme.TopBarOpal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -47,6 +58,7 @@ fun MainScreen(onAddSecretClick: () -> Unit, onLogOut: () -> Unit) {
                 { onLogOut() }
             )
         },
+        drawerBackgroundColor = Charcoal
     ) {
         NavHost(navController = innerNav, startDestination = "secrets") {
             composable("secrets") {
@@ -62,26 +74,29 @@ fun MainScreen(onAddSecretClick: () -> Unit, onLogOut: () -> Unit) {
 @Composable
 private fun TopBar(onNavIconClick: () -> Unit) {
     TopAppBar(
-        title = { Text("Secrets Secured") },
+        title = { Text(color = Color.Black, text = "Secrets Secured") },
         navigationIcon = {
             IconButton(onClick = {
                 onNavIconClick()
             }) {
                 Icon(
+                    tint = Color.Black,
                     imageVector = Icons.Outlined.Menu,
-                    contentDescription = "navigation"
+                    contentDescription = "navigation",
                 )
             }
-        }
+        },
+        backgroundColor = TopBarOpal
     )
 }
 
 @Composable
 private fun AddSecret(onClick: () -> Unit) {
-    FloatingActionButton(onClick) {
+    FloatingActionButton(onClick, backgroundColor = TopBarOpal) {
         Icon(
             Icons.Default.Add,
-            "Add Secret"
+            "Add Secret",
+            tint = Color.Black
         )
     }
 }
@@ -104,7 +119,8 @@ fun NavigationDrawer(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                modifier = Modifier.padding(top = 20.dp),
+                modifier = Modifier
+                    .padding(top = 20.dp),
                 text = "Hi, ",//eventually will include ${name
                 fontSize = 20.sp
             )
@@ -138,10 +154,10 @@ fun NavigationItem(icon: ImageVector, text: String, onClick: () -> Unit) {
     ) {
         Icon(icon,"")
         Text(
-            modifier = Modifier.padding(start = 10.dp),
-            textAlign = TextAlign.Center,
             text = text,
-            fontSize = 20.sp
+            modifier = Modifier.padding(start = 10.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight(1000)
         )
     }
 }
