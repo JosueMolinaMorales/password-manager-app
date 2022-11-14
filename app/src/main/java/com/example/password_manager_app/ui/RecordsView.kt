@@ -9,12 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SecretsView() {
+fun RecordsView() {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "SECRETS VIEW")
+        Text(text = "RECORDS VIEW")
     }
 }

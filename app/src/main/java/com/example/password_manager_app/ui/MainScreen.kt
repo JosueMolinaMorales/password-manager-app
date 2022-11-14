@@ -1,9 +1,5 @@
 package com.example.password_manager_app.ui
 
-import android.graphics.fonts.FontStyle
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -17,25 +13,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.password_manager_app.ui.components.PasswordManagerTextField
 import com.example.password_manager_app.ui.theme.Charcoal
-import com.example.password_manager_app.ui.theme.LavenderBlush
 import com.example.password_manager_app.ui.theme.TopBarOpal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(onAddSecretClick: () -> Unit, onLogOut: () -> Unit) {
+fun MainScreen(onAddRecordClick: () -> Unit, onLogOut: () -> Unit) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val innerNav = rememberNavController()
@@ -48,21 +40,21 @@ fun MainScreen(onAddSecretClick: () -> Unit, onLogOut: () -> Unit) {
                 }
             }
         },
-        floatingActionButton = { AddSecret(onAddSecretClick) },
+        floatingActionButton = { AddSecretFAB(onAddRecordClick) },
         drawerContent = {
             NavigationDrawer(
                 scaffoldState,
                 coroutineScope,
-                { innerNav.navigate("secrets") },
+                { innerNav.navigate("records") },
                 { innerNav.navigate("profile") },
                 { onLogOut() }
             )
         },
         drawerBackgroundColor = Charcoal
     ) {
-        NavHost(navController = innerNav, startDestination = "secrets") {
-            composable("secrets") {
-                SecretsView()
+        NavHost(navController = innerNav, startDestination = "records") {
+            composable("records") {
+                RecordsView()
             }
             composable("profile") {
                 Profile()
@@ -91,11 +83,11 @@ private fun TopBar(onNavIconClick: () -> Unit) {
 }
 
 @Composable
-private fun AddSecret(onClick: () -> Unit) {
+private fun AddSecretFAB(onClick: () -> Unit) {
     FloatingActionButton(onClick, backgroundColor = TopBarOpal) {
         Icon(
             Icons.Default.Add,
-            "Add Secret",
+            "Add Record",
             tint = Color.Black
         )
     }
