@@ -23,7 +23,7 @@ import com.example.password_manager_app.ui.components.PasswordManagerTextField
 
 @Composable
 fun RegisterScreen(
-    onNavigateToViewPasswords: () -> Unit,
+    onNavigateToMainScreen: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
     Column {
@@ -84,7 +84,9 @@ fun RegisterScreen(
                 isError = false, // Will be true if the login failed
                 modifier = Modifier.padding(8.dp)
             )
-            PasswordManagerButton(onClick = { onNavigateToViewPasswords() }) {
+
+            PasswordManagerButton(onClick = { onNavigateToMainScreen() }) {
+
                 Text("Create Account")
             }
             Text(

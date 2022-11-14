@@ -25,7 +25,7 @@ import com.example.password_manager_app.ui.components.PasswordManagerTextField
  */
 @Composable
 fun LoginScreen(
-    onSubmit: () -> Unit,
+    onNavigateToMainScreen: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
     Column(
@@ -89,7 +89,8 @@ fun LoginScreen(
             Row(
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             ) {
-                PasswordManagerButton(onClick = onSubmit) {
+
+                PasswordManagerButton(onClick = onNavigateToMainScreen) {
                     Text(text = "Login")
                 }
             }
