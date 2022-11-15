@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.password_manager_app.nav.PasswordManagerNavigation
 import com.example.password_manager_app.ui.HomeScreen
 import com.example.password_manager_app.ui.LoginScreen
+import com.example.password_manager_app.ui.MainScreen
 import com.example.password_manager_app.ui.RegisterScreen
 import com.example.password_manager_app.ui.theme.PasswordmanagerappTheme
 
@@ -29,20 +30,17 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     PasswordManagerNavigation(navController = navController)
-
                 }
             }
         }
     }
 }
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     PasswordmanagerappTheme {
-        LoginScreen(onSubmit = {}, onNavigateToRegister = {})
+        LoginScreen(onNavigateToMainScreen = {}, onNavigateToRegister = {})
     }
 }
 
