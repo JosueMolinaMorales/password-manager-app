@@ -21,3 +21,6 @@ val LavenderBlush = Color(0xFFFDEDEC)
 
 /* Used for the top bar */
 val TopBarOpal = Color(0xFF9CBFBF)
+
+/* Used for the record cards */
+val PewterBlue = Color(0xFF88A9BF)

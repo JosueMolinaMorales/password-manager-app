@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.password_manager_app.ui.HomeScreen
 import com.example.password_manager_app.ui.LoginScreen
+import com.example.password_manager_app.ui.MainScreen
 import com.example.password_manager_app.ui.RegisterScreen
 
 @Composable

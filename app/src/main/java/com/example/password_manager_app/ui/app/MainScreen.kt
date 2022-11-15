@@ -1,5 +1,7 @@
 package com.example.password_manager_app.ui
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -15,12 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.password_manager_app.R
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.TopBarOpal
 import kotlinx.coroutines.CoroutineScope
@@ -66,7 +70,18 @@ fun MainScreen(onAddRecordClick: () -> Unit, onLogOut: () -> Unit) {
 @Composable
 private fun TopBar(onNavIconClick: () -> Unit) {
     TopAppBar(
-        title = { Text(color = Color.Black, text = "Secrets Secured") },
+        title = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.koalalogo),
+                    contentDescription = ""
+                )
+            }
+        },
         navigationIcon = {
             IconButton(onClick = {
                 onNavIconClick()
@@ -113,7 +128,7 @@ fun NavigationDrawer(
             Text(
                 modifier = Modifier
                     .padding(top = 20.dp),
-                text = "Hi, ",//eventually will include ${name
+                text = "Hi, User!",//eventually will include ${name
                 fontSize = 20.sp,
                 fontWeight = FontWeight(1000)
             )
