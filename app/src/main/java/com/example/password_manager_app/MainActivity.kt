@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.password_manager_app.nav.PasswordManagerNavigation
 import com.example.password_manager_app.ui.HomeScreen
 import com.example.password_manager_app.ui.LoginScreen
 import com.example.password_manager_app.ui.MainScreen
@@ -28,29 +29,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "homeScreen" ) {
-                        composable("login") {
-                            LoginScreen(
-                                onNavigateToMainScreen = { navController.navigate("mainScreen") },
-                                onNavigateToRegister = { navController.navigate("register") }
-                            )
-                        }
-                        composable("homeScreen") {
-                            HomeScreen(
-                                onNavigateToLogin = { navController.navigate("login") },
-                                onNavigateToRegister = { navController.navigate("register") }
-                            )
-                        }
-                        composable("register") {
-                            RegisterScreen(
-                                onNavigateToLogin = { navController.navigate("login") },
-                                onNavigateToMainScreen = { navController.navigate("mainScreen") }
-                            )
-                        }
-                        composable("mainScreen") {
-                            MainScreen({}, onLogOut = {navController.navigate("login")})
-                        }
-                    }
+                    PasswordManagerNavigation(navController = navController)
                 }
             }
         }
