@@ -1,30 +1,39 @@
 package com.example.password_manager_app.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.password_manager_app.R
+import com.example.password_manager_app.ui.components.PasswordManagerTextField
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.TopBarOpal
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +44,7 @@ fun MainScreen(onAddRecordClick: () -> Unit, onLogOut: () -> Unit) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val innerNav = rememberNavController()
+    val focusManager = LocalFocusManager.current
     Scaffold (
         scaffoldState = scaffoldState,
         topBar = {
@@ -54,7 +64,12 @@ fun MainScreen(onAddRecordClick: () -> Unit, onLogOut: () -> Unit) {
                 { onLogOut() }
             )
         },
-        drawerBackgroundColor = Charcoal
+        drawerBackgroundColor = Charcoal,
+        modifier = Modifier.pointerInput(Unit) {
+            detectTapGestures(onTap = {
+                focusManager.clearFocus()
+            })
+        }
     ) {
         NavHost(navController = innerNav, startDestination = "records") {
             composable("records") {
@@ -74,8 +89,22 @@ private fun TopBar(onNavIconClick: () -> Unit) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                val focusManager = LocalFocusManager.current
+                PasswordManagerTextField(
+                    value = "",
+                    onValueChange = {},
+                    placeholder = { Text(text="Search") },
+                    modifier = Modifier
+                        .fillMaxWidth(.8F)
+                        .scale(.9F),
+                    leadingIcon = {
+                        Icon(Icons.Default.Search, "")
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() })
+                )
                 Image(
                     painter = painterResource(id = R.drawable.koalalogo),
                     contentDescription = ""
@@ -83,9 +112,7 @@ private fun TopBar(onNavIconClick: () -> Unit) {
             }
         },
         navigationIcon = {
-            IconButton(onClick = {
-                onNavIconClick()
-            }) {
+            IconButton(onClick = { onNavIconClick() }) {
                 Icon(
                     tint = Color.Black,
                     imageVector = Icons.Outlined.Menu,
@@ -93,7 +120,7 @@ private fun TopBar(onNavIconClick: () -> Unit) {
                 )
             }
         },
-        backgroundColor = TopBarOpal
+        backgroundColor = TopBarOpal,
     )
 }
 
@@ -125,27 +152,41 @@ fun NavigationDrawer(
             Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(top = 20.dp),
-                text = "Hi, User!",//eventually will include ${name
-                fontSize = 20.sp,
-                fontWeight = FontWeight(1000)
-            )
-            NavigationItem(icon = Icons.Default.List, text = "View Secrets") {
-                navToSecrets()
-                coroutineScope.launch {
-                    scaffoldState.drawerState.close()
+            Column {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp),
+                    text = "Hi, User!",//eventually will include ${name
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight(1000),
+                    textAlign = TextAlign.Center
+                )
+                NavigationItem(icon = Icons.Default.List, text = "View Secrets") {
+                    navToSecrets()
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                }
+                NavigationItem(icon = Icons.Default.AccountBox, text = "View Profile") {
+                    navToProfile()
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                }
+                NavigationItem(icon = Icons.Default.ExitToApp, text = "Logout") {
+                    Logout()
                 }
             }
-            NavigationItem(icon = Icons.Default.AccountBox, text = "View Profile") {
-                navToProfile()
-                coroutineScope.launch {
-                    scaffoldState.drawerState.close()
-                }
-            }
-            NavigationItem(icon = Icons.Default.ExitToApp, text = "Logout") {
-                Logout()
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.logo_dark_mode),
+                    contentDescription = ""
+                )
             }
         }
     }

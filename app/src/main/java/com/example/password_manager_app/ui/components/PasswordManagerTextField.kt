@@ -1,5 +1,7 @@
 package com.example.password_manager_app.ui.components
 
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldColors
@@ -64,7 +66,10 @@ fun PasswordManagerTextField(
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
-    colors: TextFieldColors = passwordManagerTextFieldColors()
+    colors: TextFieldColors = passwordManagerTextFieldColors(),
+    leadingIcon: @Composable (() -> Unit)? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
+    keyboardActions: KeyboardActions = KeyboardActions(),
 ) {
     TextField(
         value,
@@ -73,6 +78,9 @@ fun PasswordManagerTextField(
         modifier = modifier,
         placeholder = placeholder,
         isError = isError,
-        colors = colors
+        colors = colors,
+        leadingIcon = leadingIcon,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
     )
 }
