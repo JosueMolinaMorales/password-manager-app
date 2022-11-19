@@ -33,7 +33,7 @@ fun PasswordManagerNavigation(
             )
         }
         composable("mainScreen") {
-            MainScreen({}, onLogOut = {navController.navigate("login")})
+            MainScreen(onLogOut = { navController.navigate("login") })
         }
     }
 }

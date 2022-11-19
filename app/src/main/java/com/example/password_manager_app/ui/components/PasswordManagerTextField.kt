@@ -9,6 +9,8 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.password_manager_app.ui.theme.LavenderBlush
 
 @Composable
@@ -68,8 +70,10 @@ fun PasswordManagerTextField(
     isError: Boolean = false,
     colors: TextFieldColors = passwordManagerTextFieldColors(),
     leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions(),
+    hideText: Boolean = false
 ) {
     TextField(
         value,
@@ -80,7 +84,9 @@ fun PasswordManagerTextField(
         isError = isError,
         colors = colors,
         leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
         keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        visualTransformation = if (hideText) { PasswordVisualTransformation() } else { VisualTransformation.None }
     )
 }
