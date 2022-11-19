@@ -120,7 +120,10 @@ fun MainScreen(
                 }
                 composable("createPassword") {
                     CreatePasswordPage(
-                        onCreatePasswordClick = {},
+                        onCreatePasswordClick = {
+                            innerNav.navigate("records")
+                            isOnCreatePassword.value = false
+                        },
                         onGeneratePasswordClick = {
                             coroutineScope.launch {
                                 bottomState.show()
@@ -131,7 +134,9 @@ fun MainScreen(
                     isOnCreatePassword.value = true
                 }
                 composable("createSecret") {
-                    CreateSecretPage()
+                    CreateSecretPage(
+                        onCreateSecret = {}
+                    )
                     showFAB.value = false
                     isOnCreatePassword.value = false
                 }
