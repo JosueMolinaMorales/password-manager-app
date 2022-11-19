@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.password_manager_app.ui.app.records.create_password.CreatePasswordPage
 import com.example.password_manager_app.ui.app.records.create_secret.CreateSecretPage
 import com.example.password_manager_app.ui.components.BottomSheetComponent
+import com.example.password_manager_app.ui.app.records.RecordsView
 import com.example.password_manager_app.ui.components.NavigationDrawer
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.theme.Charcoal
