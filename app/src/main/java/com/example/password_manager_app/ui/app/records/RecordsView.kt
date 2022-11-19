@@ -28,7 +28,14 @@ fun RecordsView() {
         val aList = (1..20).map { i -> "Hi $i" }
         LazyColumn {
             itemsIndexed(aList) { idx, str ->
-                RecordRowView(title = getRandomStreamingService(), recordType = if (idx % 2 == 0) { RecordType.Password } else { RecordType.Secret } )
+                RecordRowView(
+                    title = getRandomStreamingService(),
+                    recordType = if (idx % 2 == 0) { RecordType.Password } else { RecordType.Secret },
+                    onCardClick = {},
+                    onCopyToClipboardClick = {},
+                    onDeleteClick = {},
+                    onEditClick = {}
+                )
             }
         }
     }

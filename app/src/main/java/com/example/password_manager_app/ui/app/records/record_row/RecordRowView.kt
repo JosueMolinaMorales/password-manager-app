@@ -7,26 +7,37 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
 import com.example.password_manager_app.data.RecordType
+import com.example.password_manager_app.ui.theme.Charcoal
+import com.example.password_manager_app.ui.theme.LavenderBlush
 import com.example.password_manager_app.ui.theme.PewterBlue
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecordRowView(
     title: String,
-    recordType: RecordType
+    recordType: RecordType,
+    onCardClick: () -> Unit,
+    onCopyToClipboardClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
+    val isDropDownOpen = remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp, bottom = 4.dp)
             .height(70.dp),
-        onClick = { /*TODO*/ }
+        onClick = onCardClick
     ) {
         Row(
             modifier = Modifier
@@ -53,8 +64,38 @@ fun RecordRowView(
                     modifier = Modifier.padding(bottom = 2.dp)
                 )
             }
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.MoreVert, "", tint = Color.Black)
+            Column {
+                IconButton(onClick = { isDropDownOpen.value = !isDropDownOpen.value }) {
+                    Icon(Icons.Default.MoreVert, "", tint = Color.Black)
+                }
+                DropdownMenu(
+                    expanded = isDropDownOpen.value,
+                    onDismissRequest = { isDropDownOpen.value = false },
+                    modifier = Modifier
+                        .background(color = Charcoal)
+                        .fillMaxWidth(.45F),
+                ) {
+                    DropdownMenuItem(onClick = onCopyToClipboardClick) {
+                        Text(
+                            text="Copy To Clipboard",
+                            color = LavenderBlush
+                        )
+                    }
+                    Divider()
+                    DropdownMenuItem(onClick = onEditClick) {
+                        Text(
+                            text="Edit",
+                            color = LavenderBlush
+                        )
+                    }
+                    Divider()
+                    DropdownMenuItem(onClick = onDeleteClick) {
+                        Text(
+                            text="Delete",
+                            color = LavenderBlush
+                        )
+                    }
+                }
             }
         }
     }

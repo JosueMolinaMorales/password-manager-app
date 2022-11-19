@@ -47,7 +47,8 @@ fun TopBar(onNavIconClick: () -> Unit) {
                             Icon(Icons.Default.Search, "")
                         },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() })
+                        keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+
                     )
                 }
                 Column(
