@@ -19,6 +19,7 @@ import androidx.compose.ui.window.PopupProperties
 import com.example.password_manager_app.data.RecordType
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.LavenderBlush
+import com.example.password_manager_app.ui.app.records.view_records.ViewPasswordViewModel
 import com.example.password_manager_app.ui.theme.PewterBlue
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -30,6 +31,7 @@ fun RecordRowView(
     onCopyToClipboardClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
+
 ) {
     val isDropDownOpen = remember { mutableStateOf(false) }
     Card(
@@ -38,6 +40,7 @@ fun RecordRowView(
             .padding(top = 8.dp, bottom = 4.dp)
             .height(70.dp),
         onClick = onCardClick
+
     ) {
         Row(
             modifier = Modifier
