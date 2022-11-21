@@ -13,13 +13,15 @@ import com.example.password_manager_app.data.getRandomStreamingService
 import com.example.password_manager_app.ui.app.records.record_row.RecordRowView
 import com.example.password_manager_app.ui.app.records.view_records.ViewPassword
 import com.example.password_manager_app.ui.app.records.view_records.ViewPasswordViewModel
+import com.example.password_manager_app.ui.app.records.view_records.ViewSecret
+import com.example.password_manager_app.ui.app.records.view_records.ViewSecretViewModel
 
 @Composable
 fun RecordsView() {
-    val showViewModel: ViewPasswordViewModel = viewModel()
-    ViewPassword(
-        showViewModel
-    )
+    val showPasswordViewModel: ViewPasswordViewModel = viewModel()
+    val showSecretViewModel: ViewSecretViewModel = viewModel()
+    ViewPassword(showPasswordViewModel)
+    ViewSecret(showSecretViewModel)
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
@@ -27,14 +29,19 @@ fun RecordsView() {
         val aList = (1..20).map { i -> "Hi $i" }
         LazyColumn {
             itemsIndexed(aList) { idx, str ->
+                val title = getRandomStreamingService()
                 RecordRowView(
-
                     /* Should send the object for this record eventually not Str*/
-                    onCardClick = { showViewModel.show(str) },
+                    onCardClick = {
+                        if (idx % 2 == 0) {
+                            showPasswordViewModel.show(title)
+                        } else {
+                            showSecretViewModel.show(title)
+                        }},
                     onCopyToClipboardClick = {},
                     onDeleteClick = {},
                     onEditClick = {},
-                    title = getRandomStreamingService(),
+                    title = title,
                     recordType = if (idx % 2 == 0) {
                         RecordType.Password
                     } else {

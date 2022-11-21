@@ -20,9 +20,9 @@ fun passwordManagerTextFieldColors(
     backgroundColor: Color = LavenderBlush.copy(alpha = .8F),
     cursorColor: Color = Color.Black,
     errorCursorColor: Color = Color.Red,
-    focusedIndicatorColor: Color = Color.Black,
-    unfocusedIndicatorColor: Color = Color.Gray,
-    disabledIndicatorColor: Color = Color.Black,
+    focusedIndicatorColor: Color = Color.Transparent,
+    unfocusedIndicatorColor: Color = Color.Transparent,
+    disabledIndicatorColor: Color = Color.Transparent,
     errorIndicatorColor: Color = Color.Red,
     leadingIconColor: Color = Color.Black,
     disabledLeadingIconColor: Color = Color.Black,
@@ -73,6 +73,8 @@ fun PasswordManagerTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     keyboardActions: KeyboardActions = KeyboardActions(),
+    readOnly: Boolean = false,
+    enabled: Boolean = true,
     hideText: Boolean = false
 ) {
     TextField(
@@ -87,6 +89,8 @@ fun PasswordManagerTextField(
         trailingIcon = trailingIcon,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        visualTransformation = if (hideText) { PasswordVisualTransformation() } else { VisualTransformation.None }
+        visualTransformation = if (hideText) { PasswordVisualTransformation() } else { VisualTransformation.None },
+        readOnly = readOnly,
+        enabled = enabled,
     )
 }
