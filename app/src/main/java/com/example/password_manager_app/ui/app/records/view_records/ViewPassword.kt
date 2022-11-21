@@ -1,5 +1,6 @@
 package com.example.password_manager_app.ui.app.records.view_records
 
+<<<<<<< HEAD
 import android.text.style.ClickableSpan
 import android.widget.ImageButton
 import androidx.compose.foundation.BorderStroke
@@ -15,28 +16,54 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
+=======
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+>>>>>>> 68d3a552d39c294e9d22a2d41d81b552af81acf0
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.password_manager_app.ui.components.OutlinedPasswordManagerButton
 import com.example.password_manager_app.ui.theme.PewterBlue
+<<<<<<< HEAD
 import com.example.password_manager_app.R
+=======
+import com.example.password_manager_app.ui.components.PasswordManagerTextField
+>>>>>>> 68d3a552d39c294e9d22a2d41d81b552af81acf0
 
 @Composable
 fun ViewPassword(
     ViewPasswordViewModel: ViewPasswordViewModel
 ) {
+<<<<<<< HEAD
+=======
+    val showPassword: MutableState<Boolean> = remember { mutableStateOf(false) }
+>>>>>>> 68d3a552d39c294e9d22a2d41d81b552af81acf0
     val show by ViewPasswordViewModel.show
     if(show){
         AlertDialog(
             backgroundColor = PewterBlue,
             modifier = Modifier
                 .fillMaxWidth()
+<<<<<<< HEAD
                 .height(350.dp),
             onDismissRequest = { ViewPasswordViewModel.hide() },
             title = {
 
             },
+=======
+                .height(400.dp),
+            onDismissRequest = { ViewPasswordViewModel.hide() },
+            title = {},
+>>>>>>> 68d3a552d39c294e9d22a2d41d81b552af81acf0
             text = {
                 Column(
                     modifier = Modifier
@@ -53,7 +80,10 @@ fun ViewPassword(
                             color = Color.Black,
                             text = ViewPasswordViewModel.title.value
                         )
+<<<<<<< HEAD
 
+=======
+>>>>>>> 68d3a552d39c294e9d22a2d41d81b552af81acf0
                     }
                     Column(
                         modifier = Modifier
@@ -63,6 +93,7 @@ fun ViewPassword(
                         Row(
                             modifier = Modifier.padding(top = 10.dp),
                             ) {
+<<<<<<< HEAD
                             Column() {
                                 Text(text = "Username", color = Color.Black, fontSize = 20.sp)
                                 Text(
@@ -70,12 +101,22 @@ fun ViewPassword(
                                     text = "MyUsername",
                                     fontSize = 30.sp,
                                     color = Color.Black
+=======
+                            Column {
+                                //TODO change to get value from ViewPasswordViewModel
+                                PasswordManagerTextField(
+                                    value = "MyUsername",
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    label = { Text(text = "Login") },
+>>>>>>> 68d3a552d39c294e9d22a2d41d81b552af81acf0
                                 )
                             }
                         }
                         Row(
                             modifier = Modifier.padding(top = 10.dp),
                             ) {
+<<<<<<< HEAD
                             Column() {
                                 Text(text = "Username", color = Color.Black, fontSize = 20.sp)
                                 //TODO create composable to hide and unhide pword
@@ -97,6 +138,26 @@ fun ViewPassword(
                                     }
 
                                 }
+=======
+                            Column {
+                                PasswordManagerTextField(
+                                    value = "MyPassword",
+                                    onValueChange = { },
+                                    readOnly = true,
+                                    label = { Text(text = "Password") },
+                                    trailingIcon = { IconToggleButton(
+                                        checked = showPassword.value,
+                                        onCheckedChange = { showPassword.value = !showPassword.value }
+                                    ) {
+                                        if (showPassword.value) {
+                                            Icon(Icons.Filled.Visibility, "")
+                                        } else {
+                                            Icon(Icons.Filled.VisibilityOff, "")
+                                        }
+                                    }},
+                                    hideText = !showPassword.value
+                                )
+>>>>>>> 68d3a552d39c294e9d22a2d41d81b552af81acf0
                             }
                         }
                     }

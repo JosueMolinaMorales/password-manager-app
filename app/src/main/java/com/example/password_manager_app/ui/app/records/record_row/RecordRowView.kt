@@ -31,6 +31,7 @@ fun RecordRowView(
     onCopyToClipboardClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
+
 ) {
     val isDropDownOpen = remember { mutableStateOf(false) }
     Card(
@@ -39,6 +40,7 @@ fun RecordRowView(
             .padding(top = 8.dp, bottom = 4.dp)
             .height(70.dp),
         onClick = onCardClick
+
     ) {
         Row(
             modifier = Modifier

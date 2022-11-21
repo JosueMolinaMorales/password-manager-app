@@ -9,12 +9,11 @@ import com.example.password_manager_app.data.RecordType
 import com.example.password_manager_app.data.getRandomStreamingService
 import com.example.password_manager_app.ui.app.records.record_row.RecordRowView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.password_manager_app.data.getRandomStreamingService
-import com.example.password_manager_app.ui.app.records.record_row.RecordRowView
 import com.example.password_manager_app.ui.app.records.view_records.ViewPassword
 import com.example.password_manager_app.ui.app.records.view_records.ViewPasswordViewModel
 import com.example.password_manager_app.ui.app.records.view_records.ViewSecret
 import com.example.password_manager_app.ui.app.records.view_records.ViewSecretViewModel
+
 
 @Composable
 fun RecordsView() {

@@ -162,7 +162,10 @@ fun CreateRecordView(
             horizontalArrangement = Arrangement.Center
         ) {
             // Password Button
-            PasswordManagerButton(onClick = onCreatePasswordClick) {
+            PasswordManagerButton(
+                onClick = onCreatePasswordClick,
+                modifier = Modifier.fillMaxWidth(.5F)
+            ) {
                 Text("Password")
             }
         }
@@ -173,7 +176,10 @@ fun CreateRecordView(
             horizontalArrangement = Arrangement.Center
         ) {
             // Secret Button
-            PasswordManagerButton(onClick = onCreateSecretClick) {
+            PasswordManagerButton(
+                onClick = onCreateSecretClick,
+                modifier = Modifier.fillMaxWidth(.5F)
+            ) {
                 Text("Secret")
             }
         }
