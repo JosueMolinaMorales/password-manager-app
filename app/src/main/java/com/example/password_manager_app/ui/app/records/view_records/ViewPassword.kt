@@ -1,42 +1,36 @@
 package com.example.password_manager_app.ui.app.records.view_records
 
-import android.text.style.ClickableSpan
-import android.widget.ImageButton
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.password_manager_app.ui.components.OutlinedPasswordManagerButton
 import com.example.password_manager_app.ui.theme.PewterBlue
-import com.example.password_manager_app.R
+import com.example.password_manager_app.ui.components.PasswordManagerTextField
 
 @Composable
 fun ViewPassword(
     ViewPasswordViewModel: ViewPasswordViewModel
 ) {
+    val showPassword: MutableState<Boolean> = remember { mutableStateOf(false) }
     val show by ViewPasswordViewModel.show
     if(show){
         AlertDialog(
             backgroundColor = PewterBlue,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(350.dp),
+                .height(400.dp),
             onDismissRequest = { ViewPasswordViewModel.hide() },
-            title = {
-
-            },
+            title = {},
             text = {
                 Column(
                     modifier = Modifier
@@ -53,7 +47,6 @@ fun ViewPassword(
                             color = Color.Black,
                             text = ViewPasswordViewModel.title.value
                         )
-
                     }
                     Column(
                         modifier = Modifier
@@ -63,40 +56,37 @@ fun ViewPassword(
                         Row(
                             modifier = Modifier.padding(top = 10.dp),
                             ) {
-                            Column() {
-                                Text(text = "Username", color = Color.Black, fontSize = 20.sp)
-                                Text(
-                                    //TODO change to get value from ViewPasswordViewModel
-                                    text = "MyUsername",
-                                    fontSize = 30.sp,
-                                    color = Color.Black
+                            Column {
+                                //TODO change to get value from ViewPasswordViewModel
+                                PasswordManagerTextField(
+                                    value = "MyUsername",
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    label = { Text(text = "Login") },
                                 )
                             }
                         }
                         Row(
                             modifier = Modifier.padding(top = 10.dp),
                             ) {
-                            Column() {
-                                Text(text = "Username", color = Color.Black, fontSize = 20.sp)
-                                //TODO create composable to hide and unhide pword
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    ){
-                                    Text(
-                                        text = "********",
-                                        fontSize = 30.sp,
-                                        color = Color.Black
-                                    )
-                                    IconButton(onClick = {/*TODO*/}) {
-                                        Image(
-                                            painter =  painterResource(id = R.drawable.closedeye),
-                                            contentDescription = "Closed Eye"
-                                        )
-                                    }
-
-                                }
+                            Column {
+                                PasswordManagerTextField(
+                                    value = "MyPassword",
+                                    onValueChange = { },
+                                    readOnly = true,
+                                    label = { Text(text = "Password") },
+                                    trailingIcon = { IconToggleButton(
+                                        checked = showPassword.value,
+                                        onCheckedChange = { showPassword.value = !showPassword.value }
+                                    ) {
+                                        if (showPassword.value) {
+                                            Icon(Icons.Filled.Visibility, "")
+                                        } else {
+                                            Icon(Icons.Filled.VisibilityOff, "")
+                                        }
+                                    }},
+                                    hideText = !showPassword.value
+                                )
                             }
                         }
                     }
