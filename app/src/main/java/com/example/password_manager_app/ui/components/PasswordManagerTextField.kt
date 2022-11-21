@@ -67,7 +67,6 @@ fun PasswordManagerTextField(
     modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
-    readOnly: Boolean = false,
     isError: Boolean = false,
     colors: TextFieldColors = passwordManagerTextFieldColors(),
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -92,7 +91,6 @@ fun PasswordManagerTextField(
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         visualTransformation = if (hideText) { PasswordVisualTransformation() } else { VisualTransformation.None },
-        readOnly = readOnly,
         enabled = enabled,
     )
 }

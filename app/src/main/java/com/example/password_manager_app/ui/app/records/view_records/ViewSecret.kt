@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.password_manager_app.R
@@ -32,39 +33,32 @@ fun ViewSecret(
             backgroundColor = PewterBlue,
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(.7F),
+                .fillMaxHeight(.6F),
             onDismissRequest = { viewSecretViewModel.hide() },
             title = {},
             text = {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceBetween
+                        .fillMaxHeight()
                 ) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.SpaceEvenly,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                             style = MaterialTheme.typography.h4,
-                            text = viewSecretViewModel.title.value
-                        )
-                        Text(
-                            fontWeight = FontWeight.Medium,
-                            color = Color.Black,
-                            style = MaterialTheme.typography.h6,
-                            text = "Secret Record"
+                            text = viewSecretViewModel.title.value,
+                            textAlign = TextAlign.Center
                         )
                     }
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Secret", color = Color.Black, fontSize = 20.sp)
                         //TODO create composable to hide and unhide pword
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -72,6 +66,9 @@ fun ViewSecret(
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             PasswordManagerTextField(
+                                label = {
+                                    Text(text = "Secret", color = Color.Black, fontSize = 20.sp)
+                                },
                                 value = "Hello There",
                                 readOnly = true,
                                 enabled = false,
@@ -80,8 +77,6 @@ fun ViewSecret(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.fillMaxWidth().fillMaxHeight(.1F))
-
                 }
             },
             buttons = {
