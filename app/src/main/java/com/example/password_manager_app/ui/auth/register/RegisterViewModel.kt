@@ -49,14 +49,17 @@ class RegisterViewModel: ViewModel() {
 
     fun setName(name: String) {
         _name.value = name
+        _nameHasError.value = _name.value == ""
     }
 
     fun setEmail(email: String) {
         _email.value = email
+        _emailHasError.value = _email.value == ""
     }
 
     fun setUsername(username: String) {
         _username.value = username
+        _usernameHasError.value = _username.value == ""
     }
 
     fun setPassword(password: String) {

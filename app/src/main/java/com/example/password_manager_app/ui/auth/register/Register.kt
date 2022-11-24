@@ -148,7 +148,7 @@ fun RegisterScreen(
                             )
                         }
                     },
-                    enabled = registerViewModel.makingRequest.value
+                    enabled = !registerViewModel.makingRequest.value
                 ) {
                     if (registerViewModel.makingRequest.value) {
                         CircularProgressIndicator(color = Charcoal)
