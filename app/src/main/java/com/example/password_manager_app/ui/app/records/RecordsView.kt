@@ -25,7 +25,7 @@ fun RecordsView() {
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
     ) {
-        val aList = (1..20).map { i -> "Hi $i" }
+        val aList = (1..20).toList()
         LazyColumn {
             itemsIndexed(aList) { idx, str ->
                 val title = getRandomStreamingService()

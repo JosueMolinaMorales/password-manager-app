@@ -2,10 +2,10 @@ package com.example.password_manager_app.ui.components
 
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -75,22 +75,52 @@ fun PasswordManagerTextField(
     keyboardActions: KeyboardActions = KeyboardActions(),
     readOnly: Boolean = false,
     enabled: Boolean = true,
-    hideText: Boolean = false
+    hideText: Boolean = false,
+    isHiddenField: Boolean = false,
+    onTrailingIconClick: (Boolean) -> Unit = {}
 ) {
-    TextField(
-        value,
-        onValueChange = onValueChange,
-        label = label,
-        modifier = modifier,
-        placeholder = placeholder,
-        readOnly = readOnly,
-        isError = isError,
-        colors = colors,
-        leadingIcon = leadingIcon,
-        trailingIcon = trailingIcon,
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        visualTransformation = if (hideText) { PasswordVisualTransformation() } else { VisualTransformation.None },
-        enabled = enabled,
-    )
+    if (!isHiddenField) {
+        TextField(
+            value,
+            onValueChange = onValueChange,
+            label = label,
+            modifier = modifier,
+            placeholder = placeholder,
+            readOnly = readOnly,
+            isError = isError,
+            colors = colors,
+            leadingIcon = leadingIcon,
+            trailingIcon = trailingIcon,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            visualTransformation = if (hideText) { PasswordVisualTransformation() } else { VisualTransformation.None },
+            enabled = enabled,
+        )
+    } else {
+        TextField(
+            value,
+            onValueChange = onValueChange,
+            label = label,
+            modifier = modifier,
+            placeholder = placeholder,
+            readOnly = readOnly,
+            isError = isError,
+            colors = colors,
+            leadingIcon = leadingIcon,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            visualTransformation = if (hideText) { PasswordVisualTransformation() } else { VisualTransformation.None },
+            enabled = enabled,
+            trailingIcon = { IconToggleButton(
+                checked = hideText,
+                onCheckedChange = onTrailingIconClick
+            ) {
+                if (!hideText) {
+                    Icon(Icons.Filled.Visibility, "")
+                } else {
+                    Icon(Icons.Filled.VisibilityOff, "")
+                }
+            }},
+        )
+    }
 }

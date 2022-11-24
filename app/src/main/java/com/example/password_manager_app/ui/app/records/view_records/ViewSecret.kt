@@ -4,12 +4,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +27,8 @@ fun ViewSecret(
     viewSecretViewModel: ViewSecretViewModel
 ) {
     val show by viewSecretViewModel.show
+    val showSecret: MutableState<Boolean> = remember { mutableStateOf(false) }
+
     if (show) {
         AlertDialog(
             backgroundColor = PewterBlue,
@@ -66,14 +67,23 @@ fun ViewSecret(
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             PasswordManagerTextField(
-                                label = {
-                                    Text(text = "Secret", color = Color.Black, fontSize = 20.sp)
-                                },
-                                value = "Hello There",
+                                value = "MySecret",
+                                onValueChange = { },
                                 readOnly = true,
                                 enabled = false,
-                                hideText = true,
-                                onValueChange = {}
+                                label = { Text(text = "Secret") },
+                                trailingIcon = { IconToggleButton(
+                                    checked = showSecret.value,
+                                    onCheckedChange = { showSecret.value = !showSecret.value }
+                                ) {
+                                    if (showSecret.value) {
+                                        Icon(Icons.Filled.Visibility, "")
+                                    } else {
+                                        Icon(Icons.Filled.VisibilityOff, "")
+                                    }
+                                }
+                                },
+                                hideText = !showSecret.value
                             )
                         }
                     }
