@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.password_manager_app.data.RecordType
+import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.data.getRandomStreamingService
 import com.example.password_manager_app.ui.app.records.record_row.RecordRowView
 import androidx.lifecycle.viewmodel.compose.viewModel

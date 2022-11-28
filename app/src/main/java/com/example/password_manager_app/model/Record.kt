@@ -1,4 +1,6 @@
-package com.example.password_manager_app.data
+package com.example.password_manager_app.model
+
+import com.example.password_manager_app.model.RecordType
 
 data class Record(
     val recordType: RecordType,

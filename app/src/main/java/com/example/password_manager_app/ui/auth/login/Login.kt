@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.password_manager_app.R
+import com.example.password_manager_app.data.AuthResponse
 import com.example.password_manager_app.ui.auth.login.LoginViewModel
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.components.PasswordManagerSnackbar
@@ -32,6 +33,7 @@ import kotlinx.coroutines.delay
  */
 @Composable
 fun LoginScreen(
+    onSuccessfulLogin: (AuthResponse) -> Unit,
     onNavigateToMainScreen: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
@@ -115,8 +117,7 @@ fun LoginScreen(
                                 if (errorMsg.value == null) {
                                     loginViewModel.login(
                                         onSuccessfulLogin = { response ->
-                                            // Go to homescreen
-                                            // save bearer and user returned
+                                            onNavigateToMainScreen()
                                         },
                                         onUnsuccessfulLogin = { errMsg ->
                                             errorMsg.value = errMsg

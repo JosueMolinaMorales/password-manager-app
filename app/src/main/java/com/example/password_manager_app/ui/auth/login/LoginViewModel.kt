@@ -1,18 +1,23 @@
 package com.example.password_manager_app.ui.auth.login
 
+import android.app.Application
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import com.example.password_manager_app.data.AuthResponse
 import com.example.password_manager_app.data.LoginForm
+import com.example.password_manager_app.data.PasswordManagerDatabase
+import com.example.password_manager_app.data.PasswordManagerUserManager
 import com.example.password_manager_app.network.ErrorResponse
 import com.example.password_manager_app.ui.auth.network.AuthNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
-class LoginViewModel: ViewModel() {
+class LoginViewModel(app: Application): AndroidViewModel(app) {
     private val _email: MutableState<String> = mutableStateOf("")
     val email: State<String> = _email
 
@@ -27,7 +32,17 @@ class LoginViewModel: ViewModel() {
     private val _passwordHasError: MutableState<Boolean> = mutableStateOf(false)
     val passwordHasError: State<Boolean> = _passwordHasError
 
+    private val userDb: PasswordManagerDatabase
+
     private val authNetwork = AuthNetwork()
+
+    init {
+        userDb = Room.databaseBuilder(
+            app,
+            PasswordManagerDatabase::class.java,
+            "passwordManager.db"
+        ).build()
+    }
 
     fun setEmail(email: String) {
         _email.value = email
@@ -57,7 +72,7 @@ class LoginViewModel: ViewModel() {
     }
 
     fun login(
-        onSuccessfulLogin: (AuthResponse) -> Unit,
+        onSuccessfulLogin: () -> Unit,
         onUnsuccessfulLogin: (String) -> Unit
     ) {
         viewModelScope.launch {
@@ -72,7 +87,11 @@ class LoginViewModel: ViewModel() {
                 200 -> {
                     val jsonBody = responseBody?.string()
                     val authResponse = Gson().fromJson(jsonBody, AuthResponse::class.java)
-                    onSuccessfulLogin(authResponse)
+                    if (userDb.userDao().getUser(authResponse.user.id) == null) {
+                        // User does not exist in the db
+                        userDb.userDao().insertUser(authResponse.user)
+                    }
+                    onSuccessfulLogin()
                 }
                 400, 404 -> {
                     val jsonBody = responseBody?.string()

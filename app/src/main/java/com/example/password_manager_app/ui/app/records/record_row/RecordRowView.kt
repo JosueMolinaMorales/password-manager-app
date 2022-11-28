@@ -12,14 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.PopupProperties
-import com.example.password_manager_app.data.RecordType
+import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.LavenderBlush
-import com.example.password_manager_app.ui.app.records.view_records.ViewPasswordViewModel
 import com.example.password_manager_app.ui.theme.PewterBlue
 
 @OptIn(ExperimentalMaterialApi::class)

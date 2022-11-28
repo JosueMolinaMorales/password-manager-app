@@ -1,19 +1,23 @@
 package com.example.password_manager_app.ui.auth.register
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
 import com.example.password_manager_app.data.AuthResponse
+import com.example.password_manager_app.data.PasswordManagerDatabase
 import com.example.password_manager_app.data.RegisterForm
 import com.example.password_manager_app.network.ErrorResponse
 import com.example.password_manager_app.ui.auth.network.AuthNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
-class RegisterViewModel: ViewModel() {
+class RegisterViewModel(app: Application): AndroidViewModel(app) {
     private val _name: MutableState<String> = mutableStateOf("")
     val name: State<String> = _name
     private val _nameHasError: MutableState<Boolean> = mutableStateOf(false)
@@ -46,6 +50,15 @@ class RegisterViewModel: ViewModel() {
     val makingRequest: State<Boolean> = _makingRequest
 
     private val authNetwork: AuthNetwork = AuthNetwork()
+    private val userDb: PasswordManagerDatabase
+
+    init {
+        userDb = Room.databaseBuilder(
+            app,
+            PasswordManagerDatabase::class.java,
+            "passwordManager.db"
+        ).build()
+    }
 
     fun setName(name: String) {
         _name.value = name
@@ -138,6 +151,7 @@ class RegisterViewModel: ViewModel() {
             when (response.code) {
                 201, 200 -> {
                     val responseBody = Gson().fromJson(body, AuthResponse::class.java)
+                    userDb.userDao().insertUser(responseBody.user)
                     onSuccessfulRegistration()
                 }
                 400 -> {

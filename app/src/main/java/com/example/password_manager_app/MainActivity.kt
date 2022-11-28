@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     PasswordmanagerappTheme {
-        LoginScreen(onNavigateToMainScreen = {}, onNavigateToRegister = {})
+        LoginScreen(onNavigateToMainScreen = {}, onNavigateToRegister = {}, onSuccessfulLogin = {})
     }
 }
 

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.password_manager_app.data.PasswordManagerUserManager
 import com.example.password_manager_app.ui.HomeScreen
 import com.example.password_manager_app.ui.LoginScreen
 import com.example.password_manager_app.ui.MainScreen
@@ -16,6 +17,9 @@ fun PasswordManagerNavigation(
     NavHost(navController = navController, startDestination = "homeScreen" ) {
         composable("login") {
             LoginScreen(
+                onSuccessfulLogin = { res ->
+
+                },
                 onNavigateToMainScreen = { navController.navigate("mainScreen") },
                 onNavigateToRegister = { navController.navigate("register") }
             )
