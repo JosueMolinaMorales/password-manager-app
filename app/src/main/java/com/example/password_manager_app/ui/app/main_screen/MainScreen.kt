@@ -94,11 +94,11 @@ fun MainScreen(
             },
             drawerContent = {
                 NavigationDrawer(
-                    scaffoldState,
-                    coroutineScope,
-                    { innerNav.navigate("records") },
-                    { innerNav.navigate("profile") },
-                    { onLogOut() }
+                    scaffoldState = scaffoldState,
+                    coroutineScope = coroutineScope,
+                    navToSecrets = { innerNav.navigate("records") },
+                    navToProfile = { innerNav.navigate("profile") },
+                    onLogOut{ onLogOut() }
                 )
             },
             drawerBackgroundColor = Charcoal,
