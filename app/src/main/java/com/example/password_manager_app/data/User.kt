@@ -4,9 +4,12 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class User(
-    val name: String,
-    val email: String,
-    val username: String,
+    val name: String = "",
+    val email: String = "",
+    val username: String = "",
+
+    @Expose(serialize = false, deserialize = false)
+    val token: String = "",
 ) {}
 
 class RegisterForm(

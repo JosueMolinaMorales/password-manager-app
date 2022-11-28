@@ -18,7 +18,7 @@ class AuthNetwork: IAuthNetwork {
             val request = Request
                 .Builder()
                 .post(requestBody)
-                .url("${Routes.LocalHost.route}/auth/login")
+                .url("${Routes.PasswordManagerRoute.route}/auth/login")
                 .build()
             client.newCall(request).execute()
         }
@@ -30,7 +30,7 @@ class AuthNetwork: IAuthNetwork {
             val request = Request
                 .Builder()
                 .post(requestBody)
-                .url("${Routes.LocalHost.route}/auth/register")
+                .url("${Routes.PasswordManagerRoute.route}/auth/register")
                 .build()
             val response = client.newCall(request).execute()
             response
