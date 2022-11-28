@@ -20,7 +20,7 @@ class User(
 
     @Expose(serialize = false, deserialize = false)
     @ColumnInfo
-    val token: String = "",
+    var token: String = "",
 ) {}
 
 @Dao
@@ -28,11 +28,17 @@ interface UserDao {
     @Query("SELECT token from User where id = :userId")
     suspend fun getToken(userId: String): String?
 
-    @Query("SELECT * from User where id = :userId")
-    suspend fun getUser(userId: String): User?
+    @Query("SELECT * from User LIMIT 1")
+    suspend fun getUser(): User?
 
     @Insert()
     suspend fun insertUser(user: User)
+
+    @Query("DELETE FROM User")
+    suspend fun deleteUsers()
+
+    @Update()
+    suspend fun updateUser(user: User)
 }
 
 class RegisterForm(

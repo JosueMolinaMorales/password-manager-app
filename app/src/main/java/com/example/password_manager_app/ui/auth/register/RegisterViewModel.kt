@@ -151,6 +151,11 @@ class RegisterViewModel(app: Application): AndroidViewModel(app) {
             when (response.code) {
                 201, 200 -> {
                     val responseBody = Gson().fromJson(body, AuthResponse::class.java)
+                    // Clear User table
+                    userDb.userDao().deleteUsers()
+                    // Add token to user
+                    responseBody.user.token = responseBody.token
+                    // Insert User
                     userDb.userDao().insertUser(responseBody.user)
                     onSuccessfulRegistration()
                 }

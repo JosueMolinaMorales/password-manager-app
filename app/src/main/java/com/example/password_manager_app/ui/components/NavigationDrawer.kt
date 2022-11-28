@@ -17,12 +17,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.password_manager_app.R
+import com.example.password_manager_app.data.User
 import com.example.password_manager_app.ui.NavigationItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun NavigationDrawer(
+    user: User?,
     scaffoldState: ScaffoldState,
     coroutineScope: CoroutineScope,
     navToSecrets: () -> Unit,
@@ -43,7 +45,7 @@ fun NavigationDrawer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 20.dp),
-                    text = "Hi, User!",//eventually will include ${name
+                    text = "Hi, " + if (user == null) { "User!" } else { user.name + "!" },
                     fontSize = 20.sp,
                     fontWeight = FontWeight(1000),
                     textAlign = TextAlign.Center

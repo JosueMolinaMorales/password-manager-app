@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.password_manager_app.R
 import com.example.password_manager_app.data.AuthResponse
@@ -116,7 +117,7 @@ fun LoginScreen(
                                 errorMsg.value = loginViewModel.validate()
                                 if (errorMsg.value == null) {
                                     loginViewModel.login(
-                                        onSuccessfulLogin = { response ->
+                                        onSuccessfulLogin = {
                                             onNavigateToMainScreen()
                                         },
                                         onUnsuccessfulLogin = { errMsg ->
@@ -144,20 +145,20 @@ fun LoginScreen(
                 }
             }
         }
-        if (errorMsg.value != null) {
-            PasswordManagerSnackbar(
-                modifier = Modifier.padding(8.dp),
-                action = {
-                    PasswordManagerButton(onClick = { errorMsg.value = null }) {
-                        Text(text = "Confirm")
-                    }
+    }
+    if (errorMsg.value != null) {
+        PasswordManagerSnackbar(
+            modifier = Modifier.padding(8.dp).zIndex(1F),
+            action = {
+                PasswordManagerButton(onClick = { errorMsg.value = null }) {
+                    Text(text = "Confirm")
                 }
-            ) {
-                Text(text = errorMsg.value ?: "An Error Occurred")
-                LaunchedEffect(key1 = errorMsg.value) {
-                    delay(5000)
-                    errorMsg.value = null
-                }
+            }
+        ) {
+            Text(text = errorMsg.value ?: "An Error Occurred")
+            LaunchedEffect(key1 = errorMsg.value) {
+                delay(5000)
+                errorMsg.value = null
             }
         }
     }

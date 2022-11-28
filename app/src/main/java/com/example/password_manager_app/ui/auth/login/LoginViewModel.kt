@@ -5,13 +5,11 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.password_manager_app.data.AuthResponse
 import com.example.password_manager_app.data.LoginForm
 import com.example.password_manager_app.data.PasswordManagerDatabase
-import com.example.password_manager_app.data.PasswordManagerUserManager
 import com.example.password_manager_app.network.ErrorResponse
 import com.example.password_manager_app.ui.auth.network.AuthNetwork
 import com.google.gson.Gson
@@ -42,6 +40,13 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
             PasswordManagerDatabase::class.java,
             "passwordManager.db"
         ).build()
+        viewModelScope.launch {
+            val user = userDb.userDao().getUser()
+            if (user != null) {
+                // If there was a user in db, populate email field
+                _email.value = user.email
+            }
+        }
     }
 
     fun setEmail(email: String) {
@@ -87,10 +92,19 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
                 200 -> {
                     val jsonBody = responseBody?.string()
                     val authResponse = Gson().fromJson(jsonBody, AuthResponse::class.java)
-                    if (userDb.userDao().getUser(authResponse.user.id) == null) {
+                    // Add token to user
+                    authResponse.user.token = authResponse.token
+
+                    if (_email.value != authResponse.user.email) {
+                        // Delete previous user from table since users are different
+                        userDb.userDao().deleteUsers()
                         // User does not exist in the db
                         userDb.userDao().insertUser(authResponse.user)
+                    } else {
+                        // Previous user is attempting to login, replace token
+                        userDb.userDao().updateUser(authResponse.user)
                     }
+
                     onSuccessfulLogin()
                 }
                 400, 404 -> {

@@ -1,5 +1,6 @@
 package com.example.password_manager_app.ui
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -23,9 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
 import com.example.password_manager_app.ui.app.records.create_password.CreatePasswordPage
 import com.example.password_manager_app.ui.app.records.create_secret.CreateSecretPage
 import com.example.password_manager_app.ui.components.BottomSheetComponent
@@ -38,6 +41,7 @@ import kotlinx.coroutines.launch
 import com.example.password_manager_app.ui.components.TopBar
 import com.example.password_manager_app.ui.theme.LavenderBlush
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
@@ -50,6 +54,8 @@ fun MainScreen(
     val bottomState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val showFAB = remember { mutableStateOf(true) }
     val isOnCreatePassword = remember { mutableStateOf(false) }
+    val vm: MainScreenViewModel = viewModel()
+
     ModalBottomSheetLayout(
         sheetContent = {
             BottomSheetComponent(
@@ -94,11 +100,14 @@ fun MainScreen(
             },
             drawerContent = {
                 NavigationDrawer(
+                    user = vm.user.value,
                     scaffoldState = scaffoldState,
                     coroutineScope = coroutineScope,
                     navToSecrets = { innerNav.navigate("records") },
                     navToProfile = { innerNav.navigate("profile") },
-                    onLogOut{ onLogOut() }
+                    Logout = {
+                        onLogOut()
+                    }
                 )
             },
             drawerBackgroundColor = Charcoal,

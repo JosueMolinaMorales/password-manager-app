@@ -5,9 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -32,6 +30,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.password_manager_app.R
 import com.example.password_manager_app.ui.auth.register.RegisterViewModel
@@ -55,29 +54,28 @@ fun RegisterScreen(
     val showPassword: MutableState<Boolean> = remember { mutableStateOf(true) }
     val showConfirmPassword: MutableState<Boolean> = remember { mutableStateOf(true) }
 
-    Column {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                "Register",
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Medium,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier.padding(vertical = 16.dp)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.koalalogo),
-                contentDescription = ""
-            )
-        }
+//    Column {
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().zIndex(0F),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(1) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "Register",
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.Medium,
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier.padding(vertical = 16.dp)
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.koalalogo),
+                        contentDescription = ""
+                    )
+                }
                 PasswordManagerTextField(
                     value = registerViewModel.name.value,
                     onValueChange = registerViewModel::setName,
@@ -166,11 +164,12 @@ fun RegisterScreen(
         }
         if (errorMsg.value != null) {
             PasswordManagerSnackbar(
-                modifier = Modifier.padding(8.dp),
-                action = { PasswordManagerButton(onClick = { errorMsg.value = null }) {
-                    Text("Confirm")
-                }},
-                backgroundColor = PewterBlue
+                modifier = Modifier.padding(8.dp).zIndex(1F),
+                action = {
+                    PasswordManagerButton(onClick = { errorMsg.value = null }) {
+                        Text("Confirm")
+                    }
+                }
             ) {
                 Text(text = errorMsg.value ?: "An error occurred")
                 LaunchedEffect(key1 = errorMsg.value) {
@@ -179,5 +178,5 @@ fun RegisterScreen(
                 }
             }
         }
-    }
+//    }
 }
