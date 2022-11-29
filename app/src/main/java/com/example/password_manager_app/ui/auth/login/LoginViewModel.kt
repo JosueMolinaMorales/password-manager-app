@@ -95,10 +95,14 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
                     // Add token to user
                     authResponse.user.token = authResponse.token
 
-                    if (_email.value != authResponse.user.email) {
+                    val recentUser = userDb.userDao().getUser()
+                    if (recentUser == null) {
+                        // No recent user, log the user in regularly
+                        userDb.userDao().insertUser(authResponse.user)
+                    } else if (recentUser.email != authResponse.user.email) {
                         // Delete previous user from table since users are different
                         userDb.userDao().deleteUsers()
-                        // User does not exist in the db
+                        // User does not exist in the db so add them
                         userDb.userDao().insertUser(authResponse.user)
                     } else {
                         // Previous user is attempting to login, replace token
