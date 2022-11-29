@@ -145,6 +145,7 @@ fun MainScreen(
                 }
                 composable("createSecret") {
                     CreateSecretPage(
+                        token = vm.user.value?.token ?: "",
                         onCreateSecret = {}
                     )
                     showFAB.value = false

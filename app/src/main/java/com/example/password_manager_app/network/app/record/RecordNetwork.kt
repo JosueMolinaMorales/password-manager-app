@@ -5,7 +5,7 @@ import com.example.password_manager_app.network.interfaces.IRecordNetwork
 import okhttp3.Response
 
 class RecordNetwork: IRecordNetwork {
-    override suspend fun createSecret(record: Record): Response {
+    override suspend fun createSecret(record: Record, token: String): Response {
         TODO("Not yet implemented")
     }
 }

@@ -13,7 +13,7 @@ import com.example.password_manager_app.ui.RegisterScreen
 fun PasswordManagerNavigation(
     navController: NavHostController
 ) {
-    NavHost(navController = navController, startDestination = "homeScreen" ) {
+    NavHost(navController = navController, startDestination = "mainScreen" ) {
         composable("login") {
             LoginScreen(
                 onSuccessfulLogin = { res ->
