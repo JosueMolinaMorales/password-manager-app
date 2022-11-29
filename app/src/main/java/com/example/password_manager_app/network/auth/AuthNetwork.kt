@@ -1,8 +1,9 @@
-package com.example.password_manager_app.ui.auth.network
+package com.example.password_manager_app.network.auth
 
 import com.example.password_manager_app.data.LoginForm
 import com.example.password_manager_app.data.RegisterForm
 import com.example.password_manager_app.network.Routes
+import com.example.password_manager_app.network.interfaces.IAuthNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
