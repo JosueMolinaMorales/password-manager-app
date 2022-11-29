@@ -146,7 +146,11 @@ fun MainScreen(
                 composable("createSecret") {
                     CreateSecretPage(
                         token = vm.user.value?.token ?: "",
-                        onCreateSecret = {}
+                        onCreateSecret = {
+                            innerNav.navigate("records") {
+                                popUpTo("records")
+                            }
+                        }
                     )
                     showFAB.value = false
                     isOnCreatePassword.value = false

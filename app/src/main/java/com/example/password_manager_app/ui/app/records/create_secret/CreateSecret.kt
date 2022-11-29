@@ -4,10 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Icon
-import androidx.compose.material.IconToggleButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -108,7 +105,7 @@ fun CreateSecretPage(
                                     // No error, make request
                                     vm.createSecret(
                                         token = token,
-                                        onSuccessfulSecretCreate = {},
+                                        onSuccessfulSecretCreate = onCreateSecret,
                                         onUnsuccessfulCreate = { errMsg ->
                                             errorMsg.value = errMsg
                                         }
@@ -117,7 +114,11 @@ fun CreateSecretPage(
                             },
                             modifier = Modifier.fillMaxWidth(.4F)
                         ) {
-                            Text(text = "Create")
+                            if (vm.isMakingRequest.value) {
+                                CircularProgressIndicator(color = Color.Black)
+                            } else {
+                                Text(text = "Create")
+                            }
                         }
                     }
                 }
@@ -125,7 +126,9 @@ fun CreateSecretPage(
         }
         if (errorMsg.value != null) {
             PasswordManagerSnackbar(
-                modifier = Modifier.padding(8.dp).zIndex(1F),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .zIndex(1F),
                 action = {
                     PasswordManagerButton(onClick = { errorMsg.value = null }) {
                         Text(text = "Confirm")
