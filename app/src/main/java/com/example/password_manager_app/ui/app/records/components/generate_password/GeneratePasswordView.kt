@@ -12,19 +12,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.theme.LavenderBlush
 
 @Composable
 fun GeneratePasswordView(
-    onGeneratePassword: () -> Unit
+    onGeneratePassword: (String) -> Unit
 ) {
     // Show generate Password
-    val sliderPosition = remember { mutableStateOf(8) }
-    val includeCapitalLetter = remember { mutableStateOf(true) }
-    val includeNumbers = remember { mutableStateOf(true) }
-    val includeSpecialCharacters = remember { mutableStateOf(true) }
-
+    val vm: GeneratePasswordViewModel = viewModel()
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,14 +44,14 @@ fun GeneratePasswordView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Character Length: ${sliderPosition.value}",
+                text = "Character Length: ${vm.sliderPosition.value}",
                 color = LavenderBlush,
                 fontWeight = FontWeight.Medium,
                 style = MaterialTheme.typography.h6
             )
             Slider(
-                value = sliderPosition.value.toFloat(),
-                onValueChange = { sliderPosition.value = it.toInt() },
+                value = vm.sliderPosition.value.toFloat(),
+                onValueChange = vm::setSliderPosition,
                 valueRange = 8F..20F,
                 modifier = Modifier.fillMaxWidth(.8F)
             )
@@ -71,8 +68,8 @@ fun GeneratePasswordView(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Switch(
-                    checked = includeCapitalLetter.value,
-                    onCheckedChange = { includeCapitalLetter.value = it }
+                    checked = vm.includeCapitalLetters.value,
+                    onCheckedChange = vm::setCapitalLettersChoice
                 )
                 Text(text = "A-Z")
             }
@@ -81,8 +78,8 @@ fun GeneratePasswordView(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Switch(
-                    checked = includeNumbers.value,
-                    onCheckedChange = { includeNumbers.value = it }
+                    checked = vm.includeNumbers.value,
+                    onCheckedChange = vm::setNumbersChoice
                 )
                 Text(text = "0-9")
             }
@@ -91,8 +88,8 @@ fun GeneratePasswordView(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Switch(
-                    checked = includeSpecialCharacters.value,
-                    onCheckedChange = { includeSpecialCharacters.value = it }
+                    checked = vm.includeSpecialCharacters.value,
+                    onCheckedChange = vm::setSpecialCharacterChoice
                 )
                 Text(text = "!@#$%")
             }
@@ -104,7 +101,9 @@ fun GeneratePasswordView(
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            PasswordManagerButton(onClick = onGeneratePassword) {
+            PasswordManagerButton(onClick = {
+                onGeneratePassword(vm.generatePassword())
+            }) {
                 Text("Generate")
             }
         }

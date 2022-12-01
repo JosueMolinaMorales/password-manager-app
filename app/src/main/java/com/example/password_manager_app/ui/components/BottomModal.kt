@@ -11,7 +11,7 @@ import com.example.password_manager_app.ui.app.records.components.generate_passw
 fun BottomSheetComponent(
     onCreatePasswordClick: () -> Unit,
     onCreateSecretClick: () -> Unit,
-    onGeneratePassword: () -> Unit,
+    onGeneratePassword: (String) -> Unit,
     currentPage: PagesWithBottomSheet,
 ) {
     when (currentPage) {
