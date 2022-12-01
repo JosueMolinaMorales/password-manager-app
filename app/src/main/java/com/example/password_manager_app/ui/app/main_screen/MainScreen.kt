@@ -57,6 +57,7 @@ fun MainScreen(
     val currentPage = remember { mutableStateOf(PagesWithBottomSheet.HomePage) }
     val vm: MainScreenViewModel = viewModel()
 
+    // TODO: Remove This Modal Bottom Sheet and implement one in every page that needs one
     ModalBottomSheetLayout(
         sheetContent = {
             BottomSheetComponent(
