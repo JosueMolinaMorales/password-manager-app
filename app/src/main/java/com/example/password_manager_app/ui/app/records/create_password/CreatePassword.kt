@@ -2,6 +2,7 @@ package com.example.password_manager_app.ui.app.records.create_password
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
@@ -28,72 +29,71 @@ fun CreatePasswordPage(
     onCreatePasswordClick: () -> Unit
 ) {
     val showPassword = remember { mutableStateOf(false) }
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight(.3F)
-                .padding(top = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Header
-            Text(
-                text = "Create Password",
-                style = MaterialTheme.typography.h4,
-                textDecoration = TextDecoration.Underline,
-                fontWeight = FontWeight.Medium
-            )
-            Image(painter = painterResource(id = R.drawable.koalalogo), contentDescription = "")
-        }
-        Column(
-            modifier = Modifier.fillMaxHeight(.75F),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-            // Form Fields
-            PasswordManagerTextField(
-                value = "",
-                onValueChange = {},
-                label = { Text(text = "Service*") },
-            )
-            PasswordManagerTextField(
-                value = "",
-                onValueChange = {},
-                label = { Text(text = "Email") }
-            )
-            PasswordManagerTextField(
-                value = "",
-                onValueChange = {},
-                label = { Text(text = "Username*") }
-            )
-            PasswordManagerTextField(
-                value = "",
-                onValueChange = { },
-                label = { Text(text = "Password*") },
-                trailingIcon = { IconToggleButton(
-                    checked = showPassword.value,
-                    onCheckedChange = { showPassword.value = !showPassword.value }
-                ) {
-                    if (showPassword.value) {
-                        Icon(Icons.Filled.Visibility, "")
-                    } else {
-                        Icon(Icons.Filled.VisibilityOff, "")
-                    }
-                }},
-                hideText = !showPassword.value
-            )
-            PasswordManagerButton(onClick = onGeneratePasswordClick) {
-                Text(text = "Generate Password")
+        item {
+            Column(
+                modifier = Modifier.padding(top = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Header
+                Text(
+                    text = "Create Password",
+                    style = MaterialTheme.typography.h4,
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Medium
+                )
+                Image(painter = painterResource(id = R.drawable.koalalogo), contentDescription = "")
             }
-        }
-        Row {
-            // Submit button
-            PasswordManagerButton(onClick = onCreatePasswordClick) {
-                Text(text = "Create")
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Form Fields
+                PasswordManagerTextField(
+                    value = "",
+                    onValueChange = {},
+                    label = { Text(text = "Service*") },
+                )
+                PasswordManagerTextField(
+                    value = "",
+                    onValueChange = {},
+                    label = { Text(text = "Email") }
+                )
+                PasswordManagerTextField(
+                    value = "",
+                    onValueChange = {},
+                    label = { Text(text = "Username*") }
+                )
+                PasswordManagerTextField(
+                    value = "",
+                    onValueChange = { },
+                    label = { Text(text = "Password*") },
+                    trailingIcon = { IconToggleButton(
+                        checked = showPassword.value,
+                        onCheckedChange = { showPassword.value = !showPassword.value }
+                    ) {
+                        if (showPassword.value) {
+                            Icon(Icons.Filled.Visibility, "")
+                        } else {
+                            Icon(Icons.Filled.VisibilityOff, "")
+                        }
+                    }},
+                    hideText = !showPassword.value
+                )
+                PasswordManagerButton(onClick = onGeneratePasswordClick) {
+                    Text(text = "Generate Password")
+                }
+            }
+            Row {
+                // Submit button
+                PasswordManagerButton(onClick = onCreatePasswordClick) {
+                    Text(text = "Create")
+                }
             }
         }
     }

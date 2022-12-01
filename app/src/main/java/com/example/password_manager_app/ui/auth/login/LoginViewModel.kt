@@ -11,7 +11,7 @@ import com.example.password_manager_app.data.AuthResponse
 import com.example.password_manager_app.data.LoginForm
 import com.example.password_manager_app.data.PasswordManagerDatabase
 import com.example.password_manager_app.network.ErrorResponse
-import com.example.password_manager_app.ui.auth.network.AuthNetwork
+import com.example.password_manager_app.network.auth.AuthNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 

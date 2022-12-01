@@ -1,4 +1,4 @@
-package com.example.password_manager_app.ui.auth.network
+package com.example.password_manager_app.network.interfaces
 
 import com.example.password_manager_app.data.AuthResponse
 import com.example.password_manager_app.data.LoginForm

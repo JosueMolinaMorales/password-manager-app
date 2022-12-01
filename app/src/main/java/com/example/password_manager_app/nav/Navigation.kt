@@ -13,10 +13,11 @@ fun PasswordManagerNavigation(
     NavHost(navController = navController, startDestination = "homeScreen" ) {
         composable("login") {
             LoginScreen(
-                onSuccessfulLogin = { res ->
-
+                onNavigateToMainScreen = {
+                    navController.navigate("mainScreen")  {
+                        popUpTo("homeScreen") { inclusive = true }
+                    }
                 },
-                onNavigateToMainScreen = { navController.navigate("mainScreen") },
                 onNavigateToRegister = { navController.navigate("register") }
             )
         }
@@ -29,11 +30,19 @@ fun PasswordManagerNavigation(
         composable("register") {
             RegisterScreen(
                 onNavigateToLogin = { navController.navigate("login") },
-                onNavigateToMainScreen = { navController.navigate("mainScreen") }
+                onNavigateToMainScreen = {
+                    navController.navigate("mainScreen") {
+                        popUpTo("homeScreen") { inclusive = true }
+                    }
+                }
             )
         }
         composable("mainScreen") {
-            MainScreen(onLogOut = { navController.navigate("login") })
+            MainScreen(onLogOut = {
+                navController.navigate("login") {
+                    popUpTo("mainScreen") { inclusive = true }
+                }
+            })
         }
     }
 }

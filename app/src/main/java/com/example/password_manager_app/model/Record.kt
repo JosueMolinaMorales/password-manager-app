@@ -1,8 +1,10 @@
 package com.example.password_manager_app.model
 
 import com.example.password_manager_app.model.RecordType
+import com.google.gson.annotations.SerializedName
 
 data class Record(
+    @SerializedName(value = "record_type")
     val recordType: RecordType,
     val id: String? = null,
     val user_id: String? = null,

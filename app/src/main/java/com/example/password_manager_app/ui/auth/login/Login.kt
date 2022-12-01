@@ -34,7 +34,6 @@ import kotlinx.coroutines.delay
  */
 @Composable
 fun LoginScreen(
-    onSuccessfulLogin: (AuthResponse) -> Unit,
     onNavigateToMainScreen: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
