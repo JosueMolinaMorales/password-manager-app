@@ -40,6 +40,7 @@ fun CreateSecretPage(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
+                .border(width = 3.dp, color = Color.Red)
         ) {
             item {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -61,38 +62,33 @@ fun CreateSecretPage(
                         )
                         Image(painter = painterResource(id = R.drawable.koalalogo), contentDescription = "")
                     }
-                    Column(
-                        modifier = Modifier.fillParentMaxHeight(.25F),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceAround
-                    ) {
-                        // Form Fields
-                        PasswordManagerTextField(
-                            value = vm.key.value,
-                            onValueChange = vm::setKey,
-                            label = { Text(text = "Key*") },
-                            isError = vm.keyHasError.value
-                        )
-                        PasswordManagerTextField(
-                            value = vm.secret.value,
-                            onValueChange = vm::setSecret,
-                            label = { Text(text = "Secret*") },
-                            trailingIcon = { IconToggleButton(
-                                checked = showSecret.value,
-                                onCheckedChange = { showSecret.value = !showSecret.value }
-                            ) {
-                                if (showSecret.value) {
-                                    Icon(Icons.Filled.Visibility, "")
-                                } else {
-                                    Icon(Icons.Filled.VisibilityOff, "")
-                                }
+                    // Form Fields
+                    PasswordManagerTextField(
+                        value = vm.key.value,
+                        onValueChange = vm::setKey,
+                        label = { Text(text = "Key*") },
+                        isError = vm.keyHasError.value
+                    )
+                    Spacer(modifier = Modifier.fillMaxWidth().height(32.dp))
+                    PasswordManagerTextField(
+                        value = vm.secret.value,
+                        onValueChange = vm::setSecret,
+                        label = { Text(text = "Secret*") },
+                        trailingIcon = { IconToggleButton(
+                            checked = showSecret.value,
+                            onCheckedChange = { showSecret.value = !showSecret.value }
+                        ) {
+                            if (showSecret.value) {
+                                Icon(Icons.Filled.Visibility, "")
+                            } else {
+                                Icon(Icons.Filled.VisibilityOff, "")
                             }
-                            },
-                            hideText = !showSecret.value,
-                            isError = vm.secretHasError.value
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
+                        }
+                        },
+                        hideText = !showSecret.value,
+                        isError = vm.secretHasError.value
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center

@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.password_manager_app.data.PagesWithBottomSheet
 import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
 import com.example.password_manager_app.ui.app.records.create_password.CreatePasswordPage
 import com.example.password_manager_app.ui.app.records.create_secret.CreateSecretPage
@@ -53,7 +54,7 @@ fun MainScreen(
     val focusManager = LocalFocusManager.current
     val bottomState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val showFAB = remember { mutableStateOf(true) }
-    val isOnCreatePassword = remember { mutableStateOf(false) }
+    val currentPage = remember { mutableStateOf(PagesWithBottomSheet.HomePage) }
     val vm: MainScreenViewModel = viewModel()
 
     ModalBottomSheetLayout(
@@ -76,7 +77,7 @@ fun MainScreen(
                         bottomState.hide()
                     }
                 },
-                isOnPasswordPage = isOnCreatePassword.value
+                currentPage = currentPage.value
             )
         },
         sheetState = bottomState,
@@ -121,18 +122,17 @@ fun MainScreen(
                 composable("records") {
                     RecordsView()
                     showFAB.value = true
-                    isOnCreatePassword.value = false
+                    currentPage.value = PagesWithBottomSheet.HomePage
                 }
                 composable("profile") {
                     Profile()
                     showFAB.value = false
-                    isOnCreatePassword.value = false
+                    currentPage.value = PagesWithBottomSheet.ProfilePage
                 }
                 composable("createPassword") {
                     CreatePasswordPage(
                         onCreatePasswordClick = {
                             innerNav.navigate("records")
-                            isOnCreatePassword.value = false
                         },
                         onGeneratePasswordClick = {
                             coroutineScope.launch {
@@ -141,7 +141,7 @@ fun MainScreen(
                         }
                     )
                     showFAB.value = false
-                    isOnCreatePassword.value = true
+                    currentPage.value = PagesWithBottomSheet.CreatePasswordPage
                 }
                 composable("createSecret") {
                     CreateSecretPage(
@@ -153,7 +153,6 @@ fun MainScreen(
                         }
                     )
                     showFAB.value = false
-                    isOnCreatePassword.value = false
                 }
             }
         }
