@@ -1,8 +1,6 @@
 package com.example.password_manager_app.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -19,27 +17,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.password_manager_app.data.User
 import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
 import com.example.password_manager_app.ui.app.records.create_password.CreatePasswordPage
 import com.example.password_manager_app.ui.app.records.create_secret.CreateSecretPage
 import com.example.password_manager_app.ui.components.BottomSheetComponent
 import com.example.password_manager_app.ui.app.records.RecordsView
 import com.example.password_manager_app.ui.components.NavigationDrawer
-import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.TopBarOpal
 import kotlinx.coroutines.launch
 import com.example.password_manager_app.ui.components.TopBar
-import com.example.password_manager_app.ui.theme.LavenderBlush
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
@@ -124,7 +119,7 @@ fun MainScreen(
                     isOnCreatePassword.value = false
                 }
                 composable("profile") {
-                    Profile()
+                    Profile(vm.user.value ?: User())
                     showFAB.value = false
                     isOnCreatePassword.value = false
                 }
