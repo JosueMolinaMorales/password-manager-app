@@ -60,9 +60,16 @@ fun RecordsView(
                 )
             }
         }else {
-            LazyColumn {
-            itemsIndexed(recordsViewViewModel.records.value) { idx, record ->
-                val title = record.service!!
+            LazyColumn(
+                verticalArrangement = Arrangement.Top
+            ) {
+            itemsIndexed(recordsViewViewModel.records.value) { _, record ->
+                var title: String = ""
+                if (record.recordType == RecordType.Password){
+                    title = record.service!!
+                } else if (record.recordType == RecordType.Secret){
+                    title = record.key!!
+                }
                 RecordRowView(
                     /* Should send the object for this record eventually not Str*/
                     onCardClick = {
