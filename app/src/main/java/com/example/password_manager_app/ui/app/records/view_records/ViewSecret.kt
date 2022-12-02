@@ -51,7 +51,7 @@ fun ViewSecret(
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                             style = MaterialTheme.typography.h4,
-                            text = viewSecretViewModel.title.value,
+                            text = viewSecretViewModel.record.value?.service!!,
                             textAlign = TextAlign.Center
                         )
                     }

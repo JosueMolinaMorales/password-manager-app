@@ -4,20 +4,20 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.password_manager_app.model.Record
 
 class ViewSecretViewModel: ViewModel() {
-    private val _showPasswordView: MutableState<Boolean> = mutableStateOf(false)
-    val show: State<Boolean> = _showPasswordView
-    private val _service: MutableState<String> = mutableStateOf("")
-    val title: State<String> = _service
+    private val _showSecretView: MutableState<Boolean> = mutableStateOf(false)
+    val show: State<Boolean> = _showSecretView
+    private val _record: MutableState<Record?> = mutableStateOf(null)
+    val record: State<Record?> = _record
 
-    fun show(title: String) {
-        //TODO refactor after record is sent, not string
-        _service.value = title
-        _showPasswordView.value = true
+    fun show(record: Record) {
+        _record.value = record
+        _showSecretView.value = true
     }
 
     fun hide() {
-        _showPasswordView.value = false
+        _showSecretView.value = false
     }
 }

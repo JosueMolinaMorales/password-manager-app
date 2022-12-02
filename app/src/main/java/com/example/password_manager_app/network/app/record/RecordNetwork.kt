@@ -1,5 +1,6 @@
 package com.example.password_manager_app.network.app.record
 
+import android.util.Log
 import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.network.Routes
 import com.example.password_manager_app.network.interfaces.IRecordNetwork
@@ -24,6 +25,20 @@ class RecordNetwork: IRecordNetwork {
                 .build()
             val response = client.newCall(request).execute()
             response
+        }
+    }
+
+    override suspend fun fetchRecords(token: String, userId: String): List<Record> {
+        return withContext(Dispatchers.IO) {
+            val request = Request.Builder()
+                .url("${Routes.PasswordManagerRoute.route}/record/${userId}/all")
+                .addHeader("Authorization", "Bearer $token")
+                .get()
+                .build()
+            val response = client.newCall(request).execute()
+            val gson = Gson()
+            Log.d("here", response.body.toString())
+            listOf()
         }
     }
 }

@@ -17,7 +17,7 @@ fun PasswordManagerNavigation(
         composable("login") {
             LoginScreen(
                 onNavigateToMainScreen = {
-                    navController.navigate("mainScreen")  {
+                    navController.navigate("mainScreen") {
                         popUpTo("homeScreen") { inclusive = true }
                     }
                 },

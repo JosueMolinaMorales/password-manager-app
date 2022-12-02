@@ -47,7 +47,7 @@ fun ViewPassword(
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                             style = MaterialTheme.typography.h4,
-                            text = ViewPasswordViewModel.title.value,
+                            text = ViewPasswordViewModel.record.value?.service!!,
                             textAlign = TextAlign.Center
                         )
                     }
