@@ -139,9 +139,9 @@ class RegisterViewModel(app: Application): AndroidViewModel(app) {
         viewModelScope.launch {
             _makingRequest.value = true
             val response = authNetwork.register(RegisterForm(
-                name = _name.value,
-                username = _username.value,
-                email = _email.value,
+                name = _name.value.trim(),
+                username = _username.value.trim(),
+                email = _email.value.trim(),
                 password = _password.value
             ))
             _makingRequest.value = false

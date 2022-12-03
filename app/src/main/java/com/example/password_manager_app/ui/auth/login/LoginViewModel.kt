@@ -83,7 +83,7 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
         viewModelScope.launch {
             _isMakingRequest.value = true
             val response = authNetwork.login(LoginForm(
-                email = _email.value,
+                email = _email.value.trim(),
                 password = password.value
             ))
             _isMakingRequest.value = false

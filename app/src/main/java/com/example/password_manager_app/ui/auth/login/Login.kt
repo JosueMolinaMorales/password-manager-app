@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +43,21 @@ fun LoginScreen(
     val loginViewModel: LoginViewModel = viewModel()
     val hidePassword: MutableState<Boolean> = remember { mutableStateOf(true) }
     val errorMsg: MutableState<String?> = remember { mutableStateOf(null) }
+
+    fun onLogin() {
+        errorMsg.value = loginViewModel.validate()
+        if (errorMsg.value == null) {
+            loginViewModel.login(
+                onSuccessfulLogin = {
+                    onNavigateToMainScreen()
+                },
+                onUnsuccessfulLogin = { errMsg ->
+                    errorMsg.value = errMsg
+                }
+            )
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.SpaceBetween
@@ -89,7 +107,11 @@ fun LoginScreen(
                             onValueChange = loginViewModel::setEmail,
                             placeholder = { Text(text = "Email") },
                             isError = loginViewModel.emailHasError.value,
-                            label = { Text(text = "Email*") }
+                            label = { Text(text = "Email*") },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = {
+                                this.defaultKeyboardAction(ImeAction.Next)
+                            })
                         )
                     }
                     Row(
@@ -105,26 +127,21 @@ fun LoginScreen(
                             isError = loginViewModel.passwordHasError.value,
                             isHiddenField = true,
                             hideText = hidePassword.value,
-                            onTrailingIconClick = { hidePassword.value = !hidePassword.value }
+                            onTrailingIconClick = { hidePassword.value = !hidePassword.value },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
+                            keyboardActions = KeyboardActions(
+                                onGo = {
+                                    onLogin()
+                                }
+                            )
                         )
                     }
                     Row(
                         modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                     ) {
                         PasswordManagerButton(
-                            onClick = {
-                                errorMsg.value = loginViewModel.validate()
-                                if (errorMsg.value == null) {
-                                    loginViewModel.login(
-                                        onSuccessfulLogin = {
-                                            onNavigateToMainScreen()
-                                        },
-                                        onUnsuccessfulLogin = { errMsg ->
-                                            errorMsg.value = errMsg
-                                        }
-                                    )
-                                }
-                            }
+                            onClick = { onLogin() },
+                            enabled = !loginViewModel.isMakingRequest.value
                         ) {
                             if (loginViewModel.isMakingRequest.value) {
                                 CircularProgressIndicator(color = Charcoal)
