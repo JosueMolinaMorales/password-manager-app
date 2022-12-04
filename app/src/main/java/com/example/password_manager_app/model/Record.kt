@@ -16,3 +16,12 @@ data class Record(
     val username: String? = null
 ) {
 }
+
+data class UpdateRecord(
+    val key: String? = null,
+    val secret: String? = null,
+    val service: String? = null,
+    val password: String? = null,
+    val email: String? = null,
+    val username: String? = null
+)

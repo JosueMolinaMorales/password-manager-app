@@ -16,11 +16,13 @@ import com.example.password_manager_app.ui.app.records.view_records.ViewSecretVi
 
 
 @Composable
-fun RecordsView() {
+fun RecordsView(
+    onEditClick: (RecordType) -> Unit
+) {
     val showPasswordViewModel: ViewPasswordViewModel = viewModel()
     val showSecretViewModel: ViewSecretViewModel = viewModel()
-    ViewPassword(showPasswordViewModel)
-    ViewSecret(showSecretViewModel)
+    ViewPassword(showPasswordViewModel, onEditClick = onEditClick)
+    ViewSecret(showSecretViewModel, onEditClick = onEditClick)
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center
@@ -39,7 +41,7 @@ fun RecordsView() {
                         }},
                     onCopyToClipboardClick = {},
                     onDeleteClick = {},
-                    onEditClick = {},
+                    onEditClick = onEditClick,
                     title = title,
                     recordType = if (idx % 2 == 0) {
                         RecordType.Password

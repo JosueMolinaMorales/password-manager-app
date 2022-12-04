@@ -1,8 +1,6 @@
 package com.example.password_manager_app.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -19,28 +17,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.password_manager_app.data.PagesWithBottomSheet
+import com.example.password_manager_app.model.ActionOnRecord
+import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
-import com.example.password_manager_app.ui.app.records.create_password.CreatePasswordPage
-import com.example.password_manager_app.ui.app.records.create_secret.CreateSecretPage
+import com.example.password_manager_app.ui.app.records.create_update_secret.CreateSecretPage
 import com.example.password_manager_app.ui.components.BottomSheetComponent
 import com.example.password_manager_app.ui.app.records.RecordsView
+import com.example.password_manager_app.ui.app.records.create_update_password.CreateUpdatePasswordPage
 import com.example.password_manager_app.ui.components.NavigationDrawer
-import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.TopBarOpal
 import kotlinx.coroutines.launch
 import com.example.password_manager_app.ui.components.TopBar
-import com.example.password_manager_app.ui.theme.LavenderBlush
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
@@ -62,13 +60,13 @@ fun MainScreen(
         sheetContent = {
             BottomSheetComponent(
                 onCreatePasswordClick = {
-                    innerNav.navigate("createPassword")
+                    innerNav.navigate("createPassword/create")
                     coroutineScope.launch {
                         bottomState.hide()
                     }
                 },
                 onCreateSecretClick = {
-                    innerNav.navigate("createSecret")
+                    innerNav.navigate("createSecret/create")
                     coroutineScope.launch {
                         bottomState.hide()
                     }
@@ -121,7 +119,15 @@ fun MainScreen(
         ) {
             NavHost(navController = innerNav, startDestination = "records") {
                 composable("records") {
-                    RecordsView()
+                    RecordsView(
+                        onEditClick = { recordType ->
+                            if (recordType == RecordType.Secret) {
+                                innerNav.navigate("createSecret/update")
+                            } else {
+                                innerNav.navigate("createPassword/update")
+                            }
+                        }
+                    )
                     showFAB.value = true
                     currentPage.value = PagesWithBottomSheet.HomePage
                 }
@@ -130,25 +136,43 @@ fun MainScreen(
                     showFAB.value = false
                     currentPage.value = PagesWithBottomSheet.ProfilePage
                 }
-                composable("createPassword") {
-                    CreatePasswordPage(
+                composable(
+                    route = "createPassword/{action}",
+                    arguments = listOf(navArgument("action") { type =  NavType.StringType })
+                ) { navBackStack ->
+                    CreateUpdatePasswordPage(
                         token = vm.user.value?.token ?: "",
-                        onCreatePasswordClick = {
+                        onNavigateHome = {
                             innerNav.navigate("records") {
                                 popUpTo("records") { inclusive = true }
                             }
-                        }
+                        },
+                        action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
+                            ActionOnRecord.Create
+                        } else {
+                            ActionOnRecord.Update
+                        },
+                        recordId = "638b8bba27d7b9da05b3b719", // TODO Change this
                     )
                     showFAB.value = false
                 }
-                composable("createSecret") {
+                composable(
+                    route = "createSecret/{action}",
+                    arguments = listOf(navArgument("action") { type =  NavType.StringType })
+                ) { navBackStack ->
                     CreateSecretPage(
                         token = vm.user.value?.token ?: "",
-                        onCreateSecret = {
+                        onNavigateHome = {
                             innerNav.navigate("records") {
-                                popUpTo("records")
+                                popUpTo("records") { inclusive = true }
                             }
-                        }
+                        },
+                        action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
+                            ActionOnRecord.Create
+                        } else {
+                            ActionOnRecord.Update
+                        },
+                        recordId = "638664aa694ab33a12a05110", // TODO Change this
                     )
                     showFAB.value = false
                 }

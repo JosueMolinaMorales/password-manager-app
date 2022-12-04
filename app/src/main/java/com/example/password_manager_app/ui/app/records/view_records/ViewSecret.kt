@@ -18,13 +18,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.password_manager_app.R
+import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.components.OutlinedPasswordManagerButton
 import com.example.password_manager_app.ui.components.PasswordManagerTextField
 import com.example.password_manager_app.ui.theme.PewterBlue
 
 @Composable
 fun ViewSecret(
-    viewSecretViewModel: ViewSecretViewModel
+    viewSecretViewModel: ViewSecretViewModel,
+    onEditClick: (RecordType) -> Unit
 ) {
     val show by viewSecretViewModel.show
     val showSecret: MutableState<Boolean> = remember { mutableStateOf(false) }
@@ -60,7 +62,6 @@ fun ViewSecret(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        //TODO create composable to hide and unhide pword
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
@@ -97,7 +98,7 @@ fun ViewSecret(
                 ) {
                     OutlinedPasswordManagerButton(
                         modifier = Modifier.width(200.dp),
-                        onClick = { /*TODO*/ },
+                        onClick = { onEditClick(RecordType.Secret) },
                         border = BorderStroke(1.dp, Color.Black)
                     ) {
                         Text(text = "Edit", fontSize = 15.sp)
