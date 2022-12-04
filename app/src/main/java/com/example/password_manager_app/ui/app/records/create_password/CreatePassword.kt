@@ -1,6 +1,7 @@
 package com.example.password_manager_app.ui.app.records.create_password
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -28,7 +30,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CreatePasswordPage(
-    onGeneratePasswordClick: () -> Unit,
+    token: String,
     onCreatePasswordClick: () -> Unit
 ) {
     val vm: CreatePasswordViewModel = viewModel()
@@ -49,14 +51,16 @@ fun CreatePasswordPage(
         sheetBackgroundColor = Charcoal,
         scrimColor = Charcoal.copy(alpha = .5F)
     ) {
-        Column(modifier = Modifier.fillMaxHeight()) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
                     Column(
-                        modifier = Modifier.padding(top = 16.dp),
+                        modifier = Modifier.padding(top = 8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         // Header
@@ -66,7 +70,11 @@ fun CreatePasswordPage(
                             textDecoration = TextDecoration.Underline,
                             fontWeight = FontWeight.Medium
                         )
-                        Image(painter = painterResource(id = R.drawable.koalalogo), contentDescription = "")
+                        Image(
+                            painter = painterResource(id = R.drawable.koalalogo),
+                            contentDescription = "",
+                            modifier = Modifier.fillMaxSize(.4F)
+                        )
                     }
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -113,7 +121,11 @@ fun CreatePasswordPage(
                                 bottomState.show()
                             }
                         }) {
-                            Text(text = "Generate Password")
+                            if (vm.isMakingRequest.value) {
+                                CircularProgressIndicator(color = Color.Black)
+                            } else {
+                                Text(text = "Generate Password")
+                            }
                         }
                     }
                     Row {
@@ -123,8 +135,13 @@ fun CreatePasswordPage(
                             errorMsg.value = vm.validate()
                             if (errorMsg.value == null) {
                                 // No error message, make request
-                                // TODO: Call vm method to make request to api to create password
-                                onCreatePasswordClick()
+                                vm.createPassword(
+                                    token = token,
+                                    onSuccessfulCreation = onCreatePasswordClick,
+                                    onUnsuccessfulCreation = { errorMessage ->
+                                        errorMsg.value = errorMessage
+                                    }
+                                )
                             }
                         }) {
                             Text(text = "Create")
@@ -132,24 +149,24 @@ fun CreatePasswordPage(
                     }
                 }
             }
-            if (errorMsg.value != null) {
-                PasswordManagerSnackbar(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .zIndex(1F),
-                    action = {
-                        PasswordManagerButton(
-                            onClick = { errorMsg.value = null },
-                        ) {
-                            Text(text = "Confirm")
-                        }
+        }
+        if (errorMsg.value != null) {
+            PasswordManagerSnackbar(
+                modifier = Modifier
+                    .padding(4.dp)
+                    .zIndex(1F),
+                action = {
+                    PasswordManagerButton(
+                        onClick = { errorMsg.value = null },
+                    ) {
+                        Text(text = "Confirm")
                     }
-                ) {
-                    Text(text = errorMsg.value ?: "An Error Occurred")
-                    LaunchedEffect(key1 = errorMsg.value) {
-                        delay(5000)
-                        errorMsg.value = null
-                    }
+                }
+            ) {
+                Text(text = errorMsg.value ?: "An Error Occurred")
+                LaunchedEffect(key1 = errorMsg.value) {
+                    delay(5000)
+                    errorMsg.value = null
                 }
             }
         }

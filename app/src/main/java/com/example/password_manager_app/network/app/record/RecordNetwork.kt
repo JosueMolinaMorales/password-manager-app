@@ -19,7 +19,7 @@ class RecordNetwork: IRecordNetwork {
     private val client = OkHttpClient()
 
 
-    override suspend fun createSecret(record: Record, token: String): Response {
+    override suspend fun createRecord(record: Record, token: String): Response {
         return withContext(Dispatchers.IO) {
             val requestBody = Gson().toJson(record).toRequestBody()
             val request = Request.Builder()

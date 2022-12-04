@@ -4,6 +4,7 @@ import com.example.password_manager_app.model.Record
 import okhttp3.Response
 
 interface IRecordNetwork {
-    suspend fun createSecret(record: Record, token: String): Response
+    suspend fun createRecord(record: Record, token: String): Response
     suspend fun fetchRecords(token: String, userId: String): List<Record>
+
 }

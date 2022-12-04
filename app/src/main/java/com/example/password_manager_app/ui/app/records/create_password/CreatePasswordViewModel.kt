@@ -4,6 +4,13 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.password_manager_app.model.Record
+import com.example.password_manager_app.model.RecordType
+import com.example.password_manager_app.network.ErrorResponse
+import com.example.password_manager_app.network.app.record.RecordNetwork
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
 
 class CreatePasswordViewModel: ViewModel() {
 
@@ -30,6 +37,11 @@ class CreatePasswordViewModel: ViewModel() {
 
     private val _passwordHasError: MutableState<Boolean> = mutableStateOf(false)
     val passwordHasError: State<Boolean> = _passwordHasError
+
+    private val _isMakingRequest: MutableState<Boolean> = mutableStateOf(false)
+    val isMakingRequest: State<Boolean> = _isMakingRequest
+
+    private val recordNet = RecordNetwork()
 
     fun setService(service: String) {
         _service.value = service
@@ -72,5 +84,38 @@ class CreatePasswordViewModel: ViewModel() {
             return "Either email or username is required"
         }
         return null
+    }
+
+    fun createPassword(
+        token: String,
+        onSuccessfulCreation: () -> Unit,
+        onUnsuccessfulCreation: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            _isMakingRequest.value = true
+            val res = recordNet.createRecord(
+                record= Record(
+                    password=_password.value,
+                    email = if (_email.value == "") { null } else { _email.value.trim() },
+                    username = if (_username.value == "") { null } else { _username.value.trim() },
+                    service = _service.value.trim(),
+                    recordType = RecordType.Password
+                ),
+                token = token
+            )
+            _isMakingRequest.value = false
+            when (res.code) {
+                200, 201 -> {
+                    onSuccessfulCreation()
+                }
+                400 -> {
+                    val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
+                    onUnsuccessfulCreation(error.error.message)
+                }
+                else -> {
+                    onUnsuccessfulCreation("Internal Service Error, Please Try Again Later.")
+                }
+            }
+        }
     }
 }

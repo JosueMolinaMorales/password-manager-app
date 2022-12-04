@@ -38,9 +38,7 @@ fun CreateSecretPage(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(width = 3.dp, color = Color.Red)
+            modifier = Modifier.fillMaxWidth()
         ) {
             item {
                 Spacer(modifier = Modifier.height(16.dp))

@@ -66,7 +66,7 @@ class CreateSecretViewModel: ViewModel() {
     ) {
         viewModelScope.launch {
             _isMakingRequest.value = true
-            val res = _recordNetwork.createSecret(Record(
+            val res = _recordNetwork.createRecord(Record(
                 recordType = RecordType.Secret,
                 key = _key.value,
                 secret = _secret.value
