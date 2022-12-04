@@ -36,10 +36,6 @@ fun ViewSecret(
                 .fillMaxWidth()
                 .fillMaxHeight(.6F),
             onDismissRequest = { vm.hide() },
-            title = {
-                Text(text = vm.record.value?.key!!)
-
-            },
             text = {
                 Column(
                     modifier = Modifier

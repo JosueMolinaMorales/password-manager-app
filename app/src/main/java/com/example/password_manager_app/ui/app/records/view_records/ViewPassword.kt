@@ -62,7 +62,7 @@ fun ViewPassword(
                             Column {
                                 //TODO change to get value from ViewPasswordViewModel
                                 PasswordManagerTextField(
-                                    value = vm.record.value?.username!!,
+                                    value = vm.record.value?.username ?: vm.record.value?.email!!,
                                     onValueChange = {},
                                     readOnly = true,
                                     label = { Text(text = "Login") },
@@ -74,7 +74,7 @@ fun ViewPassword(
                             ) {
                             Column {
                                 PasswordManagerTextField(
-                                    value = vm.record.value?.secret!!,
+                                    value = vm.record.value?.password!!,
                                     onValueChange = { },
                                     readOnly = true,
                                     label = { Text(text = "Password") },

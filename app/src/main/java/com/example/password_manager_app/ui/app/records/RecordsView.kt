@@ -37,7 +37,7 @@ fun RecordsView(
     ViewSecret(showSecretViewModel)
     Column(
         Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
 
         coroutineScope.launch {

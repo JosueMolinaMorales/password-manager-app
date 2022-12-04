@@ -58,104 +58,109 @@ fun MainScreen(
     val vm: MainScreenViewModel = viewModel()
     val recordsViewViewModel: RecordsViewViewModel = viewModel()
 
-    // TODO: Remove This Modal Bottom Sheet and implement one in every page that needs one
-    ModalBottomSheetLayout(
-        sheetContent = {
-            BottomSheetComponent(
-                onCreatePasswordClick = {
-                    innerNav.navigate("createPassword")
-                    coroutineScope.launch {
-                        bottomState.hide()
-                    }
-                },
-                onCreateSecretClick = {
-                    innerNav.navigate("createSecret")
-                    coroutineScope.launch {
-                        bottomState.hide()
-                    }
-                },
-                onGeneratePassword = {
-                    coroutineScope.launch {
-                        bottomState.hide()
-                    }
-                },
-                currentPage = currentPage.value
-            )
-        },
-        sheetState = bottomState,
-        sheetBackgroundColor = Charcoal,
-        scrimColor = Charcoal.copy(alpha = .5F)
-    ) {
-        Scaffold (
-            scaffoldState = scaffoldState,
-            topBar = {
-                TopBar {
-                    coroutineScope.launch {
-                        scaffoldState.drawerState.open()
-                    }
-                }
-            },
-            floatingActionButton = {
-                AddSecretFAB(
-                    onClick = { coroutineScope.launch { bottomState.show() }},
-                    showFAB = showFAB.value
+    if(vm.user.value == null) {
+        CircularProgressIndicator()
+    }else {
+        ModalBottomSheetLayout(
+            sheetContent = {
+                BottomSheetComponent(
+                    onCreatePasswordClick = {
+                        innerNav.navigate("createPassword")
+                        coroutineScope.launch {
+                            bottomState.hide()
+                        }
+                    },
+                    onCreateSecretClick = {
+                        innerNav.navigate("createSecret")
+                        coroutineScope.launch {
+                            bottomState.hide()
+                        }
+                    },
+                    onGeneratePassword = {
+                        coroutineScope.launch {
+                            bottomState.hide()
+                        }
+                    },
+                    currentPage = currentPage.value
                 )
             },
-            drawerContent = {
-                NavigationDrawer(
-                    user = vm.user.value,
-                    scaffoldState = scaffoldState,
-                    coroutineScope = coroutineScope,
-                    navToSecrets = { innerNav.navigate("records") },
-                    navToProfile = { innerNav.navigate("profile") },
-                    Logout = {
-                        onLogOut()
-                    }
-                )
-            },
-            drawerBackgroundColor = Charcoal,
-            modifier = Modifier.pointerInput(Unit) {
-                detectTapGestures(onTap = {
-                    focusManager.clearFocus()
-                })
-            }
+            sheetState = bottomState,
+            sheetBackgroundColor = Charcoal,
+            scrimColor = Charcoal.copy(alpha = .5F)
         ) {
-            NavHost(navController = innerNav, startDestination = "records") {
-                composable("records") {
-                    RecordsView(recordsViewViewModel, vm)
-                    showFAB.value = true
-                    currentPage.value = PagesWithBottomSheet.HomePage
-                }
-                composable("profile") {
-                    Profile()
-                    showFAB.value = false
-                    currentPage.value = PagesWithBottomSheet.ProfilePage
-                }
-                composable("createPassword") {
-                    CreatePasswordPage(
-                        token = vm.user.value?.token ?: "",
-                        onCreatePasswordClick = {
-                            innerNav.navigate("records") {
-                                popUpTo("records") { inclusive = true }
-                            }
+            Scaffold (
+                scaffoldState = scaffoldState,
+                topBar = {
+                    TopBar {
+                        coroutineScope.launch {
+                            scaffoldState.drawerState.open()
+                        }
+                    }
+                },
+                floatingActionButton = {
+                    AddSecretFAB(
+                        onClick = { coroutineScope.launch { bottomState.show() }},
+                        showFAB = showFAB.value
+                    )
+                },
+                drawerContent = {
+                    NavigationDrawer(
+                        user = vm.user.value,
+                        scaffoldState = scaffoldState,
+                        coroutineScope = coroutineScope,
+                        navToSecrets = { innerNav.navigate("records") },
+                        navToProfile = { innerNav.navigate("profile") },
+                        Logout = {
+                            onLogOut()
                         }
                     )
-                    showFAB.value = false
+                },
+                drawerBackgroundColor = Charcoal,
+                modifier = Modifier.pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
                 }
-                composable("createSecret") {
-                    CreateSecretPage(
-                        token = vm.user.value?.token ?: "",
-                        onCreateSecret = {
-                            innerNav.navigate("records") {
-                                popUpTo("records")
+            ) {
+                NavHost(navController = innerNav, startDestination = "records") {
+                    composable("records") {
+                        RecordsView(recordsViewViewModel, vm)
+                        showFAB.value = true
+                        currentPage.value = PagesWithBottomSheet.HomePage
+                    }
+                    composable("profile") {
+                        Profile()
+                        showFAB.value = false
+                        currentPage.value = PagesWithBottomSheet.ProfilePage
+                    }
+                    composable("createPassword") {
+                        CreatePasswordPage(
+                            token = vm.user.value?.token ?: "",
+                            onCreatePasswordClick = {
+                                innerNav.navigate("records") {
+                                    popUpTo("records") { inclusive = true }
+                                }
                             }
-                        }
-                    )
-                    showFAB.value = false
+                        )
+                        showFAB.value = false
+                    }
+                    composable("createSecret") {
+                        CreateSecretPage(
+                            token = vm.user.value?.token ?: "",
+                            onCreateSecret = {
+                                innerNav.navigate("records") {
+                                    popUpTo("records")
+                                }
+                            }
+                        )
+                        showFAB.value = false
+                    }
                 }
             }
         }
     }
+    // TODO: Remove This Modal Bottom Sheet and implement one in every page that needs one
+
 }
 
 
