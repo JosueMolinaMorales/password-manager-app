@@ -64,7 +64,7 @@ fun RecordsView(
                 verticalArrangement = Arrangement.Top
             ) {
             itemsIndexed(recordsViewViewModel.records.value) { _, record ->
-                var title: String = ""
+                var title = ""
                 if (record.recordType == RecordType.Password){
                     title = record.service!!
                 } else if (record.recordType == RecordType.Secret){
