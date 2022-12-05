@@ -66,36 +66,36 @@ fun RecordsView(
             LazyColumn(
                 verticalArrangement = Arrangement.Top
             ) {
-            itemsIndexed(recordsViewViewModel.records.value) { _, record ->
-                var title = ""
-                if (record.recordType == RecordType.Password){
-                    title = record.service!!
-                } else if (record.recordType == RecordType.Secret){
-                    title = record.key!!
-                }
-                RecordRowView(
-                    /* Should send the object for this record eventually not Str*/
-                    onCardClick = {
-                        if (record.recordType == RecordType.Password) {
-                            showPasswordViewModel.show(record)
-                        } else {
-                            showSecretViewModel.show(record)
-                        }},
-                    onCopyToClipboardClick = {
-                        val clipData: ClipData? = if(record.recordType == RecordType.Secret) {
-                            ClipData.newPlainText("secret", record.secret)
-                        } else {
-                            ClipData.newPlainText("password", record.password)
-                        }
-                        clipboard.setPrimaryClip(clipData!!)
+                itemsIndexed(recordsViewViewModel.records.value) { _, record ->
+                    var title = ""
+                    if (record.recordType == RecordType.Password){
+                        title = record.service!!
+                    } else if (record.recordType == RecordType.Secret){
+                        title = record.key!!
+                    }
+                    RecordRowView(
+                        /* Should send the object for this record eventually not Str*/
+                        onCardClick = {
+                            if (record.recordType == RecordType.Password) {
+                                showPasswordViewModel.show(record)
+                            } else {
+                                showSecretViewModel.show(record)
+                            }},
+                        onCopyToClipboardClick = {
+                            val clipData: ClipData? = if(record.recordType == RecordType.Secret) {
+                                ClipData.newPlainText("secret", record.secret)
+                            } else {
+                                ClipData.newPlainText("password", record.password)
+                            }
+                            clipboard.setPrimaryClip(clipData!!)
 
-                    },
-                    onDeleteClick = {},
-                    onEditClick = {},
-                    title = title,
-                    recordType = record.recordType
-                )
-            }
+                        },
+                        onDeleteClick = {},
+                        onEditClick = {},
+                        title = title,
+                        recordType = record.recordType
+                    )
+                }
             }
         }
     }
