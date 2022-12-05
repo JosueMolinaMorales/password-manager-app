@@ -5,6 +5,6 @@ import okhttp3.Response
 
 interface IRecordNetwork {
     suspend fun createRecord(record: Record, token: String): Response
-    suspend fun fetchRecords(token: String, userId: String): List<Record>
+    suspend fun fetchRecords(token: String, userId: String): Response
 
 }
