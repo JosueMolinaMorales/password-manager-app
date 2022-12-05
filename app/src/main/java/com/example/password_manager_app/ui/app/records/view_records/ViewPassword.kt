@@ -74,7 +74,7 @@ fun ViewPassword(
                             ) {
                             Column {
                                 PasswordManagerTextField(
-                                    value = vm.record.value?.password!!,
+                                    value = vm.record.value?.password ?: vm.record.value?.secret!!,
                                     onValueChange = { },
                                     readOnly = true,
                                     label = { Text(text = "Password") },

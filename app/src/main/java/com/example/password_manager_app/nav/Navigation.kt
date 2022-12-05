@@ -1,5 +1,6 @@
 package com.example.password_manager_app.nav
 
+import android.content.ClipboardManager
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,7 +12,8 @@ import com.example.password_manager_app.ui.RegisterScreen
 
 @Composable
 fun PasswordManagerNavigation(
-    navController: NavHostController
+    navController: NavHostController,
+    clipboard: ClipboardManager
 ) {
     NavHost(navController = navController, startDestination = "homeScreen" ) {
         composable("login") {
@@ -45,7 +47,9 @@ fun PasswordManagerNavigation(
                 navController.navigate("login") {
                     popUpTo("mainScreen") { inclusive = true }
                 }
-            })
+            },
+                clipboard = clipboard
+            )
         }
     }
 }

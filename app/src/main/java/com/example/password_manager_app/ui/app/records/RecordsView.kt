@@ -1,6 +1,8 @@
 package com.example.password_manager_app.ui.app.records
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,7 +30,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun RecordsView(
     recordsViewViewModel: RecordsViewViewModel,
-    mainScreenViewModel: MainScreenViewModel
+    mainScreenViewModel: MainScreenViewModel,
+    clipboard: ClipboardManager
 ) {
     val showPasswordViewModel: ViewPasswordViewModel = viewModel()
     val showSecretViewModel: ViewSecretViewModel = viewModel()
@@ -78,7 +81,15 @@ fun RecordsView(
                         } else {
                             showSecretViewModel.show(record)
                         }},
-                    onCopyToClipboardClick = {},
+                    onCopyToClipboardClick = {
+                        val clipData: ClipData? = if(record.recordType == RecordType.Secret) {
+                            ClipData.newPlainText("secret", record.secret)
+                        } else {
+                            ClipData.newPlainText("password", record.password)
+                        }
+                        clipboard.setPrimaryClip(clipData!!)
+
+                    },
                     onDeleteClick = {},
                     onEditClick = {},
                     title = title,

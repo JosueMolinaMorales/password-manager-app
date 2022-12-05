@@ -1,6 +1,7 @@
 package com.example.password_manager_app.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipboardManager
 import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -46,7 +47,8 @@ import com.example.password_manager_app.ui.theme.LavenderBlush
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
-    onLogOut: () -> Unit
+    onLogOut: () -> Unit,
+    clipboard: ClipboardManager
 ) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
@@ -124,7 +126,7 @@ fun MainScreen(
             ) {
                 NavHost(navController = innerNav, startDestination = "records") {
                     composable("records") {
-                        RecordsView(recordsViewViewModel, vm)
+                        RecordsView(recordsViewViewModel, vm, clipboard = clipboard)
                         showFAB.value = true
                         currentPage.value = PagesWithBottomSheet.HomePage
                     }

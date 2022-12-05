@@ -1,5 +1,8 @@
 package com.example.password_manager_app
 
+import android.annotation.SuppressLint
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,17 +11,13 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.password_manager_app.nav.PasswordManagerNavigation
-import com.example.password_manager_app.ui.HomeScreen
 import com.example.password_manager_app.ui.LoginScreen
-import com.example.password_manager_app.ui.MainScreen
-import com.example.password_manager_app.ui.RegisterScreen
 import com.example.password_manager_app.ui.theme.PasswordmanagerappTheme
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,7 +28,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    PasswordManagerNavigation(navController = navController)
+                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+                    PasswordManagerNavigation(navController = navController, clipboard = clipboard)
                 }
             }
         }
