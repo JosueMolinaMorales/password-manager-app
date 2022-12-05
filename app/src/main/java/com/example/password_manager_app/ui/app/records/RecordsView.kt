@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,7 +29,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RecordsView(
-    onEditClick: (RecordType) -> Unit,
+    onEditClick: (RecordType, String) -> Unit,
     recordsViewViewModel: RecordsViewViewModel,
     mainScreenViewModel: MainScreenViewModel,
     clipboard: ClipboardManager
@@ -88,7 +90,9 @@ fun RecordsView(
 
                         },
                         onDeleteClick = {},
-                        onEditClick = {},
+                        onEditClick = { recordType ->
+                            onEditClick(recordType, record.id!!)
+                        },
                         title = title,
                         recordType = record.recordType
                     )

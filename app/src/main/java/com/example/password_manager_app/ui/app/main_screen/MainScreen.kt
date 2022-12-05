@@ -128,11 +128,11 @@ fun MainScreen(
                 NavHost(navController = innerNav, startDestination = "records") {
                     composable("records") {
                         RecordsView(
-                            onEditClick = { recordType ->
+                            onEditClick = { recordType, recordId ->
                                 if (recordType == RecordType.Secret) {
-                                    innerNav.navigate("createSecret/update")
+                                    innerNav.navigate("createSecret/update/$recordId")
                                 } else {
-                                    innerNav.navigate("createPassword/update")
+                                    innerNav.navigate("createPassword/update/$recordId")
                                 }
                             },
                             recordsViewViewModel = recordsViewViewModel,
@@ -147,8 +147,11 @@ fun MainScreen(
                         currentPage.value = PagesWithBottomSheet.ProfilePage
                     }
                     composable(
-                        route = "createPassword/{action}",
-                        arguments = listOf(navArgument("action") { type =  NavType.StringType })
+                        route = "createPassword/{action}/{recordId}",
+                        arguments = listOf(
+                            navArgument("action") { type =  NavType.StringType },
+                            navArgument("recordId") { type = NavType.StringType }
+                        )
                     ) { navBackStack ->
                         CreateUpdatePasswordPage(
                             token = vm.user.value?.token ?: "",
@@ -162,14 +165,17 @@ fun MainScreen(
                             } else {
                                 ActionOnRecord.Update
                             },
-                            recordId = "638b8bba27d7b9da05b3b719", // TODO Change this
+                            recordId = navBackStack.arguments?.getString("recordId")
                         )
                         showFAB.value = false
 
                     }
                     composable(
-                        route = "createSecret/{action}",
-                        arguments = listOf(navArgument("action") { type =  NavType.StringType })
+                        route = "createSecret/{action}/{recordId}",
+                        arguments = listOf(
+                            navArgument("action") { type =  NavType.StringType },
+                            navArgument("recordId") { type = NavType.StringType }
+                        )
                     ) { navBackStack ->
                         CreateSecretPage(
                             token = vm.user.value?.token ?: "",
@@ -183,7 +189,7 @@ fun MainScreen(
                             } else {
                                 ActionOnRecord.Update
                             },
-                            recordId = "638664aa694ab33a12a05110", // TODO Change this
+                            recordId = navBackStack.arguments?.getString("recordId")
                         )
                         showFAB.value = false
                     }

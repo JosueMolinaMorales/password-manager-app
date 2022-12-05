@@ -14,6 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.components.OutlinedPasswordManagerButton
 import com.example.password_manager_app.ui.components.PasswordManagerTextField
@@ -22,10 +24,9 @@ import com.example.password_manager_app.ui.theme.PewterBlue
 
 @Composable
 fun ViewPassword(
-    ViewPasswordViewModel: ViewPasswordViewModel,
-    onEditClick: (RecordType) -> Unit
+    vm: ViewPasswordViewModel,
+    onEditClick: (RecordType, String) -> Unit
 ) {
-    val showPassword: MutableState<Boolean> = remember { mutableStateOf(false) }
     val show by vm.show
     if(show){
         AlertDialog(
@@ -54,7 +55,9 @@ fun ViewPassword(
                         )
                     }
                     Column(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -81,16 +84,16 @@ fun ViewPassword(
                                     readOnly = true,
                                     label = { Text(text = "Password") },
                                     trailingIcon = { IconToggleButton(
-                                        checked = showPassword.value,
-                                        onCheckedChange = { showPassword.value = !showPassword.value }
+                                        checked = vm.showPasswordValue.value,
+                                        onCheckedChange = vm::toggleShowPasswordValue
                                     ) {
-                                        if (showPassword.value) {
+                                        if (vm.showPasswordValue.value) {
                                             Icon(Icons.Filled.Visibility, "")
                                         } else {
                                             Icon(Icons.Filled.VisibilityOff, "")
                                         }
                                     }},
-                                    hideText = !showPassword.value
+                                    hideText = !vm.showPasswordValue.value
                                 )
                             }
                         }
@@ -105,7 +108,7 @@ fun ViewPassword(
                 ) {
                     OutlinedPasswordManagerButton(
                         modifier = Modifier.width(200.dp),
-                        onClick = { onEditClick(RecordType.Password) },
+                        onClick = { onEditClick(RecordType.Password, vm.record.value?.id!!) },
                         border = BorderStroke(1.dp, Color.Black)
                     ) {
                         Text(text = "Edit", fontSize = 15.sp)

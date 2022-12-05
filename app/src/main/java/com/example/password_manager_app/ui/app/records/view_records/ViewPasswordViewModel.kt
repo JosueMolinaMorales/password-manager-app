@@ -14,6 +14,9 @@ class ViewPasswordViewModel: ViewModel() {
     private val _record: MutableState<Record?> = mutableStateOf(null)
     val record: State<Record?> = _record
 
+    private val _showPasswordValue: MutableState<Boolean> = mutableStateOf(false)
+    val showPasswordValue: State<Boolean> = _showPasswordValue
+
     fun show(record: Record) {
         _record.value = record
         _showPasswordView.value = true
@@ -21,5 +24,10 @@ class ViewPasswordViewModel: ViewModel() {
 
     fun hide() {
         _showPasswordView.value = false
+        _showPasswordValue.value = false
+    }
+
+    fun toggleShowPasswordValue(newValue: Boolean) {
+        _showPasswordValue.value = !_showPasswordValue.value
     }
 }

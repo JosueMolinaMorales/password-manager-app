@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.password_manager_app.R
 import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.components.OutlinedPasswordManagerButton
@@ -25,11 +26,10 @@ import com.example.password_manager_app.ui.theme.PewterBlue
 
 @Composable
 fun ViewSecret(
-    viewSecretViewModel: ViewSecretViewModel,
-    onEditClick: (RecordType) -> Unit
+    vm: ViewSecretViewModel,
+    onEditClick: (RecordType, String) -> Unit
 ) {
     val show by vm.show
-    val showSecret: MutableState<Boolean> = remember { mutableStateOf(false) }
 
     if (show) {
         AlertDialog(
@@ -75,17 +75,17 @@ fun ViewSecret(
                                 enabled = false,
                                 label = { Text(text = "Secret") },
                                 trailingIcon = { IconToggleButton(
-                                    checked = showSecret.value,
-                                    onCheckedChange = { showSecret.value = !showSecret.value }
+                                    checked = vm.showSecretValue.value,
+                                    onCheckedChange = vm::toggleShowSecretValue
                                 ) {
-                                    if (showSecret.value) {
+                                    if (vm.showSecretValue.value) {
                                         Icon(Icons.Filled.Visibility, "")
                                     } else {
                                         Icon(Icons.Filled.VisibilityOff, "")
                                     }
                                 }
                                 },
-                                hideText = !showSecret.value
+                                hideText = !vm.showSecretValue.value
                             )
                         }
                     }
@@ -99,7 +99,7 @@ fun ViewSecret(
                 ) {
                     OutlinedPasswordManagerButton(
                         modifier = Modifier.width(200.dp),
-                        onClick = { onEditClick(RecordType.Secret) },
+                        onClick = { onEditClick(RecordType.Secret, vm.record.value?.id!!) },
                         border = BorderStroke(1.dp, Color.Black)
                     ) {
                         Text(text = "Edit", fontSize = 15.sp)
