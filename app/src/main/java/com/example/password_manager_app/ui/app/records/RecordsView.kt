@@ -37,9 +37,32 @@ fun RecordsView(
 ) {
     val showPasswordViewModel: ViewPasswordViewModel = viewModel()
     val showSecretViewModel: ViewSecretViewModel = viewModel()
-    ViewPassword(showPasswordViewModel, onEditClick = onEditClick)
-    ViewSecret(showSecretViewModel, onEditClick = onEditClick)
-    val coroutineScope = rememberCoroutineScope { Dispatchers.IO }
+    ViewPassword(
+        vm = showPasswordViewModel,
+        onEditClick = onEditClick,
+        onDeleteClick = {
+            recordsViewModel.deleteRecord(
+                recordId = showPasswordViewModel.record.value?.id!!,
+                token = mainScreenViewModel.user.value?.token!!,
+                userId = mainScreenViewModel.user.value?.id!!,
+                onSuccess = { showPasswordViewModel.hide() },
+                onError = {}
+            )
+        }
+    )
+    ViewSecret(
+        vm = showSecretViewModel,
+        onEditClick = onEditClick,
+        onDeleteClick = {
+            recordsViewModel.deleteRecord(
+                recordId = showSecretViewModel.record.value?.id!!,
+                token = mainScreenViewModel.user.value?.token!!,
+                userId = mainScreenViewModel.user.value?.id!!,
+                onSuccess = { showSecretViewModel.hide() },
+                onError = {}
+            )
+        }
+    )
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top
@@ -102,7 +125,21 @@ fun RecordsView(
                             clipboard.setPrimaryClip(clipData!!)
 
                         },
-                        onDeleteClick = {},
+                        onDeleteClick = {
+                            recordsViewModel.deleteRecord(
+                                recordId = record.id!!,
+                                token = mainScreenViewModel.user.value?.token!!,
+                                userId = mainScreenViewModel.user.value?.id!!,
+                                onError = {},
+                                onSuccess = {
+                                    if (record.recordType == RecordType.Password) {
+                                        showPasswordViewModel.hide()
+                                    } else {
+                                        showSecretViewModel.hide()
+                                    }
+                                }
+                            )
+                        },
                         onEditClick = { recordType ->
                             onEditClick(recordType, record.id!!)
                         },

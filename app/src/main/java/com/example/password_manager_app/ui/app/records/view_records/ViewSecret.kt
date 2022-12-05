@@ -27,7 +27,8 @@ import com.example.password_manager_app.ui.theme.PewterBlue
 @Composable
 fun ViewSecret(
     vm: ViewSecretViewModel,
-    onEditClick: (RecordType, String) -> Unit
+    onEditClick: (RecordType, String) -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     val show by vm.show
 
@@ -106,7 +107,7 @@ fun ViewSecret(
                     }
                     OutlinedPasswordManagerButton(
                         modifier = Modifier.width(200.dp),
-                        onClick = { /*TODO*/ },
+                        onClick = onDeleteClick,
                         border = BorderStroke(1.dp, Color.Black)
                     ) {
                         Text(text = "Delete", fontSize = 15.sp)

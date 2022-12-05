@@ -75,4 +75,16 @@ class RecordNetwork: IRecordNetwork {
             }
         }
     }
+
+    override suspend fun deleteRecord(token: String, recordId: String): Response {
+        return withContext(Dispatchers.IO) {
+            val request = Request.Builder()
+                .url("${Routes.PasswordManagerRoute.route}/record/$recordId")
+                .delete()
+                .addHeader("Authorization", "Bearer $token")
+                .build()
+            val response = client.newCall(request).execute()
+            response
+        }
+    }
 }
