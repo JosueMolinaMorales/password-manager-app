@@ -14,16 +14,23 @@ class RecordsViewViewModel: ViewModel() {
     private val _records: MutableState<List<Record>> = mutableStateOf(listOf())
     var records: State<List<Record>> = _records
 
-    val recNet: RecordNetwork = RecordNetwork()
+    private val recNet: RecordNetwork = RecordNetwork()
 
-    suspend fun fetchRecords(token: String, userId: String) {
-       val response = recNet.fetchRecords(token, userId)
-        val gson = Gson()
-        val listType: Type = object: TypeToken<List<Record>>() {}.type
-        if(response.body != null) {
-            _records.value = gson.fromJson(response.body!!.string(), listType)
-        } else {
-            _records.value = listOf()
+    suspend fun fetchRecords(token: String, userId: String, onUnsuccessfulLogin: (String) -> Unit) {
+        val response = recNet.fetchRecords(token, userId)
+        when (response.code) {
+            200 -> {
+                val gson = Gson()
+                val listType: Type = object: TypeToken<List<Record>>() {}.type
+                if(response.body != null) {
+                    _records.value = gson.fromJson(response.body!!.string(), listType)
+                } else {
+                    _records.value = listOf()
+                }
+            }
+            else -> {
+                onUnsuccessfulLogin("Internal Service Error, Please Try Again Later")
+            }
         }
     }
 }
