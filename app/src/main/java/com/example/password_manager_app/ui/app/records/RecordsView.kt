@@ -12,10 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.password_manager_app.model.RecordType
-import com.example.password_manager_app.data.getRandomStreamingService
 import com.example.password_manager_app.ui.app.records.record_row.RecordRowView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
 import com.example.password_manager_app.ui.app.records.view_records.ViewPassword
 import com.example.password_manager_app.ui.app.records.view_records.ViewPasswordViewModel
@@ -74,7 +72,6 @@ fun RecordsView(
                         title = record.key!!
                     }
                     RecordRowView(
-                        /* Should send the object for this record eventually not Str*/
                         onCardClick = {
                             if (record.recordType == RecordType.Password) {
                                 showPasswordViewModel.show(record)

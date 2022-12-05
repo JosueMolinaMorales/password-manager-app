@@ -48,4 +48,5 @@ fun DefaultPreview() {
 /**
  * Loading Images: https://developer.android.com/jetpack/compose/graphics/images/loading
  * Navigation: https://developer.android.com/jetpack/compose/navigation
+ * Clipboard: https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#kotlin
  */
