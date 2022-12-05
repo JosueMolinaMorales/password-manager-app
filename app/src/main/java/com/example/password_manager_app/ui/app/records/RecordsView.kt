@@ -7,11 +7,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.app.records.record_row.RecordRowView
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RecordsView(
     onEditClick: (RecordType, String) -> Unit,
-    recordsViewViewModel: RecordsViewViewModel,
+    recordsViewModel: RecordsViewViewModel,
     mainScreenViewModel: MainScreenViewModel,
     clipboard: ClipboardManager
 ) {
@@ -38,19 +39,19 @@ fun RecordsView(
     val showSecretViewModel: ViewSecretViewModel = viewModel()
     ViewPassword(showPasswordViewModel, onEditClick = onEditClick)
     ViewSecret(showSecretViewModel, onEditClick = onEditClick)
-    val coroutineScope = CoroutineScope(Dispatchers.IO)
+    val coroutineScope = rememberCoroutineScope { Dispatchers.IO }
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top
     ) {
-        coroutineScope.launch {
-            recordsViewViewModel.fetchRecords(
+        LaunchedEffect(key1 = recordsViewModel.records.value,){
+            recordsViewModel.fetchRecords(
                 mainScreenViewModel.user.value?.token!!,
                 mainScreenViewModel.user.value?.id!!
             )
         }
 
-        if(recordsViewViewModel.records.value.isEmpty()) {
+        if(recordsViewModel.records.value.isEmpty() && recordsViewModel.isFetchingRecords.value) {
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -62,11 +63,23 @@ fun RecordsView(
                         .padding(10.dp)
                 )
             }
-        }else {
+        } else if (recordsViewModel.records.value.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "No Records Found!",
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        } else {
             LazyColumn(
                 verticalArrangement = Arrangement.Top
             ) {
-                itemsIndexed(recordsViewViewModel.records.value) { _, record ->
+                itemsIndexed(recordsViewModel.records.value) { _, record ->
                     var title = ""
                     if (record.recordType == RecordType.Password){
                         title = record.service!!

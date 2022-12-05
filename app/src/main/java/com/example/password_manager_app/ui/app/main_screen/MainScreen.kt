@@ -68,13 +68,13 @@ fun MainScreen(
             sheetContent = {
                 BottomSheetComponent(
                     onCreatePasswordClick = {
-                        innerNav.navigate("createPassword/create")
+                        innerNav.navigate("createPassword/create/new")
                         coroutineScope.launch {
                             bottomState.hide()
                         }
                     },
                     onCreateSecretClick = {
-                        innerNav.navigate("createSecret/create")
+                        innerNav.navigate("createSecret/create/new")
                         coroutineScope.launch {
                             bottomState.hide()
                         }
@@ -135,7 +135,7 @@ fun MainScreen(
                                     innerNav.navigate("createPassword/update/$recordId")
                                 }
                             },
-                            recordsViewViewModel = recordsViewViewModel,
+                            recordsViewModel = recordsViewViewModel,
                             mainScreenViewModel = vm,
                             clipboard = clipboard
                         )
