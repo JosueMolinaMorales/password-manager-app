@@ -54,8 +54,20 @@ fun RegisterScreen(
     val showPassword: MutableState<Boolean> = remember { mutableStateOf(true) }
     val showConfirmPassword: MutableState<Boolean> = remember { mutableStateOf(true) }
 
+    fun onRegister() {
+        errorMsg.value = registerViewModel.validate()
+        if (errorMsg.value == null) {
+            // no error message, make register request
+            registerViewModel.register(
+                onSuccessfulRegistration = onNavigateToMainScreen,
+                onUnsuccessfulRegistration = {
+                    errorMsg.value = registerViewModel.registerErrorMsg.value
+                }
+            )
+        }
+    }
     LazyColumn(
-        modifier = Modifier.fillMaxWidth().zIndex(0F),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(1) {
@@ -72,7 +84,8 @@ fun RegisterScreen(
                 )
                 Image(
                     painter = painterResource(id = R.drawable.koalalogo),
-                    contentDescription = ""
+                    contentDescription = "",
+                    modifier = Modifier.fillMaxSize(.3F)
                 )
             }
             PasswordManagerTextField(
@@ -130,21 +143,14 @@ fun RegisterScreen(
                 modifier = Modifier.padding(8.dp),
                 hideText = showConfirmPassword.value,
                 isHiddenField = true,
-                onTrailingIconClick = { showConfirmPassword.value = !showConfirmPassword.value }
+                onTrailingIconClick = { showConfirmPassword.value = !showConfirmPassword.value },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
+                keyboardActions = KeyboardActions(
+                    onGo = { onRegister() }
+                )
             )
             PasswordManagerButton(
-                onClick = {
-                    errorMsg.value = registerViewModel.validate()
-                    if (errorMsg.value == null) {
-                        // no error message, make register request
-                        registerViewModel.register(
-                            onSuccessfulRegistration = onNavigateToMainScreen,
-                            onUnsuccessfulRegistration = {
-                                errorMsg.value = registerViewModel.registerErrorMsg.value
-                            }
-                        )
-                    }
-                },
+                onClick = { onRegister() },
                 enabled = !registerViewModel.makingRequest.value
             ) {
                 if (registerViewModel.makingRequest.value) {
@@ -163,7 +169,9 @@ fun RegisterScreen(
     }
     if (errorMsg.value != null) {
         PasswordManagerSnackbar(
-            modifier = Modifier.padding(8.dp).zIndex(1F),
+            modifier = Modifier
+                .padding(8.dp)
+                .zIndex(1F),
             action = {
                 PasswordManagerButton(onClick = { errorMsg.value = null }) {
                     Text("Confirm")

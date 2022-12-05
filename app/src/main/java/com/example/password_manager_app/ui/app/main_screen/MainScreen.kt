@@ -52,6 +52,7 @@ fun MainScreen(
     val currentPage = remember { mutableStateOf(PagesWithBottomSheet.HomePage) }
     val vm: MainScreenViewModel = viewModel()
 
+    // TODO: Remove This Modal Bottom Sheet and implement one in every page that needs one
     ModalBottomSheetLayout(
         sheetContent = {
             BottomSheetComponent(
@@ -126,17 +127,14 @@ fun MainScreen(
                 }
                 composable("createPassword") {
                     CreatePasswordPage(
+                        token = vm.user.value?.token ?: "",
                         onCreatePasswordClick = {
-                            innerNav.navigate("records")
-                        },
-                        onGeneratePasswordClick = {
-                            coroutineScope.launch {
-                                bottomState.show()
+                            innerNav.navigate("records") {
+                                popUpTo("records") { inclusive = true }
                             }
                         }
                     )
                     showFAB.value = false
-                    currentPage.value = PagesWithBottomSheet.CreatePasswordPage
                 }
                 composable("createSecret") {
                     CreateSecretPage(
