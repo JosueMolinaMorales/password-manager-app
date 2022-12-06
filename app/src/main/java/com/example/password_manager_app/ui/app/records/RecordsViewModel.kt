@@ -8,6 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.network.app.record.RecordNetwork
 import kotlinx.coroutines.launch
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 class RecordsViewModel: ViewModel() {
     private val _isFetchingRecords: MutableState<Boolean> = mutableStateOf(false)
@@ -28,7 +31,7 @@ class RecordsViewModel: ViewModel() {
     private val _records: MutableState<List<Record>> = mutableStateOf(listOf())
     var records: State<List<Record>> = _records
 
-    val recNet: RecordNetwork = RecordNetwork()
+    private val recNet: RecordNetwork = RecordNetwork()
 
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
@@ -62,7 +65,7 @@ class RecordsViewModel: ViewModel() {
             when (res.code) {
                 204 -> {
                     onSuccess()
-                    fetchRecords(token = token, userId = userId)
+                    fetchRecords(token = token, userId = userId, {})
                 }
                 else -> onError()
             }
@@ -90,4 +93,23 @@ class RecordsViewModel: ViewModel() {
             }
         }
     }
+    
+    suspend fun fetchRecords(token: String, userId: String, onUnsuccessfulLogin: (String) -> Unit) {
+        val response = recNet.fetchRecords(token, userId)
+        when (response.code) {
+            200 -> {
+                val gson = Gson()
+                val listType: Type = object: TypeToken<List<Record>>() {}.type
+                if(response.body != null) {
+                    _records.value = gson.fromJson(response.body!!.string(), listType)
+                } else {
+                    _records.value = listOf()
+                }
+            }
+            else -> {
+                onUnsuccessfulLogin("Internal Service Error, Please Try Again Later")
+            }
+        }
+    }
+    
 }

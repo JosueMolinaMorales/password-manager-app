@@ -19,7 +19,6 @@ import java.lang.reflect.Type
 class RecordNetwork: IRecordNetwork {
     private val client = OkHttpClient()
 
-
     override suspend fun createRecord(record: Record, token: String): Response {
         return withContext(Dispatchers.IO) {
             val requestBody = Gson().toJson(record).toRequestBody()
@@ -56,8 +55,8 @@ class RecordNetwork: IRecordNetwork {
             response
         }
     }
-    
-    override suspend fun fetchRecords(token: String, userId: String): List<Record> {
+
+    override suspend fun fetchRecords(token: String, userId: String): Response {
         return withContext(Dispatchers.IO) {
             val request = Request.Builder()
                 .url("${Routes.PasswordManagerRoute.route}/record/${userId}/all")
@@ -65,14 +64,7 @@ class RecordNetwork: IRecordNetwork {
                 .get()
                 .build()
             val response = client.newCall(request).execute()
-            val gson = Gson()
-            val listType: Type = object: TypeToken<List<Record>>() {}.type
-            if(response.body != null) {
-                val list = gson.fromJson<List<Record>>(response.body!!.string(), listType)
-                list
-            } else {
-                listOf()
-            }
+            response
         }
     }
 

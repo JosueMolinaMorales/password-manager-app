@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import androidx.compose.ui.zIndex
 import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.app.records.record_row.RecordRowView
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,6 +35,12 @@ import com.example.password_manager_app.ui.app.records.view_records.ViewSecret
 import com.example.password_manager_app.ui.app.records.view_records.ViewSecretViewModel
 import com.example.password_manager_app.ui.components.PasswordManagerTextField
 import com.example.password_manager_app.ui.theme.Opal
+import com.example.password_manager_app.ui.components.PasswordManagerButton
+import com.example.password_manager_app.ui.components.PasswordManagerSnackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -150,6 +157,7 @@ fun RecordList(
     showSecretViewModel: ViewSecretViewModel,
     clipboard: ClipboardManager
 ) {
+    val errorMsg: MutableState<String?> = remember { mutableStateOf(null) }
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top
@@ -157,7 +165,10 @@ fun RecordList(
         LaunchedEffect(key1 = recordsViewModel.records.value,){
             recordsViewModel.fetchRecords(
                 mainScreenViewModel.user.value?.token!!,
-                mainScreenViewModel.user.value?.id!!
+                mainScreenViewModel.user.value?.id!!,
+                onUnsuccessfulLogin = { msg ->
+                    errorMsg.value = msg
+                }
             )
         }
 
@@ -233,6 +244,22 @@ fun RecordList(
                         title = title,
                         recordType = record.recordType
                     )
+                }
+            }
+        }
+        if (errorMsg.value != null) {
+            PasswordManagerSnackbar(
+                modifier = Modifier.padding(8.dp).zIndex(1F),
+                action = {
+                    PasswordManagerButton(onClick = { errorMsg.value = null }) {
+                        Text(text = "Confirm")
+                    }
+                }
+            ) {
+                Text(text = errorMsg.value ?: "An Error Occurred")
+                LaunchedEffect(key1 = errorMsg.value) {
+                    delay(5000)
+                    errorMsg.value = null
                 }
             }
         }
