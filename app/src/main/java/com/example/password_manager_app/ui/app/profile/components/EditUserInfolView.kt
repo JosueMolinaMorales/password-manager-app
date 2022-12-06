@@ -29,21 +29,19 @@ import com.example.password_manager_app.ui.theme.LavenderBlush
 import kotlinx.coroutines.delay
 
 @Composable
-fun EditUserInfoView(selection: EditProfileSelection, user: User?, onEditChange: () -> Unit) {
+fun EditUserInfoView(selection: EditProfileSelection, user: User?, onEditChange: (User) -> Unit) {
     val editUserViewModel: EditUserInfoViewModel = viewModel()
     when(selection){
         EditProfileSelection.Email -> {
             ChangeEmailView(
                 editUserViewModel = editUserViewModel,
                 onEditChange = onEditChange,
-                user = user
             )
         }
         EditProfileSelection.Password -> {
             ChangePasswordView(
                 editUserViewModel = editUserViewModel,
                 onEditChange = onEditChange,
-                user = user
             )
         }
     }
@@ -52,14 +50,12 @@ fun EditUserInfoView(selection: EditProfileSelection, user: User?, onEditChange:
 
 
 @Composable
-fun ChangePasswordView(editUserViewModel: EditUserInfoViewModel, user: User?, onEditChange: () -> Unit) {
+fun ChangePasswordView(editUserViewModel: EditUserInfoViewModel, onEditChange: (User) -> Unit) {
     val focusManager: FocusManager = LocalFocusManager.current
     val errorMsg: MutableState<String?> = remember { mutableStateOf(null)}
     val showPassword: MutableState<Boolean> = remember { mutableStateOf(true) }
     val showNewPassword: MutableState<Boolean> = remember { mutableStateOf(true) }
     val showConfirmPassword: MutableState<Boolean> = remember { mutableStateOf(true)}
-
-
 
     Column(
         Modifier
@@ -120,13 +116,12 @@ fun ChangePasswordView(editUserViewModel: EditUserInfoViewModel, user: User?, on
             errorMsg.value = editUserViewModel.validatePassword()
             if (errorMsg.value == null){
                 editUserViewModel.updateInfo(
-                    onSuccessfulUpdate = {
-                        onEditChange()
+                    onSuccessfulUpdate = { newUser ->
+                        onEditChange(newUser)
                     },
                     onUnsuccessfulUpdate = {
                         errorMsg.value = editUserViewModel.updateErrorMsg.value
                     },
-                    user
                 )
             }
             }
@@ -155,7 +150,7 @@ fun ChangePasswordView(editUserViewModel: EditUserInfoViewModel, user: User?, on
 }
 
 @Composable
-fun ChangeEmailView(editUserViewModel: EditUserInfoViewModel, onEditChange: () -> Unit, user: User?) {
+fun ChangeEmailView(editUserViewModel: EditUserInfoViewModel, onEditChange: (User) -> Unit,) {
     val focusManager: FocusManager = LocalFocusManager.current
     val errorMsg: MutableState<String?> = remember { mutableStateOf(null)}
     val showPassword: MutableState<Boolean> = remember { mutableStateOf(true) }
@@ -198,13 +193,12 @@ fun ChangeEmailView(editUserViewModel: EditUserInfoViewModel, onEditChange: () -
             errorMsg.value = editUserViewModel.validateEmail()
             if (errorMsg.value == null){
                 editUserViewModel.updateInfo(
-                    onSuccessfulUpdate = {
-                        onEditChange()
+                    onSuccessfulUpdate = { user ->
+                        onEditChange(user)
                     },
                     onUnsuccessfulUpdate = {
                         errorMsg.value = editUserViewModel.updateErrorMsg.value
                     },
-                    user
                 )
             }
         }

@@ -138,11 +138,11 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
     }
 
     fun updateInfo(
-        onSuccessfulUpdate: () -> Unit,
+        onSuccessfulUpdate: (User) -> Unit,
         onUnsuccessfulUpdate: () -> Unit,
-        user: User?
     ) {
         viewModelScope.launch {
+            val user: User? = userDb.userDao().getUser()
             _makingRequest.value = true
             val response = userNetwork.update(UpdateForm(
                 email = if(_email.value == "") {null} else {_email.value.trim()},
@@ -151,25 +151,22 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
                 token = user?.token ?: "",
                 user_id = user?.id ?: ""
             ))
-            val newUser: User? = user
             _makingRequest.value = false
             val body = response.body?.string()
             when (response.code) {
                 204 -> {
+                    val newUser = User(
+                        email = if (_email.value != "") { _email.value } else { user?.email!! },
+                        token = user?.token ?: "",
+                        id = user?.id ?: "",
+                        name = user?.name ?: "",
+                        username = user?.username ?: ""
+                    )
                     if (user != null) {
                         userDb.userDao().deleteUsers()
-                        userDb.userDao().insertUser(
-                            User(
-                            email =
-                            if (_email.value != "") { _email.value } else { user.email },
-                                token = newUser?.token ?: "",
-                                id = newUser?.id ?: "",
-                                name = newUser?.name ?: "",
-                                username = newUser?.username ?: ""
-                        )
-                        )
+                        userDb.userDao().insertUser(newUser)
                     }
-                    onSuccessfulUpdate()
+                    onSuccessfulUpdate(newUser)
                 }
                 400 -> {
                     val errorBody = Gson().fromJson(body, ErrorResponse::class.java)

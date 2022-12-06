@@ -27,20 +27,24 @@ enum class EditProfileSelection{
 @Composable
 fun Profile(
     user: User,
-    onEditEmailClick: () -> Unit,
-    onChangePasswordClick: () -> Unit,
-    onEditChange: () -> Unit
+    onEditChange: (User) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val selection = remember { mutableStateOf(EditProfileSelection.Password) }
     val bottomState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-
-
-
     ModalBottomSheetLayout(
         sheetContent = {
-            EditUserInfoView(selection.value, user, onEditChange)
+            EditUserInfoView(
+                selection = selection.value,
+                user = user,
+                onEditChange = { user ->
+                    coroutineScope.launch {
+                        bottomState.hide()
+                    }
+                    onEditChange(user)
+                }
+            )
         },
         sheetState = bottomState,
         sheetBackgroundColor = Charcoal,

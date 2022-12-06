@@ -26,4 +26,8 @@ class MainScreenViewModel(app: Application): AndroidViewModel(app) {
             _user.value = db.userDao().getUser()
         }
     }
+
+    fun updateUser(newUser: User) {
+        _user.value = newUser
+    }
 }
