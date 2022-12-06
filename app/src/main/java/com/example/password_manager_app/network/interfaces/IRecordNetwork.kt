@@ -10,4 +10,5 @@ interface IRecordNetwork {
     suspend fun updateRecord(recordId: String, token: String, updatedRecord: UpdateRecord): Response
     suspend fun fetchRecords(token: String, userId: String): List<Record>
     suspend fun deleteRecord(token: String, recordId: String): Response
+    suspend fun searchRecord(token: String, userId: String, query: String): Response
 }

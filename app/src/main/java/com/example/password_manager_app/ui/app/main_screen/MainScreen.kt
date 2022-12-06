@@ -2,8 +2,6 @@ package com.example.password_manager_app.ui
 
 import android.annotation.SuppressLint
 import android.content.ClipboardManager
-import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -37,7 +35,7 @@ import com.example.password_manager_app.ui.app.records.create_update_secret.Crea
 import com.example.password_manager_app.ui.components.BottomSheetComponent
 import com.example.password_manager_app.ui.app.records.RecordsView
 import com.example.password_manager_app.ui.app.records.create_update_password.CreateUpdatePasswordPage
-import com.example.password_manager_app.ui.app.records.RecordsViewViewModel
+import com.example.password_manager_app.ui.app.records.RecordsViewModel
 import com.example.password_manager_app.ui.components.NavigationDrawer
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.TopBarOpal
@@ -59,7 +57,7 @@ fun MainScreen(
     val showFAB = remember { mutableStateOf(true) }
     val currentPage = remember { mutableStateOf(PagesWithBottomSheet.HomePage) }
     val vm: MainScreenViewModel = viewModel()
-    val recordsViewViewModel: RecordsViewViewModel = viewModel()
+    val recordsViewModel: RecordsViewModel = viewModel()
 
     if(vm.user.value == null) {
         CircularProgressIndicator()
@@ -135,7 +133,7 @@ fun MainScreen(
                                     innerNav.navigate("createPassword/update/$recordId")
                                 }
                             },
-                            recordsViewModel = recordsViewViewModel,
+                            recordsViewModel = recordsViewModel,
                             mainScreenViewModel = vm,
                             clipboard = clipboard
                         )

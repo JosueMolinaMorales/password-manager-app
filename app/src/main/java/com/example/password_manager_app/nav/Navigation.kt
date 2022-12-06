@@ -15,7 +15,7 @@ fun PasswordManagerNavigation(
     navController: NavHostController,
     clipboard: ClipboardManager
 ) {
-    NavHost(navController = navController, startDestination = "homeScreen" ) {
+    NavHost(navController = navController, startDestination = "mainScreen" ) {
         composable("login") {
             LoginScreen(
                 onNavigateToMainScreen = {
