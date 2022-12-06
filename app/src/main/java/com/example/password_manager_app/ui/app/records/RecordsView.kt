@@ -56,6 +56,8 @@ fun RecordsView(
     val showFilterDropDown: MutableState<Boolean> = remember {
         mutableStateOf(false)
     }
+    val errorMsg: MutableState<String?> = remember { mutableStateOf(null) }
+
     ViewPassword(
         vm = showPasswordViewModel,
         onEditClick = onEditClick,
@@ -96,7 +98,16 @@ fun RecordsView(
         ) {
             PasswordManagerTextField(
                 value = recordsViewModel.searchQuery.value,
-                onValueChange = recordsViewModel::setSearchQuery,
+                onValueChange = { query ->
+                    recordsViewModel.searchRecord(
+                        query = query,
+                        userId = mainScreenViewModel.user.value?.id!!,
+                        token = mainScreenViewModel.user.value?.token!!,
+                        onError = {
+                            errorMsg.value = it
+                        }
+                    )
+                },
                 trailingIcon = { Image(Icons.Outlined.Search, contentDescription = "") },
                 modifier = Modifier.fillMaxWidth(.85F),
                 placeholder = { Text(text = "Search Records...") }
@@ -117,7 +128,17 @@ fun RecordsView(
                     expanded = showFilterDropDown.value,
                     onDismissRequest = { showFilterDropDown.value = false },
                 ) {
-                    DropdownMenuItem(onClick = recordsViewModel::toggleSecretFilter) {
+                    DropdownMenuItem(onClick = {
+                        recordsViewModel.toggleFilter(
+                            recordType = RecordType.Secret,
+                            query = recordsViewModel.searchQuery.value,
+                            userId = mainScreenViewModel.user.value?.id!!,
+                            token = mainScreenViewModel.user.value?.token!!,
+                            onError = {
+                                errorMsg.value = it
+                            }
+                        )
+                    }) {
                         if (recordsViewModel.secretFilterIsCheck.value) {
                             Image(Icons.Default.CheckBox, contentDescription = "")
                         } else {
@@ -125,7 +146,17 @@ fun RecordsView(
                         }
                         Text(text = "Secrets", modifier = Modifier.padding(horizontal = 8.dp))
                     }
-                    DropdownMenuItem(onClick = recordsViewModel::togglePasswordFilter) {
+                    DropdownMenuItem(onClick = {
+                        recordsViewModel.toggleFilter(
+                            recordType = RecordType.Password,
+                            query = recordsViewModel.searchQuery.value,
+                            userId = mainScreenViewModel.user.value?.id!!,
+                            token = mainScreenViewModel.user.value?.token!!,
+                            onError = {
+                                errorMsg.value = it
+                            }
+                        )
+                    }) {
                         if (recordsViewModel.passwordFilterIsCheck.value) {
                             Image(Icons.Default.CheckBox, contentDescription = "")
                         } else {
@@ -143,7 +174,8 @@ fun RecordsView(
             mainScreenViewModel = mainScreenViewModel,
             clipboard = clipboard,
             showPasswordViewModel = showPasswordViewModel,
-            showSecretViewModel = showSecretViewModel
+            showSecretViewModel = showSecretViewModel,
+            errorMsg = errorMsg
         )
     }
 }
@@ -155,18 +187,18 @@ fun RecordList(
     mainScreenViewModel: MainScreenViewModel,
     showPasswordViewModel: ViewPasswordViewModel,
     showSecretViewModel: ViewSecretViewModel,
+    errorMsg: MutableState<String?>,
     clipboard: ClipboardManager
 ) {
-    val errorMsg: MutableState<String?> = remember { mutableStateOf(null) }
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top
     ) {
-        LaunchedEffect(key1 = recordsViewModel.records.value,){
+        LaunchedEffect(key1 = true,){
             recordsViewModel.fetchRecords(
                 mainScreenViewModel.user.value?.token!!,
                 mainScreenViewModel.user.value?.id!!,
-                onUnsuccessfulLogin = { msg ->
+                onError = { msg ->
                     errorMsg.value = msg
                 }
             )
@@ -221,7 +253,8 @@ fun RecordList(
                                 ClipData.newPlainText("password", record.password)
                             }
                             clipboard.setPrimaryClip(clipData!!)
-
+                            // Enable the snackbar to show that the content was copied
+                            errorMsg.value = "Copied!"
                         },
                         onDeleteClick = {
                             recordsViewModel.deleteRecord(
@@ -257,7 +290,7 @@ fun RecordList(
                 }
             ) {
                 Text(text = errorMsg.value ?: "An Error Occurred")
-                LaunchedEffect(key1 = errorMsg.value) {
+                LaunchedEffect(key1 = errorMsg) {
                     delay(5000)
                     errorMsg.value = null
                 }

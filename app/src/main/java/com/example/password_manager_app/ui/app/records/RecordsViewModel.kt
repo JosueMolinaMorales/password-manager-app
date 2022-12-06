@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.password_manager_app.model.Record
+import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.network.app.record.RecordNetwork
 import kotlinx.coroutines.launch
 import com.google.gson.Gson
@@ -33,22 +34,24 @@ class RecordsViewModel: ViewModel() {
 
     private val recNet: RecordNetwork = RecordNetwork()
 
-    fun setSearchQuery(query: String) {
-        _searchQuery.value = query
-    }
-
-    fun togglePasswordFilter() {
-        _passwordFilterIsCheck.value = !_passwordFilterIsCheck.value
-    }
-
-    fun toggleSecretFilter() {
-        _secretFilterIsCheck.value = !_secretFilterIsCheck.value
-    }
-
-    suspend fun fetchRecords(token: String, userId: String) {
-        _isFetchingRecords.value = true
-       _records.value = recNet.fetchRecords(token, userId)
-        _isFetchingRecords.value = false
+    fun toggleFilter(
+        recordType: RecordType,
+        userId: String,
+        token: String,
+        query: String,
+        onError: (String) -> Unit
+    ) {
+        if (recordType == RecordType.Password) {
+            _passwordFilterIsCheck.value = !_passwordFilterIsCheck.value
+        } else {
+            _secretFilterIsCheck.value = !_secretFilterIsCheck.value
+        }
+        searchRecord(
+            userId = userId,
+            token = token,
+            query = query,
+            onError = onError
+        )
     }
 
     fun deleteRecord(
@@ -56,7 +59,7 @@ class RecordsViewModel: ViewModel() {
         token: String,
         userId: String,
         onSuccess: () -> Unit,
-        onError: () -> Unit
+        onError: (String) -> Unit
     ) {
         viewModelScope.launch {
             _isMakingDeleteRequest.value = true
@@ -65,18 +68,19 @@ class RecordsViewModel: ViewModel() {
             when (res.code) {
                 204 -> {
                     onSuccess()
-                    fetchRecords(token = token, userId = userId, {})
+                    fetchRecords(token = token, userId = userId, onError = onError)
                 }
-                else -> onError()
+                else -> onError("Record Could Not Be Deleted At This Time. Please Try Again Later.")
             }
         }
     }
-
     fun searchRecord(
         userId: String,
         token: String,
-        query: String
+        query: String,
+        onError: (String) -> Unit
     ) {
+        _searchQuery.value = query
         viewModelScope.launch {
             _isFetchingRecords.value = true
             val res = recNet.searchRecord(
@@ -87,14 +91,35 @@ class RecordsViewModel: ViewModel() {
             _isFetchingRecords.value = false
             when (res.code) {
                 200 -> {
-
+                    val gson = Gson()
+                    val listType: Type = object: TypeToken<List<Record>>() {}.type
+                    if(res.body != null) {
+                        _records.value = gson.fromJson(res.body!!.string(), listType)
+                        // filter
+                        if (!_passwordFilterIsCheck.value) {
+                            // Remove password
+                            _records.value = _records.value.filter { record ->
+                                record.recordType != RecordType.Password
+                            }
+                        }
+                        if (!_secretFilterIsCheck.value) {
+                            // Remove Secret
+                            _records.value = _records.value.filter { record ->
+                                record.recordType != RecordType.Secret
+                            }
+                        }
+                    } else {
+                        _records.value = listOf()
+                    }
                 }
-                else -> {}
+                else -> {
+                    onError("An Error Occurred Fetching Your Records. Please Try Again Later.")
+                }
             }
         }
     }
     
-    suspend fun fetchRecords(token: String, userId: String, onUnsuccessfulLogin: (String) -> Unit) {
+    suspend fun fetchRecords(token: String, userId: String, onError: (String) -> Unit) {
         val response = recNet.fetchRecords(token, userId)
         when (response.code) {
             200 -> {
@@ -107,7 +132,7 @@ class RecordsViewModel: ViewModel() {
                 }
             }
             else -> {
-                onUnsuccessfulLogin("Internal Service Error, Please Try Again Later")
+                onError("Internal Service Error, Please Try Again Later")
             }
         }
     }
