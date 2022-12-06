@@ -24,9 +24,9 @@ import com.example.password_manager_app.ui.theme.PewterBlue
 
 @Composable
 fun ViewSecret(
-    viewSecretViewModel: ViewSecretViewModel
+    vm: ViewSecretViewModel
 ) {
-    val show by viewSecretViewModel.show
+    val show by vm.show
     val showSecret: MutableState<Boolean> = remember { mutableStateOf(false) }
 
     if (show) {
@@ -35,8 +35,7 @@ fun ViewSecret(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(.6F),
-            onDismissRequest = { viewSecretViewModel.hide() },
-            title = {},
+            onDismissRequest = { vm.hide() },
             text = {
                 Column(
                     modifier = Modifier
@@ -51,12 +50,14 @@ fun ViewSecret(
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                             style = MaterialTheme.typography.h4,
-                            text = viewSecretViewModel.title.value,
+                            text = vm.record.value?.key!!,
                             textAlign = TextAlign.Center
                         )
                     }
                     Column(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -67,7 +68,7 @@ fun ViewSecret(
                             horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             PasswordManagerTextField(
-                                value = "MySecret",
+                                value = vm.record.value?.secret!!,
                                 onValueChange = { },
                                 readOnly = true,
                                 enabled = false,

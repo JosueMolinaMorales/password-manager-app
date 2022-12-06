@@ -75,7 +75,7 @@ fun RecordRowView(
                         .background(color = Charcoal)
                         .fillMaxWidth(.45F),
                 ) {
-                    DropdownMenuItem(onClick = onCopyToClipboardClick) {
+                    DropdownMenuItem(onClick = { onCopyToClipboardClick() }) {
                         Text(
                             text="Copy To Clipboard",
                             color = LavenderBlush

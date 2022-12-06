@@ -21,17 +21,17 @@ import com.example.password_manager_app.ui.theme.PewterBlue
 
 @Composable
 fun ViewPassword(
-    ViewPasswordViewModel: ViewPasswordViewModel
+    vm: ViewPasswordViewModel
 ) {
     val showPassword: MutableState<Boolean> = remember { mutableStateOf(false) }
-    val show by ViewPasswordViewModel.show
+    val show by vm.show
     if(show){
         AlertDialog(
             backgroundColor = PewterBlue,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(.7F),
-            onDismissRequest = { ViewPasswordViewModel.hide() },
+            onDismissRequest = { vm.hide() },
             title = {},
             text = {
                 Column(
@@ -47,7 +47,7 @@ fun ViewPassword(
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                             style = MaterialTheme.typography.h4,
-                            text = ViewPasswordViewModel.title.value,
+                            text = vm.record.value?.service!!,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -62,7 +62,7 @@ fun ViewPassword(
                             Column {
                                 //TODO change to get value from ViewPasswordViewModel
                                 PasswordManagerTextField(
-                                    value = "MyUsername",
+                                    value = vm.record.value?.username ?: vm.record.value?.email!!,
                                     onValueChange = {},
                                     readOnly = true,
                                     label = { Text(text = "Login") },
@@ -74,7 +74,7 @@ fun ViewPassword(
                             ) {
                             Column {
                                 PasswordManagerTextField(
-                                    value = "MyPassword",
+                                    value = vm.record.value?.password ?: vm.record.value?.secret!!,
                                     onValueChange = { },
                                     readOnly = true,
                                     label = { Text(text = "Password") },

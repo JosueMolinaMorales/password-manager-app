@@ -6,16 +6,16 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.password_manager_app.data.getRandomStreamingService
+import com.example.password_manager_app.model.Record
 
 class ViewPasswordViewModel: ViewModel() {
     private val _showPasswordView: MutableState<Boolean> = mutableStateOf(false)
     val show: State<Boolean> = _showPasswordView
-    private val _service: MutableState<String> = mutableStateOf("")
-    val title: State<String> = _service
+    private val _record: MutableState<Record?> = mutableStateOf(null)
+    val record: State<Record?> = _record
 
-    fun show(title: String) {
-        //TODO refactor after record is sent, not string
-        _service.value = title
+    fun show(record: Record) {
+        _record.value = record
         _showPasswordView.value = true
     }
 
