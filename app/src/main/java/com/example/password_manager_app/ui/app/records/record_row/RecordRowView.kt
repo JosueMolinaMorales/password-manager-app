@@ -26,9 +26,8 @@ fun RecordRowView(
     recordType: RecordType,
     onCardClick: () -> Unit,
     onCopyToClipboardClick: () -> Unit,
-    onEditClick: () -> Unit,
+    onEditClick: (RecordType) -> Unit,
     onDeleteClick: () -> Unit
-
 ) {
     val isDropDownOpen = remember { mutableStateOf(false) }
     Card(
@@ -75,14 +74,14 @@ fun RecordRowView(
                         .background(color = Charcoal)
                         .fillMaxWidth(.45F),
                 ) {
-                    DropdownMenuItem(onClick = onCopyToClipboardClick) {
+                    DropdownMenuItem(onClick = { onCopyToClipboardClick() }) {
                         Text(
                             text="Copy To Clipboard",
                             color = LavenderBlush
                         )
                     }
                     Divider()
-                    DropdownMenuItem(onClick = onEditClick) {
+                    DropdownMenuItem(onClick = { onEditClick(recordType) }) {
                         Text(
                             text="Edit",
                             color = LavenderBlush

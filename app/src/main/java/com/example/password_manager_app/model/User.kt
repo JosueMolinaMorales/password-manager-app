@@ -4,8 +4,8 @@ import androidx.room.*
 import com.google.gson.annotations.Expose
 
 @Entity
-class User(
-    @PrimaryKey()
+data class User(
+    @PrimaryKey
     val id: String = "",
 
     @ColumnInfo
@@ -20,7 +20,7 @@ class User(
     @Expose(serialize = false, deserialize = false)
     @ColumnInfo
     var token: String = "",
-) {}
+)
 
 @Dao
 interface UserDao {
@@ -30,13 +30,13 @@ interface UserDao {
     @Query("SELECT * from User LIMIT 1")
     suspend fun getUser(): User?
 
-    @Insert()
+    @Insert
     suspend fun insertUser(user: User)
 
     @Query("DELETE FROM User")
     suspend fun deleteUsers()
 
-    @Update()
+    @Update
     suspend fun updateUser(user: User)
 }
 
@@ -48,7 +48,7 @@ class RegisterForm(
 
     @Expose(serialize = false)
     var confirmPassword: String = ""
-) {}
+)
 
 class LoginForm(
     val email: String = "",

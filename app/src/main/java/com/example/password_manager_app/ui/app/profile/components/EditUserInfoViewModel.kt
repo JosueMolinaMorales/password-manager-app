@@ -163,8 +163,7 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
                         username = user?.username ?: ""
                     )
                     if (user != null) {
-                        userDb.userDao().deleteUsers()
-                        userDb.userDao().insertUser(newUser)
+                        userDb.userDao().updateUser(newUser)
                     }
                     onSuccessfulUpdate(newUser)
                 }

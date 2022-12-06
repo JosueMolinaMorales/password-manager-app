@@ -1,4 +1,4 @@
-package com.example.password_manager_app.ui.app.records.create_password
+package com.example.password_manager_app.ui.app.records.create_update_password
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -7,12 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.model.RecordType
+import com.example.password_manager_app.model.UpdateRecord
 import com.example.password_manager_app.network.ErrorResponse
 import com.example.password_manager_app.network.app.record.RecordNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
-class CreatePasswordViewModel: ViewModel() {
+class CreateUpdatePasswordViewModel: ViewModel() {
 
     private val _service: MutableState<String> = mutableStateOf("")
     val service: State<String> = _service
@@ -40,6 +41,8 @@ class CreatePasswordViewModel: ViewModel() {
 
     private val _isMakingRequest: MutableState<Boolean> = mutableStateOf(false)
     val isMakingRequest: State<Boolean> = _isMakingRequest
+
+    private val _record: MutableState<Record?> = mutableStateOf(null)
 
     private val recordNet = RecordNetwork()
 
@@ -114,6 +117,72 @@ class CreatePasswordViewModel: ViewModel() {
                 }
                 else -> {
                     onUnsuccessfulCreation("Internal Service Error, Please Try Again Later.")
+                }
+            }
+        }
+    }
+
+    fun getRecord(
+        recordId: String,
+        token: String,
+        onError: (String) -> Unit,
+        onNotFound: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val res = recordNet.getRecord(
+                recordId = recordId,
+                token = token
+            )
+            when (res.code) {
+                200 -> {
+                    val body = res.body?.string()
+                    _record.value = Gson().fromJson(body, Record::class.java)
+                    _username.value = _record.value?.username ?: ""
+                    _email.value = _record.value?.email ?: ""
+                    _password.value = _record.value?.password ?: ""
+                    _service.value = _record.value?.service ?: ""
+                }
+                404 -> {
+                    onNotFound()
+                }
+                else -> {
+                    val body = res.body?.string()
+                    val errorRes = Gson().fromJson(body, ErrorResponse::class.java)
+                    onError(errorRes.error.message)
+                }
+            }
+        }
+    }
+
+    fun updatePassword(
+        token: String,
+        recordId: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            _isMakingRequest.value = true
+            val res = recordNet.updateRecord(
+                updatedRecord = UpdateRecord(
+                    password= _password.value,
+                    email = if (_email.value == "") { null } else { _email.value.trim() },
+                    username = if (_username.value == "") { null } else { _username.value.trim() },
+                    service = _service.value.trim(),
+                ),
+                token = token,
+                recordId = recordId
+            )
+            _isMakingRequest.value = false
+            when (res.code) {
+                200, 201, 204 -> {
+                    onSuccess()
+                }
+                400 -> {
+                    val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
+                    onError(error.error.message)
+                }
+                else -> {
+                    onError("Internal Service Error, Please Try Again Later.")
                 }
             }
         }

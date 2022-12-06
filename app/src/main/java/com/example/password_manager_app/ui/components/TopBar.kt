@@ -2,10 +2,7 @@ package com.example.password_manager_app.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -21,9 +18,11 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.password_manager_app.R
+import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.TopBarOpal
 
 @Composable
@@ -36,19 +35,15 @@ fun TopBar(onNavIconClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth(.7F)
+                    modifier = Modifier.fillMaxWidth(.7F).fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    val focusManager = LocalFocusManager.current
-                    PasswordManagerTextField(
-                        value = "",
-                        onValueChange = {},
-                        placeholder = { Text(text="Search") },
-                        leadingIcon = {
-                            Icon(Icons.Default.Search, "")
-                        },
-                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                        keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
-
+                    Text(
+                        text = "Secrets Secured",
+                        style = MaterialTheme.typography.h5,
+                        fontWeight = FontWeight.Bold,
+                        color = Charcoal
                     )
                 }
                 Column(

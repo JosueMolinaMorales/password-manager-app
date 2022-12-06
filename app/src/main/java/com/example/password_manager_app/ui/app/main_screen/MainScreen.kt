@@ -1,6 +1,7 @@
 package com.example.password_manager_app.ui
 
 import android.annotation.SuppressLint
+import android.content.ClipboardManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -21,15 +22,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.password_manager_app.data.PagesWithBottomSheet
 import com.example.password_manager_app.data.User
+import com.example.password_manager_app.model.ActionOnRecord
+import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
-import com.example.password_manager_app.ui.app.records.create_password.CreatePasswordPage
-import com.example.password_manager_app.ui.app.records.create_secret.CreateSecretPage
+import com.example.password_manager_app.ui.app.records.create_update_secret.CreateSecretPage
 import com.example.password_manager_app.ui.app.records.RecordsView
+import com.example.password_manager_app.ui.app.records.create_update_password.CreateUpdatePasswordPage
+import com.example.password_manager_app.ui.app.records.RecordsViewViewModel
 import com.example.password_manager_app.ui.components.NavigationDrawer
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.TopBarOpal
@@ -40,7 +46,8 @@ import com.example.password_manager_app.ui.components.TopBar
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
-    onLogOut: () -> Unit
+    onLogOut: () -> Unit,
+    clipboard: ClipboardManager
 ) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
@@ -48,83 +55,123 @@ fun MainScreen(
     val focusManager = LocalFocusManager.current
     val bottomState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val showFAB = remember { mutableStateOf(true) }
-    val currentPage = remember { mutableStateOf(PagesWithBottomSheet.HomePage) }
     val vm: MainScreenViewModel = viewModel()
+    val recordsViewViewModel: RecordsViewViewModel = viewModel()
 
-    // TODO: Remove This Modal Bottom Sheet and implement one in every page that needs one
-    Scaffold (
-        scaffoldState = scaffoldState,
-        topBar = {
-            TopBar {
-                coroutineScope.launch {
-                    scaffoldState.drawerState.open()
+    if(vm.user.value == null) {
+        CircularProgressIndicator()
+    }else {
+        Scaffold (
+            scaffoldState = scaffoldState,
+            topBar = {
+                TopBar {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.open()
+                    }
                 }
-            }
-        },
-        floatingActionButton = {
-            AddSecretFAB(
-                onClick = { coroutineScope.launch { bottomState.show() }},
-                showFAB = showFAB.value
-            )
-        },
-        drawerContent = {
-            NavigationDrawer(
-                user = vm.user.value,
-                scaffoldState = scaffoldState,
-                coroutineScope = coroutineScope,
-                navToSecrets = { innerNav.navigate("records") },
-                navToProfile = { innerNav.navigate("profile") },
-                Logout = {
-                    onLogOut()
-                }
-            )
-        },
-        drawerBackgroundColor = Charcoal,
-        modifier = Modifier.pointerInput(Unit) {
-            detectTapGestures(onTap = {
-                focusManager.clearFocus()
-            })
-        }
-    ) {
-        NavHost(navController = innerNav, startDestination = "records") {
-            composable("records") {
-                RecordsView()
-                showFAB.value = true
-                currentPage.value = PagesWithBottomSheet.HomePage
-            }
-            composable("profile") {
-                showFAB.value = false
-                //currentPage.value = PagesWithBottomSheet.ProfilePage
-                Profile(vm.user.value ?: User(),
-                    onEditChange = { newUser ->
-                        vm.updateUser(newUser)
-                    },
+            },
+            floatingActionButton = {
+                AddSecretFAB(
+                    onClick = { coroutineScope.launch { bottomState.show() }},
+                    showFAB = showFAB.value
                 )
-            }
-            composable("createPassword") {
-                CreatePasswordPage(
-                    token = vm.user.value?.token ?: "",
-                    onCreatePasswordClick = {
-                        innerNav.navigate("records") {
-                            popUpTo("records") { inclusive = true }
-                        }
+            },
+            drawerContent = {
+                NavigationDrawer(
+                    user = vm.user.value,
+                    scaffoldState = scaffoldState,
+                    coroutineScope = coroutineScope,
+                    navToSecrets = { innerNav.navigate("records") },
+                    navToProfile = { innerNav.navigate("profile") },
+                    Logout = {
+                        onLogOut()
                     }
                 )
-                showFAB.value = false
+            },
+            drawerBackgroundColor = Charcoal,
+            modifier = Modifier.pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
             }
-            composable("createSecret") {
-                CreateSecretPage(
-                    token = vm.user.value?.token ?: "",
-                    onCreateSecret = {
-                        innerNav.navigate("records") {
-                            popUpTo("records")
-                        }
-                    }
-                )
-                showFAB.value = false
+        ) {
+            NavHost(navController = innerNav, startDestination = "records") {
+                composable("records") {
+                    RecordsView(
+                        onEditClick = { recordType, recordId ->
+                            if (recordType == RecordType.Secret) {
+                                innerNav.navigate("createSecret/update/$recordId")
+                            } else {
+                                innerNav.navigate("createPassword/update/$recordId")
+                            }
+                        },
+                        recordsViewModel = recordsViewViewModel,
+                        mainScreenViewModel = vm,
+                        clipboard = clipboard
+                    )
+                    showFAB.value = true
+                }
+                composable("profile") {
+                    showFAB.value = false
+                    Profile(
+                        vm.user.value ?: User(),
+                        onEditChange = { newUser ->
+                            vm.updateUser(newUser)
+                        },
+                    )
+                }
+                composable(
+                    route = "createPassword/{action}/{recordId}",
+                    arguments = listOf(
+                        navArgument("action") { type =  NavType.StringType },
+                        navArgument("recordId") { type = NavType.StringType }
+                    )
+                ) { navBackStack ->
+                    CreateUpdatePasswordPage(
+                        token = vm.user.value?.token ?: "",
+                        onNavigateHome = {
+                            innerNav.navigate("records") {
+                                popUpTo("records") { inclusive = true }
+                            }
+                        },
+                        action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
+                            ActionOnRecord.Create
+                        } else {
+                            ActionOnRecord.Update
+                        },
+                        recordId = navBackStack.arguments?.getString("recordId")
+                    )
+                    showFAB.value = false
+
+                }
+                composable(
+                    route = "createSecret/{action}/{recordId}",
+                    arguments = listOf(
+                        navArgument("action") { type =  NavType.StringType },
+                        navArgument("recordId") { type = NavType.StringType }
+                    )
+                ) { navBackStack ->
+                    CreateSecretPage(
+                        token = vm.user.value?.token ?: "",
+                        onNavigateHome = {
+                            innerNav.navigate("records") {
+                                popUpTo("records") { inclusive = true }
+                            }
+                        },
+                        action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
+                            ActionOnRecord.Create
+                        } else {
+                            ActionOnRecord.Update
+                        },
+                        recordId = navBackStack.arguments?.getString("recordId")
+                    )
+                    showFAB.value = false
+                }
             }
         }
     }
+    // TODO: Remove This Modal Bottom Sheet and implement one in every page that needs one
+
 }
 
 
