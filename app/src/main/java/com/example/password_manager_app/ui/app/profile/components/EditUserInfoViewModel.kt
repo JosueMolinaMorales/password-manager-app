@@ -113,9 +113,6 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
         if(_confirmPassword.value == ""){
             emptyFields.add("confirm new password")
         }
-        if(_email.value == ""){
-            emptyFields.add("email")
-        }
 
         if(emptyFields.size != 0) {
             emptyFields.forEachIndexed { index, value ->
