@@ -11,6 +11,8 @@ class ViewSecretViewModel: ViewModel() {
     val show: State<Boolean> = _showSecretView
     private val _record: MutableState<Record?> = mutableStateOf(null)
     val record: State<Record?> = _record
+    private val _showSecretValue: MutableState<Boolean> = mutableStateOf(false)
+    val showSecretValue: State<Boolean> = _showSecretValue
 
     fun show(record: Record) {
         _record.value = record
@@ -19,5 +21,10 @@ class ViewSecretViewModel: ViewModel() {
 
     fun hide() {
         _showSecretView.value = false
+        _showSecretValue.value = false
+    }
+
+    fun toggleShowSecretValue(newValue: Boolean) {
+        _showSecretValue.value = !_showSecretValue.value
     }
 }

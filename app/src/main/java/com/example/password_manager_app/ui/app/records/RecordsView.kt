@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.password_manager_app.model.RecordType
@@ -32,24 +34,46 @@ import kotlinx.coroutines.launch
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RecordsView(
-    recordsViewViewModel: RecordsViewViewModel,
+    onEditClick: (RecordType, String) -> Unit,
+    recordsViewModel: RecordsViewViewModel,
     mainScreenViewModel: MainScreenViewModel,
     clipboard: ClipboardManager
 ) {
     val showPasswordViewModel: ViewPasswordViewModel = viewModel()
     val showSecretViewModel: ViewSecretViewModel = viewModel()
-    val coroutineScope = CoroutineScope(Dispatchers.IO)
     val errorMsg: MutableState<String?> = remember { mutableStateOf(null) }
-
-    ViewPassword(showPasswordViewModel)
-    ViewSecret(showSecretViewModel)
+    ViewPassword(
+        vm = showPasswordViewModel,
+        onEditClick = onEditClick,
+        onDeleteClick = {
+            recordsViewModel.deleteRecord(
+                recordId = showPasswordViewModel.record.value?.id!!,
+                token = mainScreenViewModel.user.value?.token!!,
+                userId = mainScreenViewModel.user.value?.id!!,
+                onSuccess = { showPasswordViewModel.hide() },
+                onError = {}
+            )
+        }
+    )
+    ViewSecret(
+        vm = showSecretViewModel,
+        onEditClick = onEditClick,
+        onDeleteClick = {
+            recordsViewModel.deleteRecord(
+                recordId = showSecretViewModel.record.value?.id!!,
+                token = mainScreenViewModel.user.value?.token!!,
+                userId = mainScreenViewModel.user.value?.id!!,
+                onSuccess = { showSecretViewModel.hide() },
+                onError = {}
+            )
+        }
+    )
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top
     ) {
-
-        coroutineScope.launch {
-            recordsViewViewModel.fetchRecords(
+        LaunchedEffect(key1 = recordsViewModel.records.value,){
+            recordsViewModel.fetchRecords(
                 mainScreenViewModel.user.value?.token!!,
                 mainScreenViewModel.user.value?.id!!,
                 onUnsuccessfulLogin = { msg ->
@@ -58,7 +82,7 @@ fun RecordsView(
             )
         }
 
-        if(recordsViewViewModel.records.value.isEmpty()) {
+        if(recordsViewModel.records.value.isEmpty() && recordsViewModel.isFetchingRecords.value) {
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
@@ -70,11 +94,23 @@ fun RecordsView(
                         .padding(10.dp)
                 )
             }
-        }else {
+        } else if (recordsViewModel.records.value.isEmpty()) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "No Records Found!",
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        } else {
             LazyColumn(
                 verticalArrangement = Arrangement.Top
             ) {
-                itemsIndexed(recordsViewViewModel.records.value) { _, record ->
+                itemsIndexed(recordsViewModel.records.value) { _, record ->
                     var title = ""
                     if (record.recordType == RecordType.Password){
                         title = record.service!!
@@ -97,8 +133,24 @@ fun RecordsView(
                             clipboard.setPrimaryClip(clipData!!)
 
                         },
-                        onDeleteClick = {},
-                        onEditClick = {},
+                        onDeleteClick = {
+                            recordsViewModel.deleteRecord(
+                                recordId = record.id!!,
+                                token = mainScreenViewModel.user.value?.token!!,
+                                userId = mainScreenViewModel.user.value?.id!!,
+                                onError = {},
+                                onSuccess = {
+                                    if (record.recordType == RecordType.Password) {
+                                        showPasswordViewModel.hide()
+                                    } else {
+                                        showSecretViewModel.hide()
+                                    }
+                                }
+                            )
+                        },
+                        onEditClick = { recordType ->
+                            onEditClick(recordType, record.id!!)
+                        },
                         title = title,
                         recordType = record.recordType
                     )
