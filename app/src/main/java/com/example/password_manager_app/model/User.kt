@@ -2,7 +2,6 @@ package com.example.password_manager_app.data
 
 import androidx.room.*
 import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 
 @Entity
 class User(
@@ -54,6 +53,14 @@ class RegisterForm(
 class LoginForm(
     val email: String = "",
     val password: String = ""
+)
+
+class UpdateForm(
+    val email: String? = "",
+    val password: String = "",
+    val new_password: String? = "",
+    val token: String = "",
+    val user_id: String = ""
 )
 
 data class AuthResponse(

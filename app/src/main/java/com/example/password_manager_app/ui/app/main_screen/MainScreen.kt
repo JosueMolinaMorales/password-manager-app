@@ -73,7 +73,13 @@ fun MainScreen(
                         bottomState.hide()
                     }
                 },
-                currentPage = currentPage.value
+                currentPage = currentPage.value,
+                user = vm.user.value,
+                onEditChange = {
+                    coroutineScope.launch {
+                        bottomState.hide()
+                    }
+                }
             )
         },
         sheetState = bottomState,
@@ -121,9 +127,25 @@ fun MainScreen(
                     currentPage.value = PagesWithBottomSheet.HomePage
                 }
                 composable("profile") {
-                    Profile(vm.user.value ?: User())
                     showFAB.value = false
-                    currentPage.value = PagesWithBottomSheet.ProfilePage
+                    //currentPage.value = PagesWithBottomSheet.ProfilePage
+                    Profile(vm.user.value ?: User(),
+                        onEditChange = {
+                            coroutineScope.launch{
+                                bottomState.hide()
+                            }
+                        },
+                        onEditEmailClick = {
+                            coroutineScope.launch{
+                                bottomState.show()
+                            }
+                        },
+                        onChangePasswordClick = {
+                            coroutineScope.launch {
+                                bottomState.show()
+                            }
+                        }
+                    )
                 }
                 composable("createPassword") {
                     CreatePasswordPage(
