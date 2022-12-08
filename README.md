@@ -1,6 +1,8 @@
 # Secrets Secured Password Manager
+COSC-435 Mobile Application Development Fall 2022
+
 By: Josue Molina Morales, Andrew Stoerkel, Jack Waggamon
-For: COSC-435 Mobile Application Development Fall 2022
+
 Instructor: Randy Valis
 
 ### Problem Statement:
