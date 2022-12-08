@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +36,9 @@ fun TopBar(onNavIconClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth(.7F).fillMaxHeight(),
+                    modifier = Modifier
+                        .fillMaxWidth(.7F)
+                        .fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
