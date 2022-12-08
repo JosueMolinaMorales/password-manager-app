@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.password_manager_app.data.User
@@ -67,6 +68,7 @@ fun ChangePasswordView(editUserViewModel: EditUserInfoViewModel, onEditChange: (
         Text(
             text = "Update Password",
             style = MaterialTheme.typography.h4,
+            fontSize = 30.sp,
             color = LavenderBlush,
             fontWeight = FontWeight.Medium,
             textDecoration = TextDecoration.Underline,
