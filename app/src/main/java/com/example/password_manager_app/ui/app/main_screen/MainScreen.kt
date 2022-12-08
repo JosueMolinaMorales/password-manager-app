@@ -35,7 +35,7 @@ import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
 import com.example.password_manager_app.ui.app.records.create_update_secret.CreateSecretPage
 import com.example.password_manager_app.ui.app.records.RecordsView
 import com.example.password_manager_app.ui.app.records.create_update_password.CreateUpdatePasswordPage
-import com.example.password_manager_app.ui.app.records.RecordsViewViewModel
+import com.example.password_manager_app.ui.app.records.RecordsViewModel
 import com.example.password_manager_app.ui.components.NavigationDrawer
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.TopBarOpal
@@ -56,7 +56,7 @@ fun MainScreen(
     val bottomState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val showFAB = remember { mutableStateOf(true) }
     val vm: MainScreenViewModel = viewModel()
-    val recordsViewViewModel: RecordsViewViewModel = viewModel()
+    val recordsViewModel: RecordsViewModel = viewModel()
 
     if(vm.user.value == null) {
         CircularProgressIndicator()
@@ -105,20 +105,20 @@ fun MainScreen(
                                 innerNav.navigate("createPassword/update/$recordId")
                             }
                         },
-                        recordsViewModel = recordsViewViewModel,
+                        recordsViewModel = recordsViewModel,
                         mainScreenViewModel = vm,
                         clipboard = clipboard
                     )
                     showFAB.value = true
                 }
                 composable("profile") {
-                    showFAB.value = false
                     Profile(
-                        vm.user.value ?: User(),
+                        user = vm.user.value ?: User(),
                         onEditChange = { newUser ->
                             vm.updateUser(newUser)
-                        },
+                        }
                     )
+                    showFAB.value = false
                 }
                 composable(
                     route = "createPassword/{action}/{recordId}",
@@ -142,7 +142,6 @@ fun MainScreen(
                         recordId = navBackStack.arguments?.getString("recordId")
                     )
                     showFAB.value = false
-
                 }
                 composable(
                     route = "createSecret/{action}/{recordId}",

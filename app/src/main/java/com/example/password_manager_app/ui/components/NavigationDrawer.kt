@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +51,7 @@ fun NavigationDrawer(
                     fontWeight = FontWeight(1000),
                     textAlign = TextAlign.Center
                 )
-                NavigationItem(icon = Icons.Default.List, text = "View Secrets") {
+                NavigationItem(icon = Icons.Default.List, text = "View Records") {
                     navToSecrets()
                     coroutineScope.launch {
                         scaffoldState.drawerState.close()

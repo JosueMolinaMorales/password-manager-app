@@ -88,7 +88,10 @@ fun RecordRowView(
                         )
                     }
                     Divider()
-                    DropdownMenuItem(onClick = onDeleteClick) {
+                    DropdownMenuItem(onClick = {
+                        onDeleteClick()
+                        isDropDownOpen.value = false
+                    }) {
                         Text(
                             text="Delete",
                             color = LavenderBlush
