@@ -1,7 +1,6 @@
-package com.example.password_manager_app.ui.app.main_screen
+package com.example.password_manager_app.ui.app.profile
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +11,7 @@ import com.example.password_manager_app.data.PasswordManagerDatabase
 import com.example.password_manager_app.data.User
 import kotlinx.coroutines.launch
 
-class MainScreenViewModel(app: Application): AndroidViewModel(app) {
+class ProfileViewModel(app: Application): AndroidViewModel(app) {
     private val db: PasswordManagerDatabase
     private val _user: MutableState<User?> = mutableStateOf(null)
     val user: State<User?> = _user
@@ -26,9 +25,5 @@ class MainScreenViewModel(app: Application): AndroidViewModel(app) {
         viewModelScope.launch {
             _user.value = db.userDao().getUser()
         }
-    }
-
-    fun updateUser(newUser: User) {
-        _user.value = newUser
     }
 }
