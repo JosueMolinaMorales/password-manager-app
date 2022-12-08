@@ -17,13 +17,12 @@ import okhttp3.Response
 import java.lang.reflect.Type
 
 
-class RecordNetwork(connectivityManager: ConnectivityManager): IRecordNetwork {
+class RecordNetwork(private val connectivityManager: ConnectivityManager): IRecordNetwork {
     private val client = OkHttpClient()
 
-    private val network = connectivityManager.activeNetwork
 
     override suspend fun createRecord(record: Record, token: String): Response? {
-        if(network!=null){
+        if(connectivityManager.activeNetwork != null){
             return withContext(Dispatchers.IO) {
                 val requestBody = Gson().toJson(record).toRequestBody()
                 val request = Request.Builder()
@@ -40,7 +39,7 @@ class RecordNetwork(connectivityManager: ConnectivityManager): IRecordNetwork {
     }
 
     override suspend fun getRecord(recordId: String, token: String): Response? {
-        if (network != null) {
+        if (connectivityManager.activeNetwork != null) {
             return withContext(Dispatchers.IO) {
                 val request = Request.Builder()
                     .url("${Routes.PasswordManagerRoute.route}/record/$recordId/")
@@ -55,7 +54,7 @@ class RecordNetwork(connectivityManager: ConnectivityManager): IRecordNetwork {
     }
 
     override suspend fun updateRecord(recordId: String, token: String, updatedRecord: UpdateRecord): Response? {
-        if (network != null) {
+        if (connectivityManager.activeNetwork != null) {
             return withContext(Dispatchers.IO) {
                 val requestBody = Gson().toJson(updatedRecord).toRequestBody()
                 val request = Request.Builder()
@@ -73,7 +72,7 @@ class RecordNetwork(connectivityManager: ConnectivityManager): IRecordNetwork {
     }
 
     override suspend fun fetchRecords(token: String, userId: String): Response? {
-        if (network != null) {
+        if (connectivityManager.activeNetwork != null) {
             return withContext(Dispatchers.IO) {
                 val request = Request.Builder()
                     .url("${Routes.PasswordManagerRoute.route}/record/${userId}/all")
@@ -89,7 +88,7 @@ class RecordNetwork(connectivityManager: ConnectivityManager): IRecordNetwork {
     }
 
     override suspend fun deleteRecord(token: String, recordId: String): Response? {
-        if (network != null) {
+        if (connectivityManager.activeNetwork != null) {
             return withContext(Dispatchers.IO) {
                 val request = Request.Builder()
                     .url("${Routes.PasswordManagerRoute.route}/record/$recordId")
