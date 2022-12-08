@@ -169,6 +169,22 @@ fun RecordsView(
             }
         }
         Divider()
+        if (errorMsg.value != null) {
+            PasswordManagerSnackbar(
+                modifier = Modifier.padding(8.dp).zIndex(1F),
+                action = {
+                    PasswordManagerButton(onClick = { errorMsg.value = null }) {
+                        Text(text = "Confirm")
+                    }
+                }
+            ) {
+                Text(text = errorMsg.value ?: "An Error Occurred")
+                LaunchedEffect(key1 = errorMsg) {
+                    delay(5000)
+                    errorMsg.value = null
+                }
+            }
+        }
         RecordList(
             onEditClick = onEditClick,
             recordsViewModel = recordsViewModel,
@@ -282,21 +298,6 @@ fun RecordList(
                 }
             }
         }
-        if (errorMsg.value != null) {
-            PasswordManagerSnackbar(
-                modifier = Modifier.padding(8.dp).zIndex(1F),
-                action = {
-                    PasswordManagerButton(onClick = { errorMsg.value = null }) {
-                        Text(text = "Confirm")
-                    }
-                }
-            ) {
-                Text(text = errorMsg.value ?: "An Error Occurred")
-                LaunchedEffect(key1 = errorMsg) {
-                    delay(5000)
-                    errorMsg.value = null
-                }
-            }
-        }
+
     }
 }
