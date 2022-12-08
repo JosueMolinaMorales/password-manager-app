@@ -6,6 +6,6 @@ import com.example.password_manager_app.data.RegisterForm
 import okhttp3.Response
 
 interface IAuthNetwork {
-    suspend fun login(loginForm: LoginForm): Response
-    suspend fun register(registerForm: RegisterForm): Response
+    suspend fun login(loginForm: LoginForm): Response?
+    suspend fun register(registerForm: RegisterForm): Response?
 }

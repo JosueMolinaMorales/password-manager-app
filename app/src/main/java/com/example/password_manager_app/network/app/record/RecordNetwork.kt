@@ -1,5 +1,6 @@
 package com.example.password_manager_app.network.app.record
 
+import android.net.ConnectivityManager
 import android.util.Log
 import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.model.UpdateRecord
@@ -16,10 +17,13 @@ import okhttp3.Response
 import java.lang.reflect.Type
 
 
-class RecordNetwork: IRecordNetwork {
+class RecordNetwork(connectivityManager: ConnectivityManager): IRecordNetwork {
     private val client = OkHttpClient()
 
+    private val network = connectivityManager.activeNetwork
+
     override suspend fun createRecord(record: Record, token: String): Response {
+
         return withContext(Dispatchers.IO) {
             val requestBody = Gson().toJson(record).toRequestBody()
             val request = Request.Builder()

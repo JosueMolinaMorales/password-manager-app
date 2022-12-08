@@ -1,6 +1,10 @@
 package com.example.password_manager_app.ui.auth.register
 
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +51,10 @@ class RegisterViewModel(app: Application): AndroidViewModel(app) {
     private val _makingRequest: MutableState<Boolean> = mutableStateOf(false)
     val makingRequest: State<Boolean> = _makingRequest
 
-    private val authNetwork: AuthNetwork = AuthNetwork()
+    private val ctx = getApplication<Application>()
+    private val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    private val authNetwork: AuthNetwork = AuthNetwork(connectivityManager)
     private val userDb: PasswordManagerDatabase
 
     init {
@@ -132,6 +139,7 @@ class RegisterViewModel(app: Application): AndroidViewModel(app) {
         return null
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun register(
         onSuccessfulRegistration: () -> Unit,
         onUnsuccessfulRegistration: () -> Unit
@@ -144,28 +152,33 @@ class RegisterViewModel(app: Application): AndroidViewModel(app) {
                 email = _email.value.trim(),
                 password = _password.value
             ))
-            _makingRequest.value = false
-            val body = response.body?.string()
-            when (response.code) {
-                201, 200 -> {
-                    val responseBody = Gson().fromJson(body, AuthResponse::class.java)
-                    // Clear User table
-                    userDb.userDao().deleteUsers()
-                    // Add token to user
-                    responseBody.user.token = responseBody.token
-                    // Insert User
-                    userDb.userDao().insertUser(responseBody.user)
-                    onSuccessfulRegistration()
+            if(response != null) {
+                _makingRequest.value = false
+                val body = response.body?.string()
+                when (response.code) {
+                    201, 200 -> {
+                        val responseBody = Gson().fromJson(body, AuthResponse::class.java)
+                        // Clear User table
+                        userDb.userDao().deleteUsers()
+                        // Add token to user
+                        responseBody.user.token = responseBody.token
+                        // Insert User
+                        userDb.userDao().insertUser(responseBody.user)
+                        onSuccessfulRegistration()
+                    }
+                    400 -> {
+                        val errorBody = Gson().fromJson(body,ErrorResponse::class.java)
+                        _registerErrorMsg.value = errorBody.error.message
+                        onUnsuccessfulRegistration()
+                    }
+                    else -> {
+                        _registerErrorMsg.value = "Internal Service Error, Please try again later"
+                        onUnsuccessfulRegistration()
+                    }
                 }
-                400 -> {
-                    val errorBody = Gson().fromJson(body,ErrorResponse::class.java)
-                    _registerErrorMsg.value = errorBody.error.message
-                    onUnsuccessfulRegistration()
-                }
-                else -> {
-                    _registerErrorMsg.value = "Internal Service Error, Please try again later"
-                    onUnsuccessfulRegistration()
-                }
+            } else {
+                _registerErrorMsg.value = "You are not connected to a network"
+                onUnsuccessfulRegistration()
             }
         }
     }

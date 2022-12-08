@@ -1,9 +1,12 @@
 package com.example.password_manager_app.ui.app.records
 
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.network.app.record.RecordNetwork
@@ -12,7 +15,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
-class RecordsViewViewModel: ViewModel() {
+class RecordsViewViewModel(app: Application): AndroidViewModel(app) {
     private val _isFetchingRecords: MutableState<Boolean> = mutableStateOf(false)
     val isFetchingRecords: State<Boolean> = _isFetchingRecords
 
@@ -22,7 +25,10 @@ class RecordsViewViewModel: ViewModel() {
     private val _records: MutableState<List<Record>> = mutableStateOf(listOf())
     var records: State<List<Record>> = _records
 
-    private val recNet: RecordNetwork = RecordNetwork()
+    private val ctx = getApplication<Application>()
+    private val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    private val recNet: RecordNetwork = RecordNetwork(connectivityManager)
 
     fun deleteRecord(
         recordId: String,

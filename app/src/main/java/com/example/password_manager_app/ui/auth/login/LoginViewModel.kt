@@ -1,9 +1,14 @@
 package com.example.password_manager_app.ui.auth.login
 
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
@@ -30,9 +35,12 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
     private val _passwordHasError: MutableState<Boolean> = mutableStateOf(false)
     val passwordHasError: State<Boolean> = _passwordHasError
 
+    private val ctx = getApplication<Application>()
+    private val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
     private val userDb: PasswordManagerDatabase
 
-    private val authNetwork = AuthNetwork()
+    private val authNetwork = AuthNetwork(connectivityManager)
 
     init {
         userDb = Room.databaseBuilder(
@@ -82,43 +90,49 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
     ) {
         viewModelScope.launch {
             _isMakingRequest.value = true
-            val response = authNetwork.login(LoginForm(
-                email = _email.value.trim(),
-                password = password.value
-            ))
-            _isMakingRequest.value = false
-            val responseBody = response.body
-            when (response.code) {
-                200 -> {
-                    val jsonBody = responseBody?.string()
-                    val authResponse = Gson().fromJson(jsonBody, AuthResponse::class.java)
-                    // Add token to user
-                    authResponse.user.token = authResponse.token
+            val response = authNetwork.login(
+                LoginForm(
+                    email = _email.value.trim(),
+                    password = password.value
+                )
+            )
+            if (response != null) {
+                _isMakingRequest.value = false
+                val responseBody = response.body
+                when (response.code) {
+                    200 -> {
+                        val jsonBody = responseBody?.string()
+                        val authResponse = Gson().fromJson(jsonBody, AuthResponse::class.java)
+                        // Add token to user
+                        authResponse.user.token = authResponse.token
 
-                    val recentUser = userDb.userDao().getUser()
-                    if (recentUser == null) {
-                        // No recent user, log the user in regularly
-                        userDb.userDao().insertUser(authResponse.user)
-                    } else if (recentUser.email != authResponse.user.email) {
-                        // Delete previous user from table since users are different
-                        userDb.userDao().deleteUsers()
-                        // User does not exist in the db so add them
-                        userDb.userDao().insertUser(authResponse.user)
-                    } else {
-                        // Previous user is attempting to login, replace token
-                        userDb.userDao().updateUser(authResponse.user)
+                        val recentUser = userDb.userDao().getUser()
+                        if (recentUser == null) {
+                            // No recent user, log the user in regularly
+                            userDb.userDao().insertUser(authResponse.user)
+                        } else if (recentUser.email != authResponse.user.email) {
+                            // Delete previous user from table since users are different
+                            userDb.userDao().deleteUsers()
+                            // User does not exist in the db so add them
+                            userDb.userDao().insertUser(authResponse.user)
+                        } else {
+                            // Previous user is attempting to login, replace token
+                            userDb.userDao().updateUser(authResponse.user)
+                        }
+
+                        onSuccessfulLogin()
                     }
-
-                    onSuccessfulLogin()
+                    400, 404 -> {
+                        val jsonBody = responseBody?.string()
+                        val errorResponse = Gson().fromJson(jsonBody, ErrorResponse::class.java)
+                        onUnsuccessfulLogin(errorResponse.error.message)
+                    }
+                    else -> {
+                        onUnsuccessfulLogin("Internal Service Error, Please Try Again Later")
+                    }
                 }
-                400, 404 -> {
-                    val jsonBody = responseBody?.string()
-                    val errorResponse = Gson().fromJson(jsonBody, ErrorResponse::class.java)
-                    onUnsuccessfulLogin(errorResponse.error.message)
-                }
-                else -> {
-                    onUnsuccessfulLogin("Internal Service Error, Please Try Again Later")
-                }
+            } else {
+                onUnsuccessfulLogin("You are not connected to a network")
             }
         }
     }

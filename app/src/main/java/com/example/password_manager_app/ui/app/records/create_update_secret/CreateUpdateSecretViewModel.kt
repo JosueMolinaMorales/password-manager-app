@@ -1,8 +1,12 @@
 package com.example.password_manager_app.ui.app.records.create_update_secret
 
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.password_manager_app.model.Record
@@ -13,7 +17,7 @@ import com.example.password_manager_app.network.app.record.RecordNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
-class CreateUpdateSecretViewModel: ViewModel() {
+class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
     private val _key: MutableState<String> = mutableStateOf("")
     val key: State<String> = _key
 
@@ -28,8 +32,9 @@ class CreateUpdateSecretViewModel: ViewModel() {
 
     private val _isMakingRequest: MutableState<Boolean> = mutableStateOf(false)
     val isMakingRequest: State<Boolean> = _isMakingRequest
-
-    private val _recordNetwork = RecordNetwork()
+    private val ctx = getApplication<Application>()
+    private val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    private val _recordNetwork = RecordNetwork(connectivityManager)
 
     fun setKey(key: String) {
         _key.value = key
