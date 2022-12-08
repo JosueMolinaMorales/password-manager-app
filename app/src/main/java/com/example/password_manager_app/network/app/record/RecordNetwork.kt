@@ -102,4 +102,21 @@ class RecordNetwork(private val connectivityManager: ConnectivityManager): IReco
             return null
         }
     }
+
+    override suspend fun searchRecord(token: String, userId: String, query: String): Response? {
+        if(connectivityManager.activeNetwork != null) {
+            return withContext(Dispatchers.IO) {
+                val request = Request.Builder()
+                    .url("${Routes.PasswordManagerRoute.route}/search/record/$userId?query=$query")
+                    .get()
+                    .addHeader("Authorization", "Bearer $token")
+                    .build()
+                val response = client.newCall(request).execute()
+                response
+            }
+        } else {
+            return null
+        }
+
+    }
 }

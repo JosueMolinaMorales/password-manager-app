@@ -2,8 +2,6 @@ package com.example.password_manager_app.ui
 
 import android.annotation.SuppressLint
 import android.content.ClipboardManager
-import android.util.Log
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -30,14 +28,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.password_manager_app.data.PagesWithBottomSheet
+import com.example.password_manager_app.data.User
 import com.example.password_manager_app.model.ActionOnRecord
 import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
 import com.example.password_manager_app.ui.app.records.create_update_secret.CreateSecretPage
-import com.example.password_manager_app.ui.components.BottomSheetComponent
 import com.example.password_manager_app.ui.app.records.RecordsView
 import com.example.password_manager_app.ui.app.records.create_update_password.CreateUpdatePasswordPage
-import com.example.password_manager_app.ui.app.records.RecordsViewViewModel
+import com.example.password_manager_app.ui.app.records.RecordsViewModel
 import com.example.password_manager_app.ui.components.NavigationDrawer
 import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.TopBarOpal
@@ -57,142 +55,116 @@ fun MainScreen(
     val focusManager = LocalFocusManager.current
     val bottomState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val showFAB = remember { mutableStateOf(true) }
-    val currentPage = remember { mutableStateOf(PagesWithBottomSheet.HomePage) }
     val vm: MainScreenViewModel = viewModel()
-    val recordsViewViewModel: RecordsViewViewModel = viewModel()
+    val recordsViewModel: RecordsViewModel = viewModel()
 
     if(vm.user.value == null) {
         CircularProgressIndicator()
     }else {
-        ModalBottomSheetLayout(
-            sheetContent = {
-                BottomSheetComponent(
-                    onCreatePasswordClick = {
-                        innerNav.navigate("createPassword/create/new")
-                        coroutineScope.launch {
-                            bottomState.hide()
-                        }
-                    },
-                    onCreateSecretClick = {
-                        innerNav.navigate("createSecret/create/new")
-                        coroutineScope.launch {
-                            bottomState.hide()
-                        }
-                    },
-                    onGeneratePassword = {
-                        coroutineScope.launch {
-                            bottomState.hide()
-                        }
-                    },
-                    currentPage = currentPage.value
+        Scaffold (
+            scaffoldState = scaffoldState,
+            topBar = {
+                TopBar {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.open()
+                    }
+                }
+            },
+            floatingActionButton = {
+                AddSecretFAB(
+                    onClick = { coroutineScope.launch { bottomState.show() }},
+                    showFAB = showFAB.value
                 )
             },
-            sheetState = bottomState,
-            sheetBackgroundColor = Charcoal,
-            scrimColor = Charcoal.copy(alpha = .5F)
+            drawerContent = {
+                NavigationDrawer(
+                    user = vm.user.value,
+                    scaffoldState = scaffoldState,
+                    coroutineScope = coroutineScope,
+                    navToSecrets = { innerNav.navigate("records") },
+                    navToProfile = { innerNav.navigate("profile") },
+                    Logout = {
+                        onLogOut()
+                    }
+                )
+            },
+            drawerBackgroundColor = Charcoal,
+            modifier = Modifier.pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
         ) {
-            Scaffold (
-                scaffoldState = scaffoldState,
-                topBar = {
-                    TopBar {
-                        coroutineScope.launch {
-                            scaffoldState.drawerState.open()
-                        }
-                    }
-                },
-                floatingActionButton = {
-                    AddSecretFAB(
-                        onClick = { coroutineScope.launch { bottomState.show() }},
-                        showFAB = showFAB.value
+            NavHost(navController = innerNav, startDestination = "records") {
+                composable("records") {
+                    RecordsView(
+                        onEditClick = { recordType, recordId ->
+                            if (recordType == RecordType.Secret) {
+                                innerNav.navigate("createSecret/update/$recordId")
+                            } else {
+                                innerNav.navigate("createPassword/update/$recordId")
+                            }
+                        },
+                        recordsViewModel = recordsViewModel,
+                        mainScreenViewModel = vm,
+                        clipboard = clipboard
                     )
-                },
-                drawerContent = {
-                    NavigationDrawer(
-                        user = vm.user.value,
-                        scaffoldState = scaffoldState,
-                        coroutineScope = coroutineScope,
-                        navToSecrets = { innerNav.navigate("records") },
-                        navToProfile = { innerNav.navigate("profile") },
-                        Logout = {
-                            onLogOut()
-                        }
-                    )
-                },
-                drawerBackgroundColor = Charcoal,
-                modifier = Modifier.pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    })
+                    showFAB.value = true
                 }
-            ) {
-                NavHost(navController = innerNav, startDestination = "records") {
-                    composable("records") {
-                        RecordsView(
-                            onEditClick = { recordType, recordId ->
-                                if (recordType == RecordType.Secret) {
-                                    innerNav.navigate("createSecret/update/$recordId")
-                                } else {
-                                    innerNav.navigate("createPassword/update/$recordId")
-                                }
-                            },
-                            recordsViewModel = recordsViewViewModel,
-                            mainScreenViewModel = vm,
-                            clipboard = clipboard
-                        )
-                        showFAB.value = true
-                    }
-                    composable("profile") {
-                        Profile()
-                        showFAB.value = false
-                        currentPage.value = PagesWithBottomSheet.ProfilePage
-                    }
-                    composable(
-                        route = "createPassword/{action}/{recordId}",
-                        arguments = listOf(
-                            navArgument("action") { type =  NavType.StringType },
-                            navArgument("recordId") { type = NavType.StringType }
-                        )
-                    ) { navBackStack ->
-                        CreateUpdatePasswordPage(
-                            token = vm.user.value?.token ?: "",
-                            onNavigateHome = {
-                                innerNav.navigate("records") {
-                                    popUpTo("records") { inclusive = true }
-                                }
-                            },
-                            action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
-                                ActionOnRecord.Create
-                            } else {
-                                ActionOnRecord.Update
-                            },
-                            recordId = navBackStack.arguments?.getString("recordId")
-                        )
-                        showFAB.value = false
-
-                    }
-                    composable(
-                        route = "createSecret/{action}/{recordId}",
-                        arguments = listOf(
-                            navArgument("action") { type =  NavType.StringType },
-                            navArgument("recordId") { type = NavType.StringType }
-                        )
-                    ) { navBackStack ->
-                        CreateSecretPage(
-                            token = vm.user.value?.token ?: "",
-                            onNavigateHome = {
-                                innerNav.navigate("records") {
-                                    popUpTo("records") { inclusive = true }
-                                }
-                            },
-                            action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
-                                ActionOnRecord.Create
-                            } else {
-                                ActionOnRecord.Update
-                            },
-                            recordId = navBackStack.arguments?.getString("recordId")
-                        )
-                        showFAB.value = false
-                    }
+                composable("profile") {
+                    Profile(
+                        user = vm.user.value ?: User(),
+                        onEditChange = { newUser ->
+                            vm.updateUser(newUser)
+                        }
+                    )
+                    showFAB.value = false
+                }
+                composable(
+                    route = "createPassword/{action}/{recordId}",
+                    arguments = listOf(
+                        navArgument("action") { type =  NavType.StringType },
+                        navArgument("recordId") { type = NavType.StringType }
+                    )
+                ) { navBackStack ->
+                    CreateUpdatePasswordPage(
+                        token = vm.user.value?.token ?: "",
+                        onNavigateHome = {
+                            innerNav.navigate("records") {
+                                popUpTo("records") { inclusive = true }
+                            }
+                        },
+                        action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
+                            ActionOnRecord.Create
+                        } else {
+                            ActionOnRecord.Update
+                        },
+                        recordId = navBackStack.arguments?.getString("recordId")
+                    )
+                    showFAB.value = false
+                }
+                composable(
+                    route = "createSecret/{action}/{recordId}",
+                    arguments = listOf(
+                        navArgument("action") { type =  NavType.StringType },
+                        navArgument("recordId") { type = NavType.StringType }
+                    )
+                ) { navBackStack ->
+                    CreateSecretPage(
+                        token = vm.user.value?.token ?: "",
+                        onNavigateHome = {
+                            innerNav.navigate("records") {
+                                popUpTo("records") { inclusive = true }
+                            }
+                        },
+                        action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
+                            ActionOnRecord.Create
+                        } else {
+                            ActionOnRecord.Update
+                        },
+                        recordId = navBackStack.arguments?.getString("recordId")
+                    )
+                    showFAB.value = false
                 }
             }
         }
@@ -236,63 +208,3 @@ fun NavigationItem(icon: ImageVector, text: String, onClick: () -> Unit) {
         )
     }
 }
-
-/*
-            NavHost(navController = innerNav, startDestination = "records") {
-                composable("records") {
-                    RecordsView(
-                        onEditClick = { recordType ->
-                            if (recordType == RecordType.Secret) {
-                                innerNav.navigate("createSecret/update")
-                            } else {
-                                innerNav.navigate("createPassword/update")
-                            }
-                        }
-                    )
-                    showFAB.value = true
-                    currentPage.value = PagesWithBottomSheet.HomePage
-                }
-                composable("profile") {
-                    Profile()
-                    showFAB.value = false
-                    currentPage.value = PagesWithBottomSheet.ProfilePage
-                }
-                composable(
-                    route = "createPassword/{action}",
-                    arguments = listOf(navArgument("action") { type =  NavType.StringType })
-                ) { navBackStack ->
-                    CreateUpdatePasswordPage(
-                        token = vm.user.value?.token ?: "",
-                        onNavigateHome = {
-                            innerNav.navigate("records") {
-                                popUpTo("records") { inclusive = true }
-                            }
-                        },
-                        action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
-                            ActionOnRecord.Create
-                        } else {
-                            ActionOnRecord.Update
-                        },
-                        recordId = "638b8bba27d7b9da05b3b719", // TODO Change this
-                
-                composable(
-                    route = "createSecret/{action}",
-                    arguments = listOf(navArgument("action") { type =  NavType.StringType })
-                ) { navBackStack ->
-                    CreateSecretPage(
-                        token = vm.user.value?.token ?: "",
-                        onNavigateHome = {
-                            innerNav.navigate("records") {
-                                popUpTo("records") { inclusive = true }
-                            }
-                        },
-                        action = if (navBackStack.arguments?.getString("action") == ActionOnRecord.Create.value) {
-                            ActionOnRecord.Create
-                        } else {
-                            ActionOnRecord.Update
-                        },
-                        recordId = "638664aa694ab33a12a05110", // TODO Change this
-                    )
-                    showFAB.value = false
-
-*/
