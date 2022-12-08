@@ -1,4 +1,4 @@
-package com.example.password_manager_app.ui
+package com.example.password_manager_app.ui.auth.homescreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

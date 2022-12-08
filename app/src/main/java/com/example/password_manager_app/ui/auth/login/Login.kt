@@ -1,4 +1,4 @@
-package com.example.password_manager_app.ui
+package com.example.password_manager_app.ui.auth.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.password_manager_app.R
-import com.example.password_manager_app.data.AuthResponse
 import com.example.password_manager_app.ui.auth.login.LoginViewModel
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.components.PasswordManagerSnackbar

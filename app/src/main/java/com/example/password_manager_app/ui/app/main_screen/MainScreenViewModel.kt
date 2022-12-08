@@ -1,7 +1,6 @@
 package com.example.password_manager_app.ui.app.main_screen
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -9,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.password_manager_app.data.PasswordManagerDatabase
-import com.example.password_manager_app.data.User
+import com.example.password_manager_app.model.User
 import kotlinx.coroutines.launch
 
 class MainScreenViewModel(app: Application): AndroidViewModel(app) {

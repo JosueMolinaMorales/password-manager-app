@@ -1,11 +1,8 @@
 package com.example.password_manager_app.network.auth
 
 import android.net.ConnectivityManager
-import android.net.Network
-import android.os.Build
-import androidx.annotation.RequiresApi
-import com.example.password_manager_app.data.LoginForm
-import com.example.password_manager_app.data.RegisterForm
+import com.example.password_manager_app.model.LoginForm
+import com.example.password_manager_app.model.RegisterForm
 import com.example.password_manager_app.network.Routes
 import com.example.password_manager_app.network.interfaces.IAuthNetwork
 import com.google.gson.Gson

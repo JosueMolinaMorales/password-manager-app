@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.password_manager_app.R
-import com.example.password_manager_app.data.User
-import com.example.password_manager_app.ui.NavigationItem
+import com.example.password_manager_app.model.User
+import com.example.password_manager_app.ui.app.main_screen.NavigationItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

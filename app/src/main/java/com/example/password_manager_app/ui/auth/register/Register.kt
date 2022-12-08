@@ -1,4 +1,4 @@
-package com.example.password_manager_app.ui
+package com.example.password_manager_app.ui.auth.register
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image

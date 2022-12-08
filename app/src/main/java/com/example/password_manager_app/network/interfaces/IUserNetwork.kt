@@ -1,6 +1,6 @@
 package com.example.password_manager_app.network.interfaces
 
-import com.example.password_manager_app.data.UpdateForm
+import com.example.password_manager_app.model.UpdateForm
 import okhttp3.Response
 
 interface IUserNetwork {

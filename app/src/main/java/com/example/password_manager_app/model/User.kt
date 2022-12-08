@@ -1,4 +1,4 @@
-package com.example.password_manager_app.data
+package com.example.password_manager_app.model
 
 import androidx.room.*
 import com.google.gson.annotations.Expose

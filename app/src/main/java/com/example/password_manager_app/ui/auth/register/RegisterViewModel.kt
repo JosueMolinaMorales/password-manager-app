@@ -11,9 +11,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
-import com.example.password_manager_app.data.AuthResponse
+import com.example.password_manager_app.model.AuthResponse
 import com.example.password_manager_app.data.PasswordManagerDatabase
-import com.example.password_manager_app.data.RegisterForm
+import com.example.password_manager_app.model.RegisterForm
 import com.example.password_manager_app.network.ErrorResponse
 import com.example.password_manager_app.network.auth.AuthNetwork
 import com.google.gson.Gson
@@ -146,12 +146,14 @@ class RegisterViewModel(app: Application): AndroidViewModel(app) {
     ) {
         viewModelScope.launch {
             _makingRequest.value = true
-            val response = authNetwork.register(RegisterForm(
+            val response = authNetwork.register(
+                RegisterForm(
                 name = _name.value.trim(),
                 username = _username.value.trim(),
                 email = _email.value.trim(),
                 password = _password.value
-            ))
+            )
+            )
             if(response != null) {
                 _makingRequest.value = false
                 val body = response.body?.string()

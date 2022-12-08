@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.password_manager_app.nav.PasswordManagerNavigation
-import com.example.password_manager_app.ui.LoginScreen
+import com.example.password_manager_app.ui.auth.login.LoginScreen
 import com.example.password_manager_app.ui.theme.PasswordmanagerappTheme
 
 class MainActivity : ComponentActivity() {

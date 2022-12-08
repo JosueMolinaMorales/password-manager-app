@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.password_manager_app.data.PasswordManagerDatabase
-import com.example.password_manager_app.data.User
+import com.example.password_manager_app.model.User
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(app: Application): AndroidViewModel(app) {

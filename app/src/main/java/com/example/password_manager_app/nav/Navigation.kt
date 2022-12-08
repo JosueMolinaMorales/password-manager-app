@@ -5,7 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.password_manager_app.ui.*
+import com.example.password_manager_app.ui.app.main_screen.MainScreen
+import com.example.password_manager_app.ui.auth.homescreen.HomeScreen
+import com.example.password_manager_app.ui.auth.login.LoginScreen
+import com.example.password_manager_app.ui.auth.register.RegisterScreen
 
 @Composable
 fun PasswordManagerNavigation(

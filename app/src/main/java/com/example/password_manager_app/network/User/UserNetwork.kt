@@ -1,7 +1,7 @@
 package com.example.password_manager_app.network.User
 
 import android.net.ConnectivityManager
-import com.example.password_manager_app.data.UpdateForm
+import com.example.password_manager_app.model.UpdateForm
 import com.example.password_manager_app.network.Routes
 import com.example.password_manager_app.network.interfaces.IUserNetwork
 import com.google.gson.Gson

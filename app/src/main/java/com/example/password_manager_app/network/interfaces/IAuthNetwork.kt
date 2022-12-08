@@ -1,11 +1,8 @@
 package com.example.password_manager_app.network.interfaces
 
-import com.example.password_manager_app.data.AuthResponse
-import com.example.password_manager_app.data.LoginForm
-import com.example.password_manager_app.data.RegisterForm
-import com.example.password_manager_app.data.UpdateForm
+import com.example.password_manager_app.model.LoginForm
+import com.example.password_manager_app.model.RegisterForm
 import okhttp3.Response
-import okhttp3.ResponseBody
 
 interface IAuthNetwork {
     suspend fun login(loginForm: LoginForm): Response?

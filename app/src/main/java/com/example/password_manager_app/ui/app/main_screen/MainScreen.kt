@@ -1,4 +1,4 @@
-package com.example.password_manager_app.ui
+package com.example.password_manager_app.ui.app.main_screen
 
 import android.annotation.SuppressLint
 import android.content.ClipboardManager
@@ -27,11 +27,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.password_manager_app.data.PagesWithBottomSheet
-import com.example.password_manager_app.data.User
+import com.example.password_manager_app.model.User
 import com.example.password_manager_app.model.ActionOnRecord
 import com.example.password_manager_app.model.RecordType
-import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
+import com.example.password_manager_app.ui.Profile
 import com.example.password_manager_app.ui.app.records.create_update_secret.CreateSecretPage
 import com.example.password_manager_app.ui.app.records.RecordsView
 import com.example.password_manager_app.ui.app.records.create_update_password.CreateUpdatePasswordPage

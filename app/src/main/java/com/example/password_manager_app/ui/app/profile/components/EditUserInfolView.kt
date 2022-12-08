@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.password_manager_app.data.User
+import com.example.password_manager_app.model.User
 import com.example.password_manager_app.ui.EditProfileSelection
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.components.PasswordManagerSnackbar

@@ -10,8 +10,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.password_manager_app.data.PasswordManagerDatabase
-import com.example.password_manager_app.data.UpdateForm
-import com.example.password_manager_app.data.User
+import com.example.password_manager_app.model.UpdateForm
+import com.example.password_manager_app.model.User
 import com.example.password_manager_app.network.ErrorResponse
 import com.example.password_manager_app.network.User.UserNetwork
 import com.google.gson.Gson
@@ -146,13 +146,15 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
         viewModelScope.launch {
             val user: User? = userDb.userDao().getUser()
             _makingRequest.value = true
-            val response = userNetwork.update(UpdateForm(
+            val response = userNetwork.update(
+                UpdateForm(
                 email = if(_email.value == "") {null} else {_email.value.trim()},
                 password = _password.value.trim(),
                 new_password = if(_newPassword.value == "") { null } else { _newPassword.value.trim() },
                 token = user?.token ?: "",
                 user_id = user?.id ?: ""
-            ))
+            )
+            )
             _makingRequest.value = false
             if(response != null) {
                 val body = response.body?.string()
