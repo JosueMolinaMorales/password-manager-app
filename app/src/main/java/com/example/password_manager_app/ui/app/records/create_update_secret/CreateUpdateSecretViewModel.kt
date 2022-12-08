@@ -32,8 +32,10 @@ class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
 
     private val _isMakingRequest: MutableState<Boolean> = mutableStateOf(false)
     val isMakingRequest: State<Boolean> = _isMakingRequest
+
     private val ctx = getApplication<Application>()
     private val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
     private val _recordNetwork = RecordNetwork(connectivityManager)
 
     fun setKey(key: String) {
@@ -77,21 +79,24 @@ class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
                 secret = _secret.value
             ), token)
             _isMakingRequest.value = false
-            val body = res.body
-            when (res.code) {
-                200, 201 -> {
-                    // Res body contains id of new record, could be stored in database
-                    onSuccessfulSecretCreate()
+            if (res != null) {
+                val body = res.body
+                when (res.code) {
+                    200, 201 -> {
+                        // Res body contains id of new record, could be stored in database
+                        onSuccessfulSecretCreate()
+                    }
+                    400 -> {
+                        val errBody = Gson().fromJson(body?.string(), ErrorResponse::class.java)
+                        onUnsuccessfulCreate(errBody.error.message)
+                    }
+                    else -> {
+                        onUnsuccessfulCreate("Internal Service Error, Please Try Again Later")
+                    }
                 }
-                400 -> {
-                    val errBody = Gson().fromJson(body?.string(), ErrorResponse::class.java)
-                    onUnsuccessfulCreate(errBody.error.message)
-                }
-                else -> {
-                    onUnsuccessfulCreate("Internal Service Error, Please Try Again Later")
-                }
+            } else {
+                onUnsuccessfulCreate("Not connected to the network")
             }
-
         }
     }
 
@@ -106,20 +111,25 @@ class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
                 recordId = recordId,
                 token = token
             )
-            when (res.code) {
-                200 -> {
-                    val body = res.body?.string()
-                    val record = Gson().fromJson(body, Record::class.java)
-                    _key.value = record.key ?: ""
-                    _secret.value = record.secret ?: ""
+            if(res != null){
+                when (res.code) {
+                    200 -> {
+                        val body = res.body?.string()
+                        val record = Gson().fromJson(body, Record::class.java)
+                        _key.value = record.key ?: ""
+                        _secret.value = record.secret ?: ""
+                    }
+                    404 -> {
+                        onNotFound()
+                    }
+                    else -> {
+                        onError("An Error Occurred. Please Try again later")
+                    }
                 }
-                404 -> {
-                    onNotFound()
-                }
-                else -> {
-                    onError("An Error Occurred. Please Try again later")
-                }
+            } else {
+              onError("Not Connected to the network")
             }
+
         }
     }
 
@@ -140,17 +150,21 @@ class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
                 recordId = recordId
             )
             _isMakingRequest.value = false
-            when (res.code) {
-                200, 201, 204 -> {
-                    onSuccess()
+            if(res != null) {
+                when (res.code) {
+                    200, 201, 204 -> {
+                        onSuccess()
+                    }
+                    400 -> {
+                        val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
+                        onError(error.error.message)
+                    }
+                    else -> {
+                        onError("Internal Service Error, Please Try Again Later.")
+                    }
                 }
-                400 -> {
-                    val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
-                    onError(error.error.message)
-                }
-                else -> {
-                    onError("Internal Service Error, Please Try Again Later.")
-                }
+            } else {
+                onError("Not connected to the network")
             }
         }
     }

@@ -25,10 +25,7 @@ import com.example.password_manager_app.ui.app.records.view_records.ViewSecret
 import com.example.password_manager_app.ui.app.records.view_records.ViewSecretViewModel
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.components.PasswordManagerSnackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -51,7 +48,9 @@ fun RecordsView(
                 token = mainScreenViewModel.user.value?.token!!,
                 userId = mainScreenViewModel.user.value?.id!!,
                 onSuccess = { showPasswordViewModel.hide() },
-                onError = {}
+                onError = { msg ->
+                    errorMsg.value = msg
+                }
             )
         }
     )
@@ -64,7 +63,9 @@ fun RecordsView(
                 token = mainScreenViewModel.user.value?.token!!,
                 userId = mainScreenViewModel.user.value?.id!!,
                 onSuccess = { showSecretViewModel.hide() },
-                onError = {}
+                onError = { msg ->
+                    errorMsg.value = msg
+                }
             )
         }
     )
@@ -72,11 +73,11 @@ fun RecordsView(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top
     ) {
-        LaunchedEffect(key1 = recordsViewModel.records.value,){
+        LaunchedEffect(key1 = recordsViewModel.records.value){
             recordsViewModel.fetchRecords(
                 mainScreenViewModel.user.value?.token!!,
                 mainScreenViewModel.user.value?.id!!,
-                onUnsuccessfulLogin = { msg ->
+                onUnsuccessfulFetch = { msg ->
                     errorMsg.value = msg
                 }
             )

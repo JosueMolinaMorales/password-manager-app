@@ -22,65 +22,85 @@ class RecordNetwork(connectivityManager: ConnectivityManager): IRecordNetwork {
 
     private val network = connectivityManager.activeNetwork
 
-    override suspend fun createRecord(record: Record, token: String): Response {
-
-        return withContext(Dispatchers.IO) {
-            val requestBody = Gson().toJson(record).toRequestBody()
-            val request = Request.Builder()
-                .url("${Routes.PasswordManagerRoute.route}/record")
-                .addHeader("Authorization", "Bearer $token")
-                .post(requestBody)
-                .build()
-            val response = client.newCall(request).execute()
-            response
+    override suspend fun createRecord(record: Record, token: String): Response? {
+        if(network!=null){
+            return withContext(Dispatchers.IO) {
+                val requestBody = Gson().toJson(record).toRequestBody()
+                val request = Request.Builder()
+                    .url("${Routes.PasswordManagerRoute.route}/record")
+                    .addHeader("Authorization", "Bearer $token")
+                    .post(requestBody)
+                    .build()
+                val response = client.newCall(request).execute()
+                response
+            }
+        } else {
+            return null
         }
     }
 
-    override suspend fun getRecord(recordId: String, token: String): Response {
-        return withContext(Dispatchers.IO) {
-            val request = Request.Builder()
-                .url("${Routes.PasswordManagerRoute.route}/record/$recordId/")
-                .addHeader("Authorization", "Bearer $token")
-                .get()
-                .build()
-            client.newCall(request).execute()
+    override suspend fun getRecord(recordId: String, token: String): Response? {
+        if (network != null) {
+            return withContext(Dispatchers.IO) {
+                val request = Request.Builder()
+                    .url("${Routes.PasswordManagerRoute.route}/record/$recordId/")
+                    .addHeader("Authorization", "Bearer $token")
+                    .get()
+                    .build()
+                client.newCall(request).execute()
+            }
+        }else{
+            return null
         }
     }
 
-    override suspend fun updateRecord(recordId: String, token: String, updatedRecord: UpdateRecord): Response {
-        return withContext(Dispatchers.IO) {
-            val requestBody = Gson().toJson(updatedRecord).toRequestBody()
-            val request = Request.Builder()
-                .url("${Routes.PasswordManagerRoute.route}/record/$recordId")
-                .addHeader("Authorization", "Bearer $token")
-                .patch(requestBody)
-                .build()
-            val response = client.newCall(request).execute()
-            response
+    override suspend fun updateRecord(recordId: String, token: String, updatedRecord: UpdateRecord): Response? {
+        if (network != null) {
+            return withContext(Dispatchers.IO) {
+                val requestBody = Gson().toJson(updatedRecord).toRequestBody()
+                val request = Request.Builder()
+                    .url("${Routes.PasswordManagerRoute.route}/record/$recordId")
+                    .addHeader("Authorization", "Bearer $token")
+                    .patch(requestBody)
+                    .build()
+                val response = client.newCall(request).execute()
+                response
+            }
+        } else {
+            return null
+        }
+
+    }
+
+    override suspend fun fetchRecords(token: String, userId: String): Response? {
+        if (network != null) {
+            return withContext(Dispatchers.IO) {
+                val request = Request.Builder()
+                    .url("${Routes.PasswordManagerRoute.route}/record/${userId}/all")
+                    .addHeader("Authorization", "Bearer $token")
+                    .get()
+                    .build()
+                val response = client.newCall(request).execute()
+                response
+            }
+        } else {
+            return null
         }
     }
 
-    override suspend fun fetchRecords(token: String, userId: String): Response {
-        return withContext(Dispatchers.IO) {
-            val request = Request.Builder()
-                .url("${Routes.PasswordManagerRoute.route}/record/${userId}/all")
-                .addHeader("Authorization", "Bearer $token")
-                .get()
-                .build()
-            val response = client.newCall(request).execute()
-            response
-        }
-    }
-
-    override suspend fun deleteRecord(token: String, recordId: String): Response {
-        return withContext(Dispatchers.IO) {
-            val request = Request.Builder()
-                .url("${Routes.PasswordManagerRoute.route}/record/$recordId")
-                .delete()
-                .addHeader("Authorization", "Bearer $token")
-                .build()
-            val response = client.newCall(request).execute()
-            response
+    override suspend fun deleteRecord(token: String, recordId: String): Response? {
+        if (network != null) {
+            return withContext(Dispatchers.IO) {
+                val request = Request.Builder()
+                    .url("${Routes.PasswordManagerRoute.route}/record/$recordId")
+                    .delete()
+                    .addHeader("Authorization", "Bearer $token")
+                    .build()
+                val response = client.newCall(request).execute()
+                response
+            }
+        } else {
+            return null
         }
     }
 }

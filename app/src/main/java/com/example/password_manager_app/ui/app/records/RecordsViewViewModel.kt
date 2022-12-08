@@ -35,37 +35,46 @@ class RecordsViewViewModel(app: Application): AndroidViewModel(app) {
         token: String,
         userId: String,
         onSuccess: () -> Unit,
-        onError: () -> Unit
+        onError: (String) -> Unit
     ) {
         viewModelScope.launch {
             _isMakingDeleteRequest.value = true
             val res = recNet.deleteRecord(token = token, recordId = recordId)
             _isMakingDeleteRequest.value = false
-            when (res.code) {
-                204 -> {
-                    onSuccess()
-                    fetchRecords(token = token, userId = userId, {})
+            if (res != null) {
+                when (res.code) {
+                    204 -> {
+                        onSuccess()
+                        fetchRecords(token = token, userId = userId, {})
+                    }
+                    else -> onError("Internal Service Error")
                 }
-                else -> onError()
+            } else {
+                onError("Not connected to the network")
             }
         }
     }
     
-    suspend fun fetchRecords(token: String, userId: String, onUnsuccessfulLogin: (String) -> Unit) {
+    suspend fun fetchRecords(token: String, userId: String, onUnsuccessfulFetch: (String) -> Unit) {
         val response = recNet.fetchRecords(token, userId)
-        when (response.code) {
-            200 -> {
-                val gson = Gson()
-                val listType: Type = object: TypeToken<List<Record>>() {}.type
-                if(response.body != null) {
-                    _records.value = gson.fromJson(response.body!!.string(), listType)
-                } else {
-                    _records.value = listOf()
+        if(response != null) {
+            when (response.code) {
+                200 -> {
+                    val gson = Gson()
+                    val listType: Type = object: TypeToken<List<Record>>() {}.type
+                    if(response.body != null) {
+                        _records.value = gson.fromJson(response.body!!.string(), listType)
+                    } else {
+                        _records.value = listOf()
+                    }
+                }
+                else -> {
+                    onUnsuccessfulFetch("Internal Service Error, Please Try Again Later")
                 }
             }
-            else -> {
-                onUnsuccessfulLogin("Internal Service Error, Please Try Again Later")
-            }
+        } else {
+            onUnsuccessfulFetch("Not Connected to the network")
         }
+
     }
 }

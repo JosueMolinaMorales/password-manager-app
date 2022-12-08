@@ -114,17 +114,21 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
                 token = token
             )
             _isMakingRequest.value = false
-            when (res.code) {
-                200, 201 -> {
-                    onSuccessfulCreation()
+            if(res!=null) {
+                when (res.code) {
+                    200, 201 -> {
+                        onSuccessfulCreation()
+                    }
+                    400 -> {
+                        val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
+                        onUnsuccessfulCreation(error.error.message)
+                    }
+                    else -> {
+                        onUnsuccessfulCreation("Internal Service Error, Please Try Again Later.")
+                    }
                 }
-                400 -> {
-                    val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
-                    onUnsuccessfulCreation(error.error.message)
-                }
-                else -> {
-                    onUnsuccessfulCreation("Internal Service Error, Please Try Again Later.")
-                }
+            } else {
+                onUnsuccessfulCreation("Not connected to the network")
             }
         }
     }
@@ -140,23 +144,27 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
                 recordId = recordId,
                 token = token
             )
-            when (res.code) {
-                200 -> {
-                    val body = res.body?.string()
-                    _record.value = Gson().fromJson(body, Record::class.java)
-                    _username.value = _record.value?.username ?: ""
-                    _email.value = _record.value?.email ?: ""
-                    _password.value = _record.value?.password ?: ""
-                    _service.value = _record.value?.service ?: ""
+            if (res != null) {
+                when (res.code) {
+                    200 -> {
+                        val body = res.body?.string()
+                        _record.value = Gson().fromJson(body, Record::class.java)
+                        _username.value = _record.value?.username ?: ""
+                        _email.value = _record.value?.email ?: ""
+                        _password.value = _record.value?.password ?: ""
+                        _service.value = _record.value?.service ?: ""
+                    }
+                    404 -> {
+                        onNotFound()
+                    }
+                    else -> {
+                        val body = res.body?.string()
+                        val errorRes = Gson().fromJson(body, ErrorResponse::class.java)
+                        onError(errorRes.error.message)
+                    }
                 }
-                404 -> {
-                    onNotFound()
-                }
-                else -> {
-                    val body = res.body?.string()
-                    val errorRes = Gson().fromJson(body, ErrorResponse::class.java)
-                    onError(errorRes.error.message)
-                }
+            } else {
+                onError("Not connected to the network")
             }
         }
     }
@@ -180,17 +188,21 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
                 recordId = recordId
             )
             _isMakingRequest.value = false
-            when (res.code) {
-                200, 201, 204 -> {
-                    onSuccess()
+            if (res != null) {
+                when (res.code) {
+                    200, 201, 204 -> {
+                        onSuccess()
+                    }
+                    400 -> {
+                        val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
+                        onError(error.error.message)
+                    }
+                    else -> {
+                        onError("Internal Service Error, Please Try Again Later.")
+                    }
                 }
-                400 -> {
-                    val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
-                    onError(error.error.message)
-                }
-                else -> {
-                    onError("Internal Service Error, Please Try Again Later.")
-                }
+            } else {
+                onError("Not connected to the network")
             }
         }
     }
