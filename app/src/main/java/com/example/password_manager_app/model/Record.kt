@@ -4,6 +4,9 @@ import com.example.password_manager_app.model.RecordType
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Data class for a Record Object
+ */
 data class Record(
     @SerializedName(value = "record_type")
     val recordType: RecordType,
@@ -19,6 +22,9 @@ data class Record(
 ) {
 }
 
+/**
+ * Data class for updating a record
+ */
 data class UpdateRecord(
     val key: String? = null,
     val secret: String? = null,
