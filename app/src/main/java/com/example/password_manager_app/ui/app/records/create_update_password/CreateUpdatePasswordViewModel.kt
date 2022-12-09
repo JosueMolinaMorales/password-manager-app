@@ -13,10 +13,14 @@ import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.model.UpdateRecord
 import com.example.password_manager_app.network.ErrorResponse
+import com.example.password_manager_app.network.HttpCodes
 import com.example.password_manager_app.network.app.record.RecordNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
+/**
+ * The ViewModel for creating/updating a password record
+ */
 class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
 
     private val _service: MutableState<String> = mutableStateOf("")
@@ -73,6 +77,9 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
         _passwordHasError.value = _password.value == ""
     }
 
+    /**
+     * Validates all the fields
+     */
     fun validate(): String? {
         // Required Fields
         if (_service.value == "" && _password.value == "") {
@@ -96,6 +103,9 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
         return null
     }
 
+    /**
+     * Calls the api to create the password
+     */
     fun createPassword(
         token: String,
         onSuccessfulCreation: () -> Unit,
@@ -116,10 +126,10 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
             _isMakingRequest.value = false
             if(res!=null) {
                 when (res.code) {
-                    200, 201 -> {
+                    HttpCodes.Ok.code, HttpCodes.Created.code -> {
                         onSuccessfulCreation()
                     }
-                    400 -> {
+                    HttpCodes.BadRequest.code -> {
                         val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
                         onUnsuccessfulCreation(error.error.message)
                     }
@@ -133,6 +143,9 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Gets a record from the api, if they are attempting to update it
+     */
     fun getRecord(
         recordId: String,
         token: String,
@@ -146,7 +159,7 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
             )
             if (res != null) {
                 when (res.code) {
-                    200 -> {
+                    HttpCodes.Ok.code -> {
                         val body = res.body?.string()
                         _record.value = Gson().fromJson(body, Record::class.java)
                         _username.value = _record.value?.username ?: ""
@@ -154,7 +167,7 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
                         _password.value = _record.value?.password ?: ""
                         _service.value = _record.value?.service ?: ""
                     }
-                    404 -> {
+                    HttpCodes.NotFound.code -> {
                         onNotFound()
                     }
                     else -> {
@@ -169,6 +182,9 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Calls the api to update a password record
+     */
     fun updatePassword(
         token: String,
         recordId: String,
@@ -190,10 +206,10 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
             _isMakingRequest.value = false
             if (res != null) {
                 when (res.code) {
-                    200, 201, 204 -> {
+                    HttpCodes.Ok.code, HttpCodes.Created.code, HttpCodes.NoContent.code -> {
                         onSuccess()
                     }
-                    400 -> {
+                    HttpCodes.BadRequest.code, HttpCodes.NotFound.code -> {
                         val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
                         onError(error.error.message)
                     }

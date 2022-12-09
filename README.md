@@ -21,6 +21,9 @@ We all know that we shouldn't reuse passwords across services but it's nearly im
 - Backend Hosting: https://www.digitalocean.com/
 - OKHTTP3: https://square.github.io/okhttp/
 - GSON: https://github.com/google/gson
+- Database: https://www.mongodb.com/
+- Web API Framework: https://rocket.rs/
+- Kotlin: https://kotlinlang.org/
 
 ### References
  - Loading Images: https://developer.android.com/jetpack/compose/graphics/images/loading

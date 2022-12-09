@@ -11,12 +11,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.model.RecordType
+import com.example.password_manager_app.network.HttpCodes
 import com.example.password_manager_app.network.app.record.RecordNetwork
 import kotlinx.coroutines.launch
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
+/**
+ * The records view model
+ */
 class RecordsViewModel(app: Application): AndroidViewModel(app) {
     private val _isFetchingRecords: MutableState<Boolean> = mutableStateOf(false)
     val isFetchingRecords: State<Boolean> = _isFetchingRecords
@@ -74,7 +78,7 @@ class RecordsViewModel(app: Application): AndroidViewModel(app) {
             _isMakingDeleteRequest.value = false
             if (res != null) {
                 when (res.code) {
-                    204 -> {
+                    HttpCodes.NoContent.code -> {
                         onSuccess()
                         fetchRecords(token = token, userId = userId, {})
                     }
@@ -104,7 +108,7 @@ class RecordsViewModel(app: Application): AndroidViewModel(app) {
             _isFetchingRecords.value = false
             if (res != null) {
                 when (res.code) {
-                    200 -> {
+                    HttpCodes.Ok.code -> {
                         val gson = Gson()
                         val listType: Type = object: TypeToken<List<Record>>() {}.type
                         if(res.body != null) {
@@ -141,7 +145,7 @@ class RecordsViewModel(app: Application): AndroidViewModel(app) {
         val response = recNet.fetchRecords(token, userId)
         if(response != null) {
             when (response.code) {
-                200 -> {
+                HttpCodes.Ok.code -> {
                     val gson = Gson()
                     val listType: Type = object: TypeToken<List<Record>>() {}.type
                     if(response.body != null) {

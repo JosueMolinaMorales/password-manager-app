@@ -1,6 +1,8 @@
 package com.example.password_manager_app.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +25,9 @@ enum class EditProfileSelection{
     Email
 }
 
+/**
+ * The Profile View
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Profile(
@@ -32,7 +37,6 @@ fun Profile(
     val coroutineScope = rememberCoroutineScope()
     val selection = remember { mutableStateOf(EditProfileSelection.Password) }
     val bottomState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-
     ModalBottomSheetLayout(
         sheetContent = {
             EditUserInfoView(
@@ -51,7 +55,9 @@ fun Profile(
         scrimColor = Charcoal.copy(alpha = .5F)
     ) {
         Column(
-            Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             //Greeting

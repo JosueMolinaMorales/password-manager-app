@@ -11,11 +11,18 @@ import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 
+/**
+ * Network class for handling auth related calls to the API
+ */
 class AuthNetwork(private val connectivityManager: ConnectivityManager): IAuthNetwork {
     private val client = OkHttpClient()
 
-//TODO something with the connectivity manager
-
+    /**
+     * Attempts to log in with the given credentials.
+     *
+     * @param loginForm An object containing the login credentials.
+     * @return A response object containing the server's response, or null if there is no active network connection.
+     */
     override suspend fun login(loginForm: LoginForm): Response? {
         if (connectivityManager.activeNetwork != null) {
             return withContext(Dispatchers.IO) {
@@ -32,6 +39,12 @@ class AuthNetwork(private val connectivityManager: ConnectivityManager): IAuthNe
         }
     }
 
+    /**
+     * Attempts to register a new user with the given credentials.
+     *
+     * @param registerForm An object containing the registration information.
+     * @return A response object containing the server's response, or null if there is no active network connection.
+     */
     override suspend fun register(registerForm: RegisterForm): Response? {
         if (connectivityManager.activeNetwork != null) {
             return withContext(Dispatchers.IO) {

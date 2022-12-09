@@ -19,6 +19,9 @@ import com.example.password_manager_app.ui.theme.Charcoal
 import com.example.password_manager_app.ui.theme.LavenderBlush
 import com.example.password_manager_app.ui.theme.PewterBlue
 
+/**
+ * The View For an individual record row
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RecordRowView(

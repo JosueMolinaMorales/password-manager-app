@@ -3,6 +3,9 @@ package com.example.password_manager_app.model
 import androidx.room.*
 import com.google.gson.annotations.Expose
 
+/**
+ * An entity class that denotes the user
+ */
 @Entity
 data class User(
     @PrimaryKey
@@ -39,6 +42,10 @@ interface UserDao {
     @Update
     suspend fun updateUser(user: User)
 }
+
+/**
+ * This part of the file contains classes that will be used during login/registration
+ */
 
 class RegisterForm(
     var name: String = "",

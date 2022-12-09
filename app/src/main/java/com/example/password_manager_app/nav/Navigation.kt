@@ -10,42 +10,45 @@ import com.example.password_manager_app.ui.auth.homescreen.HomeScreen
 import com.example.password_manager_app.ui.auth.login.LoginScreen
 import com.example.password_manager_app.ui.auth.register.RegisterScreen
 
+/**
+ * Outer navigation prior to being logged in
+ */
 @Composable
 fun PasswordManagerNavigation(
     navController: NavHostController,
     clipboard: ClipboardManager
 ) {
-    NavHost(navController = navController, startDestination = "homeScreen" ) {
-        composable("login") {
+    NavHost(navController = navController, startDestination = Routes.HomePage.route ) {
+        composable(Routes.LoginPage.route) {
             LoginScreen(
                 onNavigateToMainScreen = {
-                    navController.navigate("mainScreen") {
-                        popUpTo("homeScreen") { inclusive = true }
+                    navController.navigate(Routes.MainScreenPage.route) {
+                        popUpTo(Routes.HomePage.route) { inclusive = true }
                     }
                 },
-                onNavigateToRegister = { navController.navigate("register") }
+                onNavigateToRegister = { navController.navigate(Routes.RegisterPage.route) }
             )
         }
-        composable("homeScreen") {
+        composable(Routes.HomePage.route) {
             HomeScreen(
-                onNavigateToLogin = { navController.navigate("login") },
-                onNavigateToRegister = { navController.navigate("register") }
+                onNavigateToLogin = { navController.navigate(Routes.LoginPage.route) },
+                onNavigateToRegister = { navController.navigate(Routes.RegisterPage.route) }
             )
         }
-        composable("register") {
+        composable(Routes.RegisterPage.route) {
             RegisterScreen(
-                onNavigateToLogin = { navController.navigate("login") },
+                onNavigateToLogin = { navController.navigate(Routes.LoginPage.route) },
                 onNavigateToMainScreen = {
-                    navController.navigate("mainScreen") {
-                        popUpTo("homeScreen") { inclusive = true }
+                    navController.navigate(Routes.MainScreenPage.route) {
+                        popUpTo(Routes.HomePage.route) { inclusive = true }
                     }
                 }
             )
         }
-        composable("mainScreen") {
+        composable(Routes.MainScreenPage.route) {
             MainScreen(onLogOut = {
-                navController.navigate("login") {
-                    popUpTo("mainScreen") { inclusive = true }
+                navController.navigate(Routes.LoginPage.route) {
+                    popUpTo(Routes.MainScreenPage.route) { inclusive = true }
                 }
             },
                 clipboard = clipboard

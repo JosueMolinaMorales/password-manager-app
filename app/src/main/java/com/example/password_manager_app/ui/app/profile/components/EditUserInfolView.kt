@@ -29,6 +29,9 @@ import com.example.password_manager_app.ui.components.PasswordManagerTextField
 import com.example.password_manager_app.ui.theme.LavenderBlush
 import kotlinx.coroutines.delay
 
+/**
+ * The Edit User Info View, will show a different view based on what they would like to edit
+ */
 @Composable
 fun EditUserInfoView(selection: EditProfileSelection, user: User?, onEditChange: (User) -> Unit) {
     val editUserViewModel: EditUserInfoViewModel = viewModel()
@@ -49,7 +52,9 @@ fun EditUserInfoView(selection: EditProfileSelection, user: User?, onEditChange:
 }
 
 
-
+/**
+ * View for changing a user's password
+ */
 @Composable
 fun ChangePasswordView(editUserViewModel: EditUserInfoViewModel, onEditChange: (User) -> Unit) {
     val focusManager: FocusManager = LocalFocusManager.current
@@ -151,6 +156,9 @@ fun ChangePasswordView(editUserViewModel: EditUserInfoViewModel, onEditChange: (
     }
 }
 
+/**
+ * View for changing a users email
+ */
 @Composable
 fun ChangeEmailView(editUserViewModel: EditUserInfoViewModel, onEditChange: (User) -> Unit,) {
     val focusManager: FocusManager = LocalFocusManager.current

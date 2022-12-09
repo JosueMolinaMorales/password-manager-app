@@ -15,6 +15,7 @@ import com.example.password_manager_app.model.AuthResponse
 import com.example.password_manager_app.data.PasswordManagerDatabase
 import com.example.password_manager_app.model.RegisterForm
 import com.example.password_manager_app.network.ErrorResponse
+import com.example.password_manager_app.network.HttpCodes
 import com.example.password_manager_app.network.auth.AuthNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -139,7 +140,6 @@ class RegisterViewModel(app: Application): AndroidViewModel(app) {
         return null
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     fun register(
         onSuccessfulRegistration: () -> Unit,
         onUnsuccessfulRegistration: () -> Unit
@@ -158,7 +158,7 @@ class RegisterViewModel(app: Application): AndroidViewModel(app) {
                 _makingRequest.value = false
                 val body = response.body?.string()
                 when (response.code) {
-                    201, 200 -> {
+                    HttpCodes.Created.code, HttpCodes.Ok.code -> {
                         val responseBody = Gson().fromJson(body, AuthResponse::class.java)
                         // Clear User table
                         userDb.userDao().deleteUsers()
@@ -168,7 +168,7 @@ class RegisterViewModel(app: Application): AndroidViewModel(app) {
                         userDb.userDao().insertUser(responseBody.user)
                         onSuccessfulRegistration()
                     }
-                    400 -> {
+                    HttpCodes.BadRequest.code -> {
                         val errorBody = Gson().fromJson(body,ErrorResponse::class.java)
                         _registerErrorMsg.value = errorBody.error.message
                         onUnsuccessfulRegistration()

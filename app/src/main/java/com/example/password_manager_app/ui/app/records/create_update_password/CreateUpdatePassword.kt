@@ -31,6 +31,9 @@ import com.example.password_manager_app.ui.theme.Charcoal
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * The Create/Update Page for a password record
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CreateUpdatePasswordPage(

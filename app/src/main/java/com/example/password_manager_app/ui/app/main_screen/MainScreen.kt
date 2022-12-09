@@ -42,6 +42,9 @@ import com.example.password_manager_app.ui.theme.TopBarOpal
 import kotlinx.coroutines.launch
 import com.example.password_manager_app.ui.components.TopBar
 
+/**
+ * The MainScreen view for the password manager
+ */
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -196,7 +199,9 @@ fun MainScreen(
 
 }
 
-
+/**
+ * The Floating Action Button Shown at the bottom right of screen
+ */
 @Composable
 private fun AddSecretFAB(onClick: () -> Unit, showFAB: Boolean = true) {
     if (showFAB) {
@@ -213,6 +218,9 @@ private fun AddSecretFAB(onClick: () -> Unit, showFAB: Boolean = true) {
     }
 }
 
+/**
+ * The Navigation Item For the Navigation Drawer
+ */
 @Composable
 fun NavigationItem(icon: ImageVector, text: String, onClick: () -> Unit) {
     Row(

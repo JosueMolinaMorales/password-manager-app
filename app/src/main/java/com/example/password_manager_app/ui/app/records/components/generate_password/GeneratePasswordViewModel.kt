@@ -7,6 +7,9 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import kotlin.random.Random
 
+/**
+ * The View Model that handles generating a new password
+ */
 class GeneratePasswordViewModel: ViewModel() {
     private val _sliderPosition: MutableState<Int> = mutableStateOf(8)
     val sliderPosition: State<Int> = _sliderPosition
@@ -36,6 +39,9 @@ class GeneratePasswordViewModel: ViewModel() {
         _includeSpecialCharacters.value = includeSpecialCharacters
     }
 
+    /**
+     * Randomly generates a new password based on the given requirements
+     */
     fun generatePassword(): String {
         var characters = "abcdefghijklmnopqrstuvwxyz"
         val capitalLetters = characters.uppercase()

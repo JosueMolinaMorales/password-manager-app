@@ -13,10 +13,14 @@ import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.model.UpdateRecord
 import com.example.password_manager_app.network.ErrorResponse
+import com.example.password_manager_app.network.HttpCodes
 import com.example.password_manager_app.network.app.record.RecordNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
+/**
+ * View Model for creating/updating a secret record
+ */
 class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
     private val _key: MutableState<String> = mutableStateOf("")
     val key: State<String> = _key
@@ -82,11 +86,11 @@ class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
             if (res != null) {
                 val body = res.body
                 when (res.code) {
-                    200, 201 -> {
+                    HttpCodes.Ok.code, HttpCodes.Created.code -> {
                         // Res body contains id of new record, could be stored in database
                         onSuccessfulSecretCreate()
                     }
-                    400 -> {
+                    HttpCodes.BadRequest.code -> {
                         val errBody = Gson().fromJson(body?.string(), ErrorResponse::class.java)
                         onUnsuccessfulCreate(errBody.error.message)
                     }
@@ -113,13 +117,13 @@ class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
             )
             if(res != null){
                 when (res.code) {
-                    200 -> {
+                    HttpCodes.Ok.code -> {
                         val body = res.body?.string()
                         val record = Gson().fromJson(body, Record::class.java)
                         _key.value = record.key ?: ""
                         _secret.value = record.secret ?: ""
                     }
-                    404 -> {
+                    HttpCodes.NotFound.code -> {
                         onNotFound()
                     }
                     else -> {
@@ -152,10 +156,10 @@ class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
             _isMakingRequest.value = false
             if(res != null) {
                 when (res.code) {
-                    200, 201, 204 -> {
+                    HttpCodes.Ok.code, HttpCodes.Created.code, HttpCodes.NoContent.code -> {
                         onSuccess()
                     }
-                    400 -> {
+                    HttpCodes.BadRequest.code -> {
                         val error = Gson().fromJson(res.body?.string(), ErrorResponse::class.java)
                         onError(error.error.message)
                     }
