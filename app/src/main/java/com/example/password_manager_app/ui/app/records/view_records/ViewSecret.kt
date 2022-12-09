@@ -24,6 +24,9 @@ import com.example.password_manager_app.ui.components.OutlinedPasswordManagerBut
 import com.example.password_manager_app.ui.components.PasswordManagerTextField
 import com.example.password_manager_app.ui.theme.PewterBlue
 
+/**
+ * The view for a secret record
+ */
 @Composable
 fun ViewSecret(
     vm: ViewSecretViewModel,

@@ -23,6 +23,9 @@ enum class EditProfileSelection{
     Email
 }
 
+/**
+ * The Profile View
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Profile(

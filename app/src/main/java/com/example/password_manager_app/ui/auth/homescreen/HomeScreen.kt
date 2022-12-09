@@ -15,6 +15,9 @@ import androidx.compose.ui.unit.sp
 import com.example.password_manager_app.R
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 
+/**
+ * The HomeScreen view
+ */
 @Composable
 fun HomeScreen(
     onNavigateToLogin: () -> Unit,

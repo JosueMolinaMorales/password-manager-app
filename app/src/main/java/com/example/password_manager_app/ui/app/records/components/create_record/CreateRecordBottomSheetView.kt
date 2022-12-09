@@ -10,6 +10,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.theme.LavenderBlush
 
+/**
+ * The Bottom Sheet view for creating a new record
+ */
 @Composable
 fun CreateRecordView(
     onCreatePasswordClick: () -> Unit,

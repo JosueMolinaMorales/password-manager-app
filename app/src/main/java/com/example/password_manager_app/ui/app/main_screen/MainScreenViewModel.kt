@@ -11,6 +11,9 @@ import com.example.password_manager_app.data.PasswordManagerDatabase
 import com.example.password_manager_app.model.User
 import kotlinx.coroutines.launch
 
+/**
+ * The MainScreenViewModel that handles getting the user from the db and updating them
+ */
 class MainScreenViewModel(app: Application): AndroidViewModel(app) {
     private val db: PasswordManagerDatabase
     private val _user: MutableState<User?> = mutableStateOf(null)
@@ -27,6 +30,9 @@ class MainScreenViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Updates the user with a new user
+     */
     fun updateUser(newUser: User) {
         _user.value = newUser
     }

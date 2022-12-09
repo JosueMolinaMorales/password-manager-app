@@ -22,6 +22,9 @@ import com.example.password_manager_app.ui.components.PasswordManagerTextField
 import com.example.password_manager_app.ui.theme.PewterBlue
 
 
+/**
+ * The view for a password record
+ */
 @Composable
 fun ViewPassword(
     vm: ViewPasswordViewModel,

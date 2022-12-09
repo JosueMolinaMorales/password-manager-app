@@ -13,6 +13,7 @@ import com.example.password_manager_app.model.AuthResponse
 import com.example.password_manager_app.model.LoginForm
 import com.example.password_manager_app.data.PasswordManagerDatabase
 import com.example.password_manager_app.network.ErrorResponse
+import com.example.password_manager_app.network.HttpCodes
 import com.example.password_manager_app.network.auth.AuthNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
@@ -97,7 +98,7 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
                 _isMakingRequest.value = false
                 val responseBody = response.body
                 when (response.code) {
-                    200 -> {
+                    HttpCodes.Ok.code -> {
                         val jsonBody = responseBody?.string()
                         val authResponse = Gson().fromJson(jsonBody, AuthResponse::class.java)
                         // Add token to user
@@ -119,7 +120,7 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
 
                         onSuccessfulLogin()
                     }
-                    400, 404 -> {
+                    HttpCodes.BadRequest.code, HttpCodes.NotFound.code -> {
                         val jsonBody = responseBody?.string()
                         val errorResponse = Gson().fromJson(jsonBody, ErrorResponse::class.java)
                         onUnsuccessfulLogin(errorResponse.error.message)

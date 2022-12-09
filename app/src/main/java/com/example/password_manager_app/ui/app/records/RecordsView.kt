@@ -40,7 +40,9 @@ import com.example.password_manager_app.ui.components.PasswordManagerSnackbar
 import kotlinx.coroutines.delay
 
 
-
+/**
+ * The view for the record list, including the search bar and record list
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RecordsView(

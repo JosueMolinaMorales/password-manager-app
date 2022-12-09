@@ -1,13 +1,14 @@
 package com.example.password_manager_app.ui.app.records.view_records
 
-import android.icu.text.CaseMap.Title
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.password_manager_app.data.getRandomStreamingService
 import com.example.password_manager_app.model.Record
 
+/**
+ * The view model for viewing a password
+ */
 class ViewPasswordViewModel: ViewModel() {
     private val _showPasswordView: MutableState<Boolean> = mutableStateOf(false)
     val show: State<Boolean> = _showPasswordView
@@ -27,7 +28,7 @@ class ViewPasswordViewModel: ViewModel() {
         _showPasswordValue.value = false
     }
 
-    fun toggleShowPasswordValue(newValue: Boolean) {
+    fun toggleShowPasswordValue(_newValue: Boolean) {
         _showPasswordValue.value = !_showPasswordValue.value
     }
 }

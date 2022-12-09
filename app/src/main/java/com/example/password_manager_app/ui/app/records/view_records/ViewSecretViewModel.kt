@@ -6,6 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.password_manager_app.model.Record
 
+/**
+ * The view model for viewing a secret
+ */
 class ViewSecretViewModel: ViewModel() {
     private val _showSecretView: MutableState<Boolean> = mutableStateOf(false)
     val show: State<Boolean> = _showSecretView

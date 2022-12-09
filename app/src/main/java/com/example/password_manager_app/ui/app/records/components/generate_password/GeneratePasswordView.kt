@@ -16,6 +16,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.theme.LavenderBlush
 
+/**
+ * The Bottom Sheet View for Generating a new password
+ */
 @Composable
 fun GeneratePasswordView(
     onGeneratePassword: (String) -> Unit

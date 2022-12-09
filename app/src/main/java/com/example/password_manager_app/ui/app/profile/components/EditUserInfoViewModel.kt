@@ -13,15 +13,18 @@ import com.example.password_manager_app.data.PasswordManagerDatabase
 import com.example.password_manager_app.model.UpdateForm
 import com.example.password_manager_app.model.User
 import com.example.password_manager_app.network.ErrorResponse
+import com.example.password_manager_app.network.HttpCodes
 import com.example.password_manager_app.network.User.UserNetwork
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
+/**
+ * The EditUserInfoViewModel that handles the logic for updating a users information
+ */
 class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
     private val _password: MutableState<String> = mutableStateOf("")
     val password: State<String> = _password
     private val _passwordHasError: MutableState<Boolean> = mutableStateOf(false)
-    val passwordHasError: State<Boolean> = _passwordHasError
 
     private val _username: MutableState<String> = mutableStateOf("")
     val username: State<String> = _username
@@ -29,12 +32,10 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
     private val _newPassword: MutableState<String> = mutableStateOf("")
     val newPassword: State <String> = _newPassword
     private val _newPasswordHasError: MutableState<Boolean> = mutableStateOf(false)
-    val newPasswordHasError: State<Boolean> = _newPasswordHasError
 
     private val _confirmPassword: MutableState<String> = mutableStateOf("")
     val confirmPassword: State<String> = _confirmPassword
     private val _confirmPasswordHasError: MutableState<Boolean> = mutableStateOf(false)
-    val confirmPasswordHasError: State<Boolean> = _confirmPasswordHasError
 
     private val _updateErrorMsg: MutableState<String?> = mutableStateOf(null)
     val updateErrorMsg: State<String?> = _updateErrorMsg
@@ -42,10 +43,8 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
     private val _email: MutableState<String> = mutableStateOf("")
     val email: State<String> = _email
     private val _emailHasError: MutableState<Boolean> = mutableStateOf(false)
-    val emailHasError: State<Boolean> = _emailHasError
 
     private val _makingRequest: MutableState<Boolean> = mutableStateOf(false)
-    val makingRequest: State<Boolean> = _makingRequest
 
     private val ctx = getApplication<Application>()
     private val connectivityManager = ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -57,31 +56,46 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
         userDb = Room.databaseBuilder(
             app,
             PasswordManagerDatabase::class.java,
-            "passwordmanager.db"
+            "passwordManager.db"
         ).build()
     }
 
+    /**
+     * Sets the password
+     */
     fun setPassword(password: String){
         _password.value = password
     }
 
+    /**
+     * Sets the new password
+     */
     fun setNewPassword(newPassword: String) {
         _newPassword.value = newPassword
         _confirmPasswordHasError.value = _confirmPassword.value != _newPassword.value
         _newPasswordHasError.value = _confirmPassword.value != _newPassword.value
     }
 
+    /**
+     * Sets the confirm password field
+     */
     fun setConfirmPassword(confirmPassword: String) {
         _confirmPassword.value = confirmPassword
         _confirmPasswordHasError.value = _confirmPassword.value != _newPassword.value
         _newPasswordHasError.value = _confirmPassword.value != _newPassword.value
     }
 
+    /**
+     * Sets the email field
+     */
     fun setEmail(email: String) {
         _email.value = email
         _emailHasError.value = _email.value == ""
     }
 
+    /**
+     * Validates the email
+     */
     fun validateEmail(): String? {
         var errorMsg = ""
         val emptyFields = mutableListOf<String>()
@@ -105,6 +119,9 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
         return null
     }
 
+    /**
+     * Validates the Password
+     */
     fun validatePassword(): String? {
         var errorMsg = ""
         val emptyFields = mutableListOf<String>()
@@ -139,6 +156,9 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
         return null
     }
 
+    /**
+     * Calls the API to update the users information
+     */
     fun updateInfo(
         onSuccessfulUpdate: (User) -> Unit,
         onUnsuccessfulUpdate: () -> Unit,
@@ -159,7 +179,7 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
             if(response != null) {
                 val body = response.body?.string()
                 when (response.code) {
-                    204 -> {
+                    HttpCodes.NoContent.code -> {
                         val newUser = User(
                             email = if (_email.value != "") { _email.value } else { user?.email!! },
                             token = user?.token ?: "",
@@ -172,7 +192,7 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
                         }
                         onSuccessfulUpdate(newUser)
                     }
-                    400 -> {
+                    HttpCodes.BadRequest.code, HttpCodes.NotFound.code -> {
                         val errorBody = Gson().fromJson(body, ErrorResponse::class.java)
                         _updateErrorMsg.value = errorBody.error.message
                         onUnsuccessfulUpdate()

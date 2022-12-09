@@ -25,6 +25,9 @@ import com.example.password_manager_app.ui.components.PasswordManagerSnackbar
 import com.example.password_manager_app.ui.components.PasswordManagerTextField
 import kotlinx.coroutines.delay
 
+/**
+ * Create Secret View
+ */
 @Composable
 fun CreateSecretPage(
     token: String,

@@ -14,6 +14,13 @@ import okhttp3.Response
 
 class UserNetwork(private val connectivityManager: ConnectivityManager): IUserNetwork {
     private val client = OkHttpClient()
+
+    /**
+     * Updates a user's information
+     *
+     * @param updateForm The update information for the request
+     * @return A response object containing the server's response, or null if there is no active network connection.
+     */
     override suspend fun update(updateForm: UpdateForm): Response? {
         if(connectivityManager.activeNetwork != null) {
             return withContext(Dispatchers.IO) {
