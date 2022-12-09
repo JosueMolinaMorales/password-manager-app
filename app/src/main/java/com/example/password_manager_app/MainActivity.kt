@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Notification
+import android.app.PendingIntent
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.ContentValues
@@ -33,8 +34,8 @@ class MainActivity : ComponentActivity(){
 
     private lateinit var touchHandler: Handler
     private lateinit var run: Runnable
-    private var time: Long = 2000
-    val CHANNEL_ID = "com.example.password_manager_app.channel"
+    private var time: Long = 5000
+    private val CHANNEL_ID = "com.example.password_manager_app.channel"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +62,10 @@ class MainActivity : ComponentActivity(){
         startHandler()
     }
 
+    /**
+     * Listens for user's interaction with the screen. When a user interacts with the screem,
+     * the Handler is stopped and restarted to start the timer for inactivity.
+     */
     override fun onUserInteraction() {
 
         Log.e("main", "Touch!")
@@ -71,25 +76,44 @@ class MainActivity : ComponentActivity(){
         super.onUserInteraction()
     }
 
+    /**
+     * Starts the handler for the inactivity timer.
+     */
     private fun startHandler(){
         touchHandler.postDelayed(run, time)
     }
 
+    /**
+     * Stops the handler for the inactivity timer.
+     */
     private fun stopHandler(){
         touchHandler.removeCallbacks(run)
     }
 
-
+    /**
+     * Creates the notification for when a user is inactive for a set amount of time.
+     * When the user taps the notification, they will be logged out and returned to the Welcome Screen.
+     * @param time The amount of time a user has been inactive.
+     * @return The notification built with the set intent.
+     */
     fun logoutNotification(time: Long): Notification {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         createNotificationChannel()
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.koalalogo)
             .setContentTitle("Inactive")
-            .setContentText("You've been inactive for ${time} seconds. Log out?")
+            .setContentText("You've been inactive for ${time / 1000} seconds. Tap here to log out.")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
         return builder.build()
     }
 
+    /**
+     * Creates the notification channel for the inactivity notification
+     */
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val name = "SecretSecured"
@@ -120,4 +144,6 @@ fun DefaultPreview() {
  * Loading Images: https://developer.android.com/jetpack/compose/graphics/images/loading
  * Navigation: https://developer.android.com/jetpack/compose/navigation
  * Clipboard: https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#kotlin
+ * Notification/Intent: https://developer.android.com/develop/ui/views/notifications/build-notification
+ * Inactivity Detection: https://www.geeksforgeeks.org/how-to-detect-user-inactivity-in-android/
  */
