@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity(){
     fun logoutNotification(time: Long): Notification {
         createNotificationChannel()
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_menu_search)
+            .setSmallIcon(R.drawable.koalalogo)
             .setContentTitle("Inactive")
             .setContentText("You've been inactive for ${time} seconds. Log out?")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity(){
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES .O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val name = "SecretSecured"
             val descriptionText = "Notification channel"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
