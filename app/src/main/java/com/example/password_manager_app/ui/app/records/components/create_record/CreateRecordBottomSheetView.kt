@@ -1,12 +1,15 @@
 package com.example.password_manager_app.ui.app.records.components.create_record
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
 import com.example.password_manager_app.ui.components.PasswordManagerButton
 import com.example.password_manager_app.ui.theme.LavenderBlush
 
@@ -21,11 +24,12 @@ fun CreateRecordView(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .fillMaxHeight(if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) { .5F } else { .25F }),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(.1F),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             // Create New Title
@@ -39,8 +43,7 @@ fun CreateRecordView(
         }
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(.1F),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             // Password Button
@@ -53,8 +56,7 @@ fun CreateRecordView(
         }
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(.1F),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             // Secret Button

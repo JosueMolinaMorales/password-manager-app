@@ -1,5 +1,6 @@
 package com.example.password_manager_app.ui.app.records.view_records
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -10,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,7 +39,7 @@ fun ViewPassword(
             backgroundColor = PewterBlue,
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(.7F),
+                .fillMaxHeight(if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) { 1F } else { .7F }),
             onDismissRequest = { vm.hide() },
             title = {},
             text = {
