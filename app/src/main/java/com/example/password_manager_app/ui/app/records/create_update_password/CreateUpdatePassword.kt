@@ -184,7 +184,7 @@ fun CreateUpdatePasswordPage(
                                         )
                                     }
                                 }
-                            }) {
+                            }, enabled = !vm.isMakingRequest.value) {
                                 if (vm.isMakingRequest.value) {
                                     CircularProgressIndicator(color = Color.Black)
                                 } else {

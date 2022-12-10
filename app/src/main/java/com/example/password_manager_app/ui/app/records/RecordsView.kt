@@ -281,7 +281,9 @@ fun RecordList(
                                 recordId = record.id!!,
                                 token = mainScreenViewModel.user.value?.token!!,
                                 userId = mainScreenViewModel.user.value?.id!!,
-                                onError = {},
+                                onError = { errorMessage ->
+                                    errorMsg.value = errorMessage
+                                },
                                 onSuccess = {
                                     if (record.recordType == RecordType.Password) {
                                         showPasswordViewModel.hide()

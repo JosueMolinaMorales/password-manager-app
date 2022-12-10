@@ -153,10 +153,12 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
         onNotFound: () -> Unit
     ) {
         viewModelScope.launch {
+            _isMakingRequest.value = true
             val res = recordNet.getRecord(
                 recordId = recordId,
                 token = token
             )
+            _isMakingRequest.value = false
             if (res != null) {
                 when (res.code) {
                     HttpCodes.Ok.code -> {

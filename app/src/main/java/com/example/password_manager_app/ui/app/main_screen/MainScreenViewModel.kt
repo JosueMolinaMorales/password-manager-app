@@ -17,6 +17,9 @@ import kotlinx.coroutines.launch
 class MainScreenViewModel(app: Application): AndroidViewModel(app) {
     private val db: PasswordManagerDatabase
     private val _user: MutableState<User?> = mutableStateOf(null)
+    private val _isLoggedIn: MutableState<Boolean> = mutableStateOf(false)
+    val isLoggedIn: State<Boolean> = _isLoggedIn
+
     val user: State<User?> = _user
 
     init {
@@ -24,12 +27,28 @@ class MainScreenViewModel(app: Application): AndroidViewModel(app) {
             app,
             PasswordManagerDatabase::class.java,
             "passwordManager.db"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
         viewModelScope.launch {
             _user.value = db.userDao().getUser()
         }
     }
 
+    fun logUserIn() {
+        viewModelScope.launch {
+            _user.value = db.userDao().getUser()
+            db.userDao().updateUserLoggedInStatus(true, _user.value?.id ?: "")
+            _isLoggedIn.value = true
+        }
+    }
+
+    fun logUserOut() {
+        viewModelScope.launch {
+            db.userDao().updateUserLoggedInStatus(false, _user.value?.id ?: "")
+            _isLoggedIn.value = false
+        }
+    }
     /**
      * Updates the user with a new user
      */

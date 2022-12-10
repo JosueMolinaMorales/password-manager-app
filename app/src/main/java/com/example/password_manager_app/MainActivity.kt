@@ -20,12 +20,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.password_manager_app.nav.PasswordManagerNavigation
+import com.example.password_manager_app.nav.Routes
+import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
 import com.example.password_manager_app.ui.auth.login.LoginScreen
 import com.example.password_manager_app.ui.theme.PasswordmanagerappTheme
 
@@ -36,7 +42,8 @@ class MainActivity : ComponentActivity(){
     private lateinit var run: Runnable
     private var time: Long = 5000
     private val CHANNEL_ID = "com.example.password_manager_app.channel"
-
+    private val isLoggedIn: MutableState<Boolean> = mutableStateOf(false)
+    private lateinit var mainScreenViewModel: MainScreenViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +54,16 @@ class MainActivity : ComponentActivity(){
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    mainScreenViewModel = viewModel()
                     val navController = rememberNavController()
                     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-                    PasswordManagerNavigation(navController = navController, clipboard = clipboard)
+                    PasswordManagerNavigation(
+                        navController = navController,
+                        clipboard = clipboard,
+                        mainScreenViewModel = mainScreenViewModel
+                    )
+                    isLoggedIn.value = mainScreenViewModel.isLoggedIn.value
                 }
             }
         }
@@ -59,7 +72,25 @@ class MainActivity : ComponentActivity(){
             NotificationManagerCompat.from(this)
                 .notify(0, logoutNotification(time))
         }
-        startHandler()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isLoggedIn.value) {
+            startHandler()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (isLoggedIn.value) {
+            stopHandler()
+        }
+    }
+
+    override fun onStop() {
+        mainScreenViewModel.logUserOut()
+        super.onStop()
     }
 
     /**
@@ -67,13 +98,10 @@ class MainActivity : ComponentActivity(){
      * the Handler is stopped and restarted to start the timer for inactivity.
      */
     override fun onUserInteraction() {
-
-        Log.e("main", "Touch!")
-        stopHandler()
-
-        startHandler()
-
         super.onUserInteraction()
+        if (isLoggedIn.value) {
+            stopHandler()
+        }
     }
 
     /**
@@ -96,7 +124,7 @@ class MainActivity : ComponentActivity(){
      * @param time The amount of time a user has been inactive.
      * @return The notification built with the set intent.
      */
-    fun logoutNotification(time: Long): Notification {
+    private fun logoutNotification(time: Long): Notification {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
