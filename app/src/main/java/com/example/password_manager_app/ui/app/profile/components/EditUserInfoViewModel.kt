@@ -190,6 +190,10 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
                         if (user != null) {
                             userDb.userDao().updateUser(newUser)
                         }
+                        _email.value = ""
+                        _password.value = ""
+                        _newPassword.value = ""
+                        _confirmPassword.value = ""
                         onSuccessfulUpdate(newUser)
                     }
                     HttpCodes.BadRequest.code, HttpCodes.NotFound.code -> {
