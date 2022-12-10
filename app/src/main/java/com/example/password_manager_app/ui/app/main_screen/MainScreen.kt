@@ -50,7 +50,8 @@ import com.example.password_manager_app.ui.components.TopBar
 @Composable
 fun MainScreen(
     onLogOut: () -> Unit,
-    clipboard: ClipboardManager
+    clipboard: ClipboardManager,
+    vm: MainScreenViewModel
 ) {
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
@@ -58,7 +59,6 @@ fun MainScreen(
     val focusManager = LocalFocusManager.current
     val bottomState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val showFAB = remember { mutableStateOf(true) }
-    val vm: MainScreenViewModel = viewModel()
     val recordsViewModel: RecordsViewModel = viewModel()
 
     if(vm.user.value == null) {

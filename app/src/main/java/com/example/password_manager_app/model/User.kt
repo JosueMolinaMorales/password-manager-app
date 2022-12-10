@@ -23,6 +23,10 @@ data class User(
     @Expose(serialize = false, deserialize = false)
     @ColumnInfo
     var token: String = "",
+
+    @Expose(serialize = false, deserialize = false)
+    @ColumnInfo
+    var isLoggedIn: Boolean = false
 )
 
 @Dao
@@ -41,6 +45,9 @@ interface UserDao {
 
     @Update
     suspend fun updateUser(user: User)
+
+    @Query("Update User SET isLoggedIn = :isLoggedIn WHERE id = :userId")
+    suspend fun updateUserLoggedInStatus(isLoggedIn: Boolean, userId: String)
 }
 
 /**

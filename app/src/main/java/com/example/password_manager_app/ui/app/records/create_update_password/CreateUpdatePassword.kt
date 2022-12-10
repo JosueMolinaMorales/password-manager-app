@@ -55,7 +55,7 @@ fun CreateUpdatePasswordPage(
             recordId,
             token,
             onError = {
-                errorMsg.value = it
+                show404Message.value = true
             },
             onNotFound = {
                 show404Message.value = true
@@ -184,7 +184,7 @@ fun CreateUpdatePasswordPage(
                                         )
                                     }
                                 }
-                            }) {
+                            }, enabled = !vm.isMakingRequest.value) {
                                 if (vm.isMakingRequest.value) {
                                     CircularProgressIndicator(color = Color.Black)
                                 } else {

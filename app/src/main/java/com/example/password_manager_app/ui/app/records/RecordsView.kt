@@ -278,10 +278,12 @@ fun RecordList(
                         },
                         onDeleteClick = {
                             recordsViewModel.deleteRecord(
-                                recordId = record.id!!,
+                                recordId = record.id ?: "none",
                                 token = mainScreenViewModel.user.value?.token!!,
                                 userId = mainScreenViewModel.user.value?.id!!,
-                                onError = {},
+                                onError = { errorMessage ->
+                                    errorMsg.value = errorMessage
+                                },
                                 onSuccess = {
                                     if (record.recordType == RecordType.Password) {
                                         showPasswordViewModel.hide()
@@ -292,7 +294,7 @@ fun RecordList(
                             )
                         },
                         onEditClick = { recordType ->
-                            onEditClick(recordType, record.id!!)
+                            onEditClick(recordType, record.id ?: "none")
                         },
                         title = title,
                         recordType = record.recordType

@@ -142,6 +142,7 @@ class RecordsViewModel(app: Application): AndroidViewModel(app) {
     }
 
     suspend fun fetchRecords(token: String, userId: String, onError: (String) -> Unit) {
+        _isFetchingRecords.value = true
         val response = recNet.fetchRecords(token, userId)
         if(response != null) {
             when (response.code) {
@@ -161,6 +162,7 @@ class RecordsViewModel(app: Application): AndroidViewModel(app) {
         } else {
             onError("Not Connected to the network")
         }
+        _isFetchingRecords.value = false
     }
     
 }

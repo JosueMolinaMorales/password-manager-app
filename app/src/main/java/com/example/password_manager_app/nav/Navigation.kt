@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.password_manager_app.ui.app.main_screen.MainScreen
+import com.example.password_manager_app.ui.app.main_screen.MainScreenViewModel
 import com.example.password_manager_app.ui.auth.homescreen.HomeScreen
 import com.example.password_manager_app.ui.auth.login.LoginScreen
 import com.example.password_manager_app.ui.auth.register.RegisterScreen
@@ -16,12 +17,14 @@ import com.example.password_manager_app.ui.auth.register.RegisterScreen
 @Composable
 fun PasswordManagerNavigation(
     navController: NavHostController,
+    mainScreenViewModel: MainScreenViewModel,
     clipboard: ClipboardManager
 ) {
     NavHost(navController = navController, startDestination = Routes.HomePage.route ) {
         composable(Routes.LoginPage.route) {
             LoginScreen(
                 onNavigateToMainScreen = {
+                    mainScreenViewModel.logUserIn()
                     navController.navigate(Routes.MainScreenPage.route) {
                         popUpTo(Routes.HomePage.route) { inclusive = true }
                     }
@@ -39,6 +42,7 @@ fun PasswordManagerNavigation(
             RegisterScreen(
                 onNavigateToLogin = { navController.navigate(Routes.LoginPage.route) },
                 onNavigateToMainScreen = {
+                    mainScreenViewModel.logUserIn()
                     navController.navigate(Routes.MainScreenPage.route) {
                         popUpTo(Routes.HomePage.route) { inclusive = true }
                     }
@@ -47,11 +51,13 @@ fun PasswordManagerNavigation(
         }
         composable(Routes.MainScreenPage.route) {
             MainScreen(onLogOut = {
+                mainScreenViewModel.logUserOut()
                 navController.navigate(Routes.LoginPage.route) {
                     popUpTo(Routes.MainScreenPage.route) { inclusive = true }
                 }
             },
-                clipboard = clipboard
+                clipboard = clipboard,
+                vm = mainScreenViewModel
             )
         }
     }

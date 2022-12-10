@@ -56,7 +56,7 @@ fun ViewPassword(
                             fontWeight = FontWeight.Bold,
                             color = Color.Black,
                             style = MaterialTheme.typography.h4,
-                            text = vm.record.value?.service!!,
+                            text = vm.record.value?.service ?: "",
                             textAlign = TextAlign.Center
                         )
                     }
@@ -71,7 +71,6 @@ fun ViewPassword(
                             modifier = Modifier.padding(top = 10.dp),
                             ) {
                             Column {
-                                //TODO change to get value from ViewPasswordViewModel
                                 PasswordManagerTextField(
                                     value = vm.record.value?.username ?: vm.record.value?.email!!,
                                     onValueChange = {},
@@ -85,7 +84,7 @@ fun ViewPassword(
                             ) {
                             Column {
                                 PasswordManagerTextField(
-                                    value = vm.record.value?.password ?: vm.record.value?.secret!!,
+                                    value = vm.record.value?.password ?: "",
                                     onValueChange = { },
                                     readOnly = true,
                                     label = { Text(text = "Password") },
@@ -114,7 +113,7 @@ fun ViewPassword(
                 ) {
                     OutlinedPasswordManagerButton(
                         modifier = Modifier.width(200.dp),
-                        onClick = { onEditClick(RecordType.Password, vm.record.value?.id!!) },
+                        onClick = { onEditClick(RecordType.Password, vm.record.value?.id ?: "none") },
                         border = BorderStroke(1.dp, Color.Black)
                     ) {
                         Text(text = "Edit", fontSize = 15.sp)
