@@ -203,6 +203,7 @@ class EditUserInfoViewModel(app: Application): AndroidViewModel(app) {
                     }
                 }
             } else {
+                _updateErrorMsg.value = "Not Connected To Wifi"
                 onUnsuccessfulUpdate()
             }
         }

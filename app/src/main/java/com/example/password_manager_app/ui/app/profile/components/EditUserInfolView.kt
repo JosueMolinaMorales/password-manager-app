@@ -211,7 +211,7 @@ fun ChangeEmailView(editUserViewModel: EditUserInfoViewModel, onEditChange: (Use
                     },
                 )
             }
-        }
+        },
         ) {
             Text("Update Email")
         }
