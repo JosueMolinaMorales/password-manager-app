@@ -55,7 +55,7 @@ fun CreateUpdatePasswordPage(
             recordId,
             token,
             onError = {
-                errorMsg.value = it
+                show404Message.value = true
             },
             onNotFound = {
                 show404Message.value = true

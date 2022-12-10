@@ -105,7 +105,7 @@ fun ViewSecret(
                 ) {
                     OutlinedPasswordManagerButton(
                         modifier = Modifier.width(200.dp),
-                        onClick = { onEditClick(RecordType.Secret, vm.record.value?.id!!) },
+                        onClick = { onEditClick(RecordType.Secret, vm.record.value?.id ?: "none") },
                         border = BorderStroke(1.dp, Color.Black)
                     ) {
                         Text(text = "Edit", fontSize = 15.sp)
