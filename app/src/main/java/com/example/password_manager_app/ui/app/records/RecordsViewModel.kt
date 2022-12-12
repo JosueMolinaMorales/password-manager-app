@@ -66,12 +66,16 @@ class RecordsViewModel(app: Application): AndroidViewModel(app) {
     }
 
     fun deleteRecord(
-        recordId: String,
+        recordId: String?,
         token: String,
         userId: String,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
+        if (recordId == null) {
+            onError("Record Not Found")
+            return
+        }
         viewModelScope.launch {
             _isMakingDeleteRequest.value = true
             val res = recNet.deleteRecord(token = token, recordId = recordId)

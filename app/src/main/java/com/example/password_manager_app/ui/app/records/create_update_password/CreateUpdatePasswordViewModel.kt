@@ -147,11 +147,15 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
      * Gets a record from the api, if they are attempting to update it
      */
     fun getRecord(
-        recordId: String,
+        recordId: String?,
         token: String,
         onError: (String) -> Unit,
         onNotFound: () -> Unit
     ) {
+        if (recordId == null) {
+            onNotFound()
+            return
+        }
         viewModelScope.launch {
             _isMakingRequest.value = true
             val res = recordNet.getRecord(
@@ -193,6 +197,10 @@ class CreateUpdatePasswordViewModel(app: Application): AndroidViewModel(app) {
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
+//        if (recordId == null) {
+//            onError("Record Not Found")
+//            return
+//        }
         viewModelScope.launch {
             _isMakingRequest.value = true
             val res = recordNet.updateRecord(

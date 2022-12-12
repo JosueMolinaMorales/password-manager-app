@@ -16,8 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.password_manager_app.model.Record
 import com.example.password_manager_app.model.RecordType
 import com.example.password_manager_app.ui.components.OutlinedPasswordManagerButton
 import com.example.password_manager_app.ui.components.PasswordManagerTextField
@@ -30,7 +28,7 @@ import com.example.password_manager_app.ui.theme.PewterBlue
 @Composable
 fun ViewPassword(
     vm: ViewPasswordViewModel,
-    onEditClick: (RecordType, String) -> Unit,
+    onEditClick: (RecordType, String?) -> Unit,
     onDeleteClick: () -> Unit
 ) {
     val show by vm.show
@@ -113,7 +111,7 @@ fun ViewPassword(
                 ) {
                     OutlinedPasswordManagerButton(
                         modifier = Modifier.width(200.dp),
-                        onClick = { onEditClick(RecordType.Password, vm.record.value?.id ?: "none") },
+                        onClick = { onEditClick(RecordType.Password, vm.record.value?.id) },
                         border = BorderStroke(1.dp, Color.Black)
                     ) {
                         Text(text = "Edit", fontSize = 15.sp)

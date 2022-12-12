@@ -24,8 +24,14 @@ fun CreateRecordView(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) { .5F } else { .25F }),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .fillMaxHeight(
+                if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    .5F
+                } else {
+                    .25F
+                }
+            ),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Row(
             modifier = Modifier

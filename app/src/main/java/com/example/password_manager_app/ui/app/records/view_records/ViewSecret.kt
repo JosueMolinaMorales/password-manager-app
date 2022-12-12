@@ -32,7 +32,7 @@ import com.example.password_manager_app.ui.theme.PewterBlue
 @Composable
 fun ViewSecret(
     vm: ViewSecretViewModel,
-    onEditClick: (RecordType, String) -> Unit,
+    onEditClick: (RecordType, String?) -> Unit,
     onDeleteClick: () -> Unit
 ) {
     val show by vm.show
@@ -105,7 +105,7 @@ fun ViewSecret(
                 ) {
                     OutlinedPasswordManagerButton(
                         modifier = Modifier.width(200.dp),
-                        onClick = { onEditClick(RecordType.Secret, vm.record.value?.id ?: "none") },
+                        onClick = { onEditClick(RecordType.Secret, vm.record.value?.id) },
                         border = BorderStroke(1.dp, Color.Black)
                     ) {
                         Text(text = "Edit", fontSize = 15.sp)

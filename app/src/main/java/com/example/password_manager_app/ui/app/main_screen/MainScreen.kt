@@ -123,10 +123,11 @@ fun MainScreen(
                     composable("records") {
                         RecordsView(
                             onEditClick = { recordType, recordId ->
+                                val record = recordId ?: "none"
                                 if (recordType == RecordType.Secret) {
-                                    innerNav.navigate("createSecret/update/$recordId")
+                                    innerNav.navigate("createSecret/update/$record")
                                 } else {
-                                    innerNav.navigate("createPassword/update/$recordId")
+                                    innerNav.navigate("createPassword/update/$record")
                                 }
                             },
                             recordsViewModel = recordsViewModel,

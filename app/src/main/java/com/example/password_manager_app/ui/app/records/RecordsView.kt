@@ -46,7 +46,7 @@ import kotlinx.coroutines.delay
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun RecordsView(
-    onEditClick: (RecordType, String) -> Unit,
+    onEditClick: (RecordType, String?) -> Unit,
     recordsViewModel: RecordsViewModel,
     mainScreenViewModel: MainScreenViewModel,
     clipboard: ClipboardManager
@@ -63,7 +63,7 @@ fun RecordsView(
         onEditClick = onEditClick,
         onDeleteClick = {
             recordsViewModel.deleteRecord(
-                recordId = showPasswordViewModel.record.value?.id!!,
+                recordId = showPasswordViewModel.record.value?.id,
                 token = mainScreenViewModel.user.value?.token!!,
                 userId = mainScreenViewModel.user.value?.id!!,
                 onSuccess = { showPasswordViewModel.hide() },
@@ -78,7 +78,7 @@ fun RecordsView(
         onEditClick = onEditClick,
         onDeleteClick = {
             recordsViewModel.deleteRecord(
-                recordId = showSecretViewModel.record.value?.id!!,
+                recordId = showSecretViewModel.record.value?.id,
                 token = mainScreenViewModel.user.value?.token!!,
                 userId = mainScreenViewModel.user.value?.id!!,
                 onSuccess = { showSecretViewModel.hide() },
@@ -202,7 +202,7 @@ fun RecordsView(
 
 @Composable
 fun RecordList(
-    onEditClick: (RecordType, String) -> Unit,
+    onEditClick: (RecordType, String?) -> Unit,
     recordsViewModel: RecordsViewModel,
     mainScreenViewModel: MainScreenViewModel,
     showPasswordViewModel: ViewPasswordViewModel,
@@ -278,7 +278,7 @@ fun RecordList(
                         },
                         onDeleteClick = {
                             recordsViewModel.deleteRecord(
-                                recordId = record.id ?: "none",
+                                recordId = record.id,
                                 token = mainScreenViewModel.user.value?.token!!,
                                 userId = mainScreenViewModel.user.value?.id!!,
                                 onError = { errorMessage ->
@@ -294,7 +294,7 @@ fun RecordList(
                             )
                         },
                         onEditClick = { recordType ->
-                            onEditClick(recordType, record.id ?: "none")
+                            onEditClick(recordType, record.id)
                         },
                         title = title,
                         recordType = record.recordType

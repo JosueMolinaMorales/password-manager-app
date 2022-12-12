@@ -106,10 +106,14 @@ class CreateUpdateSecretViewModel(app: Application): AndroidViewModel(app) {
 
     fun getSecret(
         token: String,
-        recordId: String,
+        recordId: String?,
         onNotFound: () -> Unit,
         onError: (String) -> Unit
     ) {
+        if (recordId == null) {
+            onNotFound()
+            return
+        }
         viewModelScope.launch {
             val res = _recordNetwork.getRecord(
                 recordId = recordId,
